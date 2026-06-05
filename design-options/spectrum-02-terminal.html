@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>aegntic — coordination layer</title>
+<meta name="description" content="The coordination layer for persistent human–AI intelligence. One organism. Many organs." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --bg: #0b0f0b;
+    --phosphor: #33ff66;
+    --dim: #1f7a3d;
+    --amber: #ffb000;
+    --glow: rgba(51, 255, 102, 0.55);
+    --glow-soft: rgba(51, 255, 102, 0.18);
+    font-size: 16px;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html, body { height: 100%; }
+
+  body {
+    background: var(--bg);
+    color: var(--phosphor);
+    font-family: "JetBrains Mono", ui-monospace, "Courier New", monospace;
+    font-weight: 400;
+    line-height: 1.5;
+    overflow: hidden;
+    -webkit-font-smoothing: antialiased;
+    text-shadow: 0 0 4px var(--glow-soft);
+  }
+
+  /* ---- CRT screen frame ---- */
+  .crt {
+    position: relative;
+    height: 100vh;
+    height: 100dvh;
+    width: 100%;
+    overflow: hidden;
+    background:
+      radial-gradient(120% 120% at 50% 50%, rgba(20, 40, 22, 0.35) 0%, rgba(5, 8, 5, 0.55) 70%, rgba(2, 4, 2, 0.9) 100%),
+      var(--bg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* curvature / vignette */
+  .crt::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 30;
+    border-radius: 0;
+    box-shadow:
+      inset 0 0 8rem rgba(0, 0, 0, 0.75),
+      inset 0 0 2rem rgba(0, 0, 0, 0.55);
+    background:
+      radial-gradient(110% 100% at 50% 50%, transparent 55%, rgba(0,0,0,0.45) 100%);
+  }
+
+  /* scanlines + drift */
+  .scanlines {
+    position: absolute;
+    inset: -2px;
+    pointer-events: none;
+    z-index: 25;
+    background: repeating-linear-gradient(
+      to bottom,
+      rgba(0, 0, 0, 0) 0px,
+      rgba(0, 0, 0, 0) 2px,
+      rgba(0, 0, 0, 0.22) 3px,
+      rgba(0, 0, 0, 0.22) 4px
+    );
+    background-size: 100% 4px;
+    animation: drift 8s linear infinite;
+    mix-blend-mode: multiply;
+    opacity: 0.7;
+  }
+
+  @keyframes drift {
+    from { background-position: 0 0; }
+    to   { background-position: 0 100px; }
+  }
+
+  /* flicker layer */
+  .flicker {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 26;
+    background: var(--phosphor);
+    opacity: 0;
+    mix-blend-mode: overlay;
+    animation: flicker 7s steps(60) infinite;
+  }
+
+  @keyframes flicker {
+    0%, 100%   { opacity: 0.0; }
+    47%        { opacity: 0.0; }
+    47.5%      { opacity: 0.03; }
+    48%        { opacity: 0.0; }
+    72%        { opacity: 0.0; }
+    72.4%      { opacity: 0.04; }
+    72.8%      { opacity: 0.0; }
+    93%        { opacity: 0.0; }
+    93.3%      { opacity: 0.025; }
+    93.6%      { opacity: 0.0; }
+  }
+
+  /* ---- terminal content ---- */
+  .terminal {
+    position: relative;
+    z-index: 10;
+    width: 100%;
+    max-width: 980px;
+    height: 100%;
+    max-height: 100vh;
+    max-height: 100dvh;
+    padding: clamp(1.1rem, 3vw, 2.4rem) clamp(1.1rem, 4vw, 3rem);
+    display: flex;
+    flex-direction: column;
+    gap: 0.55rem;
+    overflow: hidden;
+  }
+
+  .titlebar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    color: var(--dim);
+    font-size: 0.72rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    border-bottom: 1px solid rgba(31, 122, 61, 0.4);
+    padding-bottom: 0.55rem;
+    margin-bottom: 0.35rem;
+  }
+
+  .titlebar .dots { display: inline-flex; gap: 0.4rem; }
+  .titlebar .dots span {
+    width: 0.55rem; height: 0.55rem; border-radius: 50%;
+    background: var(--dim); box-shadow: 0 0 4px var(--glow-soft);
+  }
+  .titlebar .dots span:last-child { background: var(--amber); box-shadow: 0 0 5px rgba(255,176,0,0.45); }
+
+  .prompt { color: var(--dim); }
+  .prompt .user { color: var(--phosphor); }
+  .prompt .cmd { color: var(--amber); }
+
+  .line { font-size: clamp(0.8rem, 1.6vw, 0.95rem); }
+  .line .ok { color: var(--amber); }
+  .muted { color: var(--dim); }
+
+  .eyebrow {
+    color: var(--amber);
+    font-size: clamp(0.7rem, 1.5vw, 0.82rem);
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    text-shadow: 0 0 6px rgba(255, 176, 0, 0.35);
+  }
+
+  h1.headline {
+    font-weight: 700;
+    font-size: clamp(1.4rem, 4.4vw, 2.75rem);
+    line-height: 1.12;
+    letter-spacing: -0.01em;
+    color: var(--phosphor);
+    text-shadow: 0 0 8px var(--glow), 0 0 18px var(--glow-soft);
+    margin: 0.2rem 0 0.1rem;
+    min-height: 1.12em;
+  }
+
+  .deck {
+    color: #bfffd0;
+    font-size: clamp(0.82rem, 1.8vw, 1rem);
+    max-width: 62ch;
+    text-shadow: 0 0 5px var(--glow-soft);
+  }
+
+  /* blinking block cursor */
+  .cursor {
+    display: inline-block;
+    width: 0.6em;
+    height: 1.05em;
+    background: var(--phosphor);
+    box-shadow: 0 0 8px var(--glow);
+    vertical-align: -0.18em;
+    margin-left: 0.12em;
+    animation: blink 1.05s steps(1) infinite;
+  }
+  @keyframes blink { 0%, 50% { opacity: 1; } 50.01%, 100% { opacity: 0; } }
+
+  /* ascii diagram */
+  .ascii-wrap {
+    border: 1px solid rgba(31, 122, 61, 0.45);
+    border-radius: 4px;
+    padding: 0.7rem 0.9rem;
+    background: rgba(20, 40, 22, 0.18);
+    overflow-x: auto;
+    overflow-y: hidden;
+  }
+  .ascii-wrap .label {
+    color: var(--dim);
+    font-size: 0.66rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    margin-bottom: 0.35rem;
+  }
+  pre.ascii {
+    font-family: "JetBrains Mono", monospace;
+    font-size: clamp(0.5rem, 1.35vw, 0.78rem);
+    line-height: 1.25;
+    color: var(--phosphor);
+    white-space: pre;
+    text-shadow: 0 0 6px var(--glow-soft);
+  }
+  pre.ascii .node { color: var(--amber); }
+  pre.ascii .core { color: #bfffd0; }
+  pre.ascii .link { color: var(--dim); }
+
+  /* status table */
+  .status {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.1rem 1.8rem;
+    font-size: clamp(0.72rem, 1.5vw, 0.88rem);
+  }
+  .status .row { display: flex; justify-content: space-between; gap: 1rem; white-space: nowrap; }
+  .status .row .k { color: var(--phosphor); }
+  .status .row .k::before { content: "› "; color: var(--dim); }
+  .status .row .v { color: var(--amber); }
+
+  .primitives {
+    color: #bfffd0;
+    font-size: clamp(0.72rem, 1.5vw, 0.86rem);
+  }
+  .primitives .sep { color: var(--dim); }
+
+  .stat { color: var(--amber); font-weight: 700; }
+  .stat .n { font-size: 1.05em; }
+
+  /* CTA row */
+  .cta-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.7rem;
+    margin-top: 0.2rem;
+  }
+  .btn {
+    font-family: inherit;
+    font-size: clamp(0.74rem, 1.5vw, 0.9rem);
+    font-weight: 500;
+    text-decoration: none;
+    padding: 0.5rem 1rem;
+    border: 1px solid var(--phosphor);
+    color: var(--phosphor);
+    background: rgba(51, 255, 102, 0.04);
+    border-radius: 3px;
+    transition: background 140ms ease-out, box-shadow 140ms ease-out, color 140ms ease-out;
+    cursor: pointer;
+  }
+  .btn:hover, .btn:focus-visible {
+    background: var(--phosphor);
+    color: var(--bg);
+    box-shadow: 0 0 12px var(--glow);
+    outline: none;
+  }
+  .btn.amber {
+    border-color: var(--amber);
+    color: var(--amber);
+    background: rgba(255, 176, 0, 0.05);
+  }
+  .btn.amber:hover, .btn.amber:focus-visible {
+    background: var(--amber);
+    color: var(--bg);
+    box-shadow: 0 0 12px rgba(255, 176, 0, 0.5);
+  }
+  .btn .arrow { color: inherit; }
+
+  footer.meta {
+    margin-top: auto;
+    color: var(--dim);
+    font-size: 0.7rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    border-top: 1px solid rgba(31, 122, 61, 0.4);
+    padding-top: 0.55rem;
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+  }
+
+  .wordmark { color: var(--phosphor); font-weight: 700; }
+
+  /* spacing helper for tight vertical screens */
+  .stack { display: flex; flex-direction: column; gap: 0.5rem; }
+
+  @media (max-width: 560px) {
+    .status { grid-template-columns: 1fr; }
+    .terminal { gap: 0.45rem; }
+    footer.meta { flex-direction: column; gap: 0.3rem; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .scanlines { animation: none; }
+    .flicker { animation: none; display: none; }
+    .cursor { animation: none; opacity: 1; }
+  }
+</style>
+</head>
+<body>
+  <main class="crt" role="main" aria-label="aegntic terminal">
+    <div class="scanlines" aria-hidden="true"></div>
+    <div class="flicker" aria-hidden="true"></div>
+
+    <section class="terminal">
+      <div class="titlebar">
+        <span class="dots" aria-hidden="true"><span></span><span></span><span></span></span>
+        <span>aegntic@coordination-layer : ~</span>
+        <span aria-hidden="true">tty0</span>
+      </div>
+
+      <div class="stack">
+        <p class="line prompt"><span class="user">$</span> <span class="cmd">aegntic --status</span></p>
+        <p class="line muted">[<span class="ok">OK</span>] booting persistent intelligence runtime…</p>
+        <p class="eyebrow">AEGNTIC · COORDINATION LAYER</p>
+
+        <h1 class="headline" id="headline" data-text="The coordination layer for persistent human–AI intelligence."></h1>
+
+        <p class="deck">One organism. Many organs. Once you see the skeleton, everything else becomes obvious.</p>
+      </div>
+
+      <div class="ascii-wrap" role="img" aria-label="ASCII network diagram of the coordination layer connecting organs to a central core">
+        <div class="label">// network skeleton</div>
+<pre class="ascii">  <span class="node">[orchestration]</span>          <span class="node">[authenticity]</span>
+        <span class="link">\</span>                    <span class="link">/</span>
+         <span class="link">\______      ______/</span>
+                <span class="link">\    /</span>
+                <span class="core">[ ae ]</span><span class="link">====</span><span class="node">[continuity]</span>
+                <span class="link">/    \</span>
+         <span class="link">______/      \______</span>
+        <span class="link">/</span>                    <span class="link">\</span>
+        <span class="node">[sovereignty]</span>      <span class="node">[experiential memory]</span></pre>
+      </div>
+
+      <div class="status" aria-label="primitive status">
+        <div class="row"><span class="k">orchestration</span><span class="v">[OK]</span></div>
+        <div class="row"><span class="k">authenticity</span><span class="v">[OK]</span></div>
+        <div class="row"><span class="k">continuity</span><span class="v">[OK]</span></div>
+        <div class="row"><span class="k">sovereignty</span><span class="v">[OK]</span></div>
+        <div class="row"><span class="k">experiential memory</span><span class="v">[OK]</span></div>
+        <div class="row"><span class="k">integrations</span><span class="v stat"><span class="n">127</span> linked</span></div>
+      </div>
+
+      <p class="primitives">
+        Orchestration <span class="sep">·</span> Authenticity <span class="sep">·</span> Continuity <span class="sep">·</span> Sovereignty <span class="sep">·</span> Experiential Memory
+      </p>
+
+      <p class="line muted">$ <span class="stat">127 integrations</span> online<span class="cursor" aria-hidden="true"></span></p>
+
+      <div class="cta-row">
+        <a class="btn amber" href="#enter">Enter the layer <span class="arrow" aria-hidden="true">→</span></a>
+        <a class="btn" href="#source">View the source</a>
+      </div>
+
+      <footer class="meta">
+        <span><span class="wordmark">aegntic</span></span>
+        <span>aegntic.ai · 2026</span>
+      </footer>
+    </section>
+  </main>
+
+  <script>
+    (function () {
+      var el = document.getElementById("headline");
+      if (!el) return;
+      var full = el.getAttribute("data-text") || "";
+      var reduce = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+      if (reduce) {
+        el.textContent = full;
+        return;
+      }
+
+      var i = 0;
+      var caret = document.createElement("span");
+      caret.className = "cursor";
+      caret.setAttribute("aria-hidden", "true");
+      el.appendChild(caret);
+
+      function tick() {
+        if (i <= full.length) {
+          el.textContent = full.slice(0, i);
+          el.appendChild(caret);
+          i++;
+          var delay = 22 + Math.random() * 28;
+          setTimeout(tick, delay);
+        }
+      }
+      setTimeout(tick, 420);
+    })();
+  </script>
+</body>
+</html>

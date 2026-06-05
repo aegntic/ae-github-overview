@@ -1,0 +1,415 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>aegntic · Design Decision Gallery</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@300;400;500&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --void:#050505; --deep:#0a0a0f; --text:#f1f1f1; --muted:#8a8a8f;
+  --edge:#1a1a20; --teal:#00d4b8; --bronze:#b38b5e;
+  --pos:#00d4b8; --neg:#d46666;
+  --ease:cubic-bezier(0.23,1,0.32,1);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{background:var(--void);color:var(--text);font-family:'Inter',system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+body{min-height:100vh}
+
+/* top control bar */
+.topbar{position:sticky;top:0;z-index:50;display:grid;grid-template-columns:auto 1fr auto;gap:24px;align-items:center;padding:14px 28px;background:rgba(5,5,5,.92);backdrop-filter:blur(16px);border-bottom:1px solid var(--edge)}
+.topbar .brand{font-family:'Space Grotesk';font-weight:700;font-size:18px;letter-spacing:-.04em}
+.topbar .brand span{color:var(--muted);font-weight:400;margin-left:10px;font-size:11px;letter-spacing:.18em;text-transform:uppercase;font-family:'JetBrains Mono'}
+.topbar .nav{display:flex;gap:8px;justify-content:center}
+.topbar .nav a{font-family:'JetBrains Mono';font-size:10.5px;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);text-decoration:none;padding:6px 10px;border:1px solid transparent;border-radius:2px;transition:all .25s var(--ease)}
+.topbar .nav a:hover{color:var(--text);border-color:var(--edge)}
+.topbar .nav a.done{color:var(--teal)}
+.topbar .actions{display:flex;gap:8px;align-items:center}
+.btn{font-family:'JetBrains Mono';font-size:10.5px;letter-spacing:.18em;text-transform:uppercase;color:var(--text);background:transparent;border:1px solid var(--edge);border-radius:2px;padding:8px 14px;cursor:pointer;transition:all .25s var(--ease)}
+.btn:hover{border-color:var(--teal);color:var(--teal)}
+.btn.primary{background:var(--teal);color:#000;border-color:var(--teal)}
+.btn.primary:hover{background:#00ffd9;color:#000}
+.btn.danger:hover{border-color:var(--neg);color:var(--neg)}
+.progress{font-family:'JetBrains Mono';font-size:10.5px;letter-spacing:.18em;color:var(--muted);text-transform:uppercase}
+.progress b{color:var(--teal);font-weight:500}
+
+/* intro */
+.intro{padding:48px 28px 24px;max-width:1480px;margin:0 auto}
+.intro h1{font-family:'Space Grotesk';font-weight:600;font-size:clamp(1.8rem,3.6vw,2.6rem);letter-spacing:-.035em;line-height:1.05;margin-bottom:14px}
+.intro h1 em{font-style:normal;color:var(--teal)}
+.intro p{color:var(--muted);font-size:15px;max-width:72ch;line-height:1.6}
+.intro p strong{color:var(--text);font-weight:500}
+.intro .legend{display:flex;gap:18px;margin-top:18px;flex-wrap:wrap;font-family:'JetBrains Mono';font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted)}
+.intro .legend span{display:inline-flex;align-items:center;gap:6px}
+.intro .legend i{font-style:normal;width:10px;height:10px;border-radius:50%;display:inline-block}
+
+/* variant section */
+.variant{padding:36px 28px 60px;max-width:1480px;margin:0 auto;border-top:1px solid var(--edge)}
+.variant h2{font-family:'Space Grotesk';font-weight:600;font-size:26px;letter-spacing:-.025em;margin-bottom:6px;display:flex;gap:14px;align-items:baseline}
+.variant h2 .num{color:var(--bronze);font-family:'JetBrains Mono';font-weight:400;font-size:12px;letter-spacing:.22em;text-transform:uppercase;margin-right:4px}
+.variant h2 small{color:var(--muted);font-family:'Inter';font-weight:300;font-size:14px;letter-spacing:0;text-transform:none;margin-left:8px}
+.variant .desc{color:var(--muted);font-size:14px;max-width:72ch;line-height:1.55;margin-bottom:18px}
+
+/* split */
+.split{display:grid;grid-template-columns:1.65fr 1fr;gap:24px;align-items:start}
+@media(max-width:1100px){.split{grid-template-columns:1fr}}
+
+/* iframe shell */
+.frame{position:relative;background:var(--deep);border:1px solid var(--edge);border-radius:6px;overflow:hidden;height:78vh;min-height:560px}
+.frame iframe{width:100%;height:100%;border:0;background:#000;display:block}
+.frame .barlet{position:absolute;top:0;left:0;right:0;display:flex;align-items:center;justify-content:space-between;padding:8px 12px;font-family:'JetBrains Mono';font-size:9.5px;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);background:rgba(0,0,0,.55);backdrop-filter:blur(8px);border-bottom:1px solid var(--edge);z-index:2}
+.frame .barlet a{color:var(--teal);text-decoration:none;border-bottom:1px solid transparent;padding-bottom:1px}
+.frame .barlet a:hover{border-color:var(--teal)}
+.frame .reload{cursor:pointer;background:transparent;border:0;color:var(--muted);font-family:inherit;font-size:inherit;letter-spacing:inherit;text-transform:inherit;padding:0 8px;border-left:1px solid var(--edge)}
+.frame .reload:hover{color:var(--teal)}
+
+/* feedback panel */
+.panel{background:var(--deep);border:1px solid var(--edge);border-radius:6px;padding:20px;display:flex;flex-direction:column;gap:18px;max-height:78vh;overflow-y:auto}
+.panel::-webkit-scrollbar{width:6px}
+.panel::-webkit-scrollbar-track{background:transparent}
+.panel::-webkit-scrollbar-thumb{background:var(--edge);border-radius:3px}
+
+.panel-h{display:flex;align-items:center;justify-content:space-between;padding-bottom:12px;border-bottom:1px solid var(--edge)}
+.panel-h .lab{font-family:'JetBrains Mono';font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:var(--teal)}
+.panel-h .save{font-family:'JetBrains Mono';font-size:9.5px;letter-spacing:.16em;color:var(--muted);text-transform:uppercase}
+.panel-h .save.ok{color:var(--teal)}
+
+.row{display:grid;grid-template-columns:1fr auto;gap:12px;align-items:start;padding:10px 0;border-bottom:1px solid var(--edge)}
+.row:last-of-type{border-bottom:0}
+.row .lbl{font-family:'Space Grotesk';font-weight:600;font-size:13px;color:var(--text)}
+.row .lbl span{display:block;color:var(--muted);font-family:'Inter';font-weight:300;font-size:11.5px;margin-top:2px;line-height:1.4}
+.row .vote{display:flex;gap:4px;align-items:center}
+.vote button{cursor:pointer;background:transparent;border:1px solid var(--edge);border-radius:2px;color:var(--muted);width:34px;height:30px;display:inline-flex;align-items:center;justify-content:center;font-size:14px;transition:all .2s var(--ease);font-family:inherit}
+.vote button:hover{border-color:var(--text);color:var(--text)}
+.vote button.up.active{background:rgba(0,212,184,.15);border-color:var(--pos);color:var(--pos)}
+.vote button.down.active{background:rgba(212,102,102,.12);border-color:var(--neg);color:var(--neg)}
+
+.row textarea{grid-column:1/-1;width:100%;background:var(--void);border:1px solid var(--edge);border-radius:2px;color:var(--text);font-family:'Inter';font-size:13px;padding:10px;line-height:1.5;resize:vertical;min-height:0;max-height:140px;transition:all .2s var(--ease);font-weight:300}
+.row textarea:focus{outline:none;border-color:var(--teal)}
+.row textarea::placeholder{color:#555}
+.row textarea.has-content{border-left:2px solid var(--bronze)}
+
+.overall{padding-top:14px;border-top:1px solid var(--edge);margin-top:6px}
+.overall .lab{font-family:'JetBrains Mono';font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:var(--bronze);margin-bottom:10px}
+.overall .vote{margin-bottom:10px}
+.overall textarea{min-height:70px}
+
+/* footer summary */
+.summary{padding:48px 28px 80px;max-width:1480px;margin:0 auto;border-top:1px solid var(--edge)}
+.summary h3{font-family:'Space Grotesk';font-weight:600;font-size:20px;letter-spacing:-.025em;margin-bottom:10px}
+.summary p{color:var(--muted);font-size:14px;max-width:72ch;margin-bottom:14px}
+.summary .actions{display:flex;gap:10px;flex-wrap:wrap}
+
+/* toast */
+.toast{position:fixed;bottom:24px;left:50%;transform:translate(-50%,40px);background:var(--deep);border:1px solid var(--teal);color:var(--text);padding:12px 18px;border-radius:2px;font-family:'JetBrains Mono';font-size:11px;letter-spacing:.18em;text-transform:uppercase;opacity:0;transition:all .35s var(--ease);z-index:100;pointer-events:none}
+.toast.show{transform:translate(-50%,0);opacity:1}
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="brand">aegntic <span>design decision</span></div>
+  <nav class="nav" id="nav"></nav>
+  <div class="actions">
+    <span class="progress" id="progress"><b>0</b>/2 reviewed</span>
+    <button class="btn" id="export">Export JSON</button>
+    <button class="btn danger" id="reset">Reset</button>
+  </div>
+</header>
+
+<section class="intro">
+  <h1>Two city heroes, one <em>agentic city</em>.</h1>
+  <p>The isometric microchip city — Sydney on a circuit board — rendered two ways. <strong>V1</strong> is a hand-crafted WebGL scene: live, animated, blueprint-toggling, fully responsive. <strong>V2</strong> frames the photoreal render cinematically with premium parallax and live chrome. Both fuse the city metaphor (visual) with the coordination-layer thesis (words). <strong>Mark each region 👍 or 👎 and drop a comment.</strong> State persists locally; export when done.</p>
+  <div class="legend">
+    <span><i style="background:var(--pos)"></i>keep this</span>
+    <span><i style="background:var(--neg)"></i>drop this</span>
+    <span><i style="background:var(--bronze)"></i>comment present</span>
+    <span><i style="background:var(--teal)"></i>variant reviewed</span>
+  </div>
+</section>
+
+<main id="variants"></main>
+
+<section class="summary">
+  <h3>Done?</h3>
+  <p>Hit <strong>Export JSON</strong> to copy your decisions into a file I can act on. The export contains every per-region vote, every comment, and an overall verdict per variant. From there I'll build the chosen direction (or hybrid) into the production hero.</p>
+  <div class="actions">
+    <button class="btn primary" id="export2">Export JSON</button>
+    <button class="btn" id="copy">Copy to clipboard</button>
+    <button class="btn danger" id="reset2">Reset all feedback</button>
+  </div>
+</section>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const VARIANTS = [
+  {
+    id:'v1', file:'city-01-webgl-sydney.html',
+    title:'WebGL Crafted City',
+    sub:'Hand-built isometric Sydney on a PCB — live, animated, blueprint-toggling.',
+    desc:'A genuine Three.js scene: 60+ procedurally-placed buildings with emissive windows on a Manhattan-routed circuit board, Opera House shells, Harbour Bridge arch, harbour inlet, 48 agent capsules traveling the traces, 38 data-packet spheres. Central ae supertall with real ligature decal. UnrealBloomPass, fog, vignette, grain. Mouse parallax. The party trick: "Explore the master plan" toggles the night city into a cyan wireframe blueprint on drafting paper — same geometry, completely different mood.'
+  },
+  {
+    id:'v2', file:'city-02-cinematic-render.html',
+    title:'Cinematic Render',
+    sub:'Photoreal render framed cinematically — parallax, scan sweep, live clock.',
+    desc:'Your prev-3 render as a full-bleed poster with premium treatment: eased parallax (pointer + idle drift), a teal scan-light sweep every ~8s, SVG film-grain overlay, radial vignette. Live chrome only in the dark edge bands (top/bottom letterbox) — real ae mark, ACCESS CONSOLE button, live UTC clock, COORDINATION ACTIVE pulse, primitive ticker. No duplication of the baked-in headline or status panel. The render does the heavy lifting; the chrome makes it operational.'
+  }
+];
+
+const REGIONS = [
+  { key:'typography', label:'Typography', hint:'Display, body, mono — hierarchy, choices, sizing' },
+  { key:'color',      label:'Colour & contrast', hint:'Palette, warmth, depth, contrast — does the world feel right?' },
+  { key:'layout',     label:'Layout & rhythm', hint:'Composition, density, spacing, asymmetry' },
+  { key:'motion',     label:'Motion / 3D / interactivity', hint:'Animation, signals, parallax, sense of life' },
+  { key:'voice',      label:'Voice & copy', hint:'Tone, conviction, length, framing of the thesis' },
+];
+
+const FEEDBACK_NS = 'feedback-v3';
+const state = JSON.parse(localStorage.getItem(FEEDBACK_NS) || '{}');
+function saveState(){ localStorage.setItem(FEEDBACK_NS, JSON.stringify(state)); markSaved(); recountProgress(); }
+
+let saveTimer;
+function markSaved(){
+  clearTimeout(saveTimer);
+  document.querySelectorAll('.save').forEach(el=>{ el.classList.add('ok'); el.textContent='saved'; });
+  saveTimer=setTimeout(()=>{ document.querySelectorAll('.save').forEach(el=>{ el.classList.remove('ok'); el.textContent='auto-save'; }); }, 1400);
+}
+
+function ensureVariant(vid){
+  if(!state[vid]) state[vid] = { regions:{}, overall:{ vote:null, comment:'' } };
+  REGIONS.forEach(r=>{
+    if(!state[vid].regions[r.key]) state[vid].regions[r.key] = { vote:null, comment:'' };
+  });
+}
+
+function variantHasFeedback(vid){
+  const v = state[vid]; if(!v) return false;
+  if(v.overall && (v.overall.vote || (v.overall.comment||'').trim())) return true;
+  return REGIONS.some(r=>{
+    const x=v.regions[r.key]||{}; return x.vote || (x.comment||'').trim();
+  });
+}
+
+function recountProgress(){
+  const done = VARIANTS.filter(v=>variantHasFeedback(v.id)).length;
+  document.querySelector('#progress b').textContent = done;
+  document.querySelectorAll('#nav a').forEach(a=>{
+    const id = a.dataset.id;
+    a.classList.toggle('done', variantHasFeedback(id));
+  });
+}
+
+function buildNav(){
+  const nav = document.getElementById('nav');
+  nav.innerHTML = VARIANTS.map(v=>`<a href="#${v.id}" data-id="${v.id}">${v.id.toUpperCase()} · ${v.title.split(' ')[0]}</a>`).join('');
+}
+
+function buildVariants(){
+  const root = document.getElementById('variants');
+  root.innerHTML = VARIANTS.map((v,i)=>{
+    ensureVariant(v.id);
+    const regionRows = REGIONS.map(r=>`
+      <div class="row" data-vid="${v.id}" data-rid="${r.key}">
+        <div class="lbl">${r.label}<span>${r.hint}</span></div>
+        <div class="vote">
+          <button class="up"   data-vote="up"   title="Keep this" aria-label="Thumbs up">👍</button>
+          <button class="down" data-vote="down" title="Drop this" aria-label="Thumbs down">👎</button>
+        </div>
+        <textarea placeholder="What works / what doesn't (optional)…" rows="1"></textarea>
+      </div>
+    `).join('');
+
+    return `
+    <section class="variant" id="${v.id}">
+      <h2><span class="num">V${i+1}</span> ${v.title} <small>${v.sub}</small></h2>
+      <p class="desc">${v.desc}</p>
+      <div class="split">
+        <div class="frame">
+          <div class="barlet">
+            <span>${v.id.toUpperCase()} · ${v.file}</span>
+            <span><a href="${v.file}" target="_blank" rel="noopener">open full ↗</a><button class="reload" data-frame="${v.id}">reload</button></span>
+          </div>
+          <iframe src="${v.file}" title="${v.title}" loading="lazy"></iframe>
+        </div>
+        <aside class="panel" data-vid="${v.id}">
+          <div class="panel-h">
+            <span class="lab">/// per-region feedback</span>
+            <span class="save">auto-save</span>
+          </div>
+          ${regionRows}
+          <div class="overall" data-vid="${v.id}">
+            <div class="lab">/// overall verdict on this variant</div>
+            <div class="vote">
+              <button class="up"   data-vote="up"   aria-label="Overall keep">👍 keep</button>
+              <button class="down" data-vote="down" aria-label="Overall drop">👎 drop</button>
+            </div>
+            <textarea placeholder="Overall — what does this variant get right or wrong?" rows="3"></textarea>
+          </div>
+        </aside>
+      </div>
+    </section>`;
+  }).join('');
+}
+
+function hydrate(){
+  document.querySelectorAll('.row').forEach(row=>{
+    const vid = row.dataset.vid, rid = row.dataset.rid;
+    const cur = state[vid].regions[rid];
+    row.querySelectorAll('.vote button').forEach(b=>{
+      if(b.dataset.vote === cur.vote) b.classList.add('active');
+    });
+    const ta = row.querySelector('textarea');
+    ta.value = cur.comment || '';
+    if(ta.value.trim()) ta.classList.add('has-content');
+  });
+  document.querySelectorAll('.overall').forEach(o=>{
+    const vid = o.dataset.vid;
+    const cur = state[vid].overall;
+    o.querySelectorAll('.vote button').forEach(b=>{
+      if(b.dataset.vote === cur.vote) b.classList.add('active');
+    });
+    const ta = o.querySelector('textarea');
+    ta.value = cur.comment || '';
+    if(ta.value.trim()) ta.classList.add('has-content');
+  });
+}
+
+function bind(){
+  // region votes
+  document.querySelectorAll('.row .vote button').forEach(btn=>{
+    btn.addEventListener('click',()=>{
+      const row = btn.closest('.row');
+      const vid = row.dataset.vid, rid = row.dataset.rid;
+      const cur = state[vid].regions[rid];
+      const next = cur.vote === btn.dataset.vote ? null : btn.dataset.vote;
+      cur.vote = next;
+      row.querySelectorAll('.vote button').forEach(b=>b.classList.remove('active'));
+      if(next) btn.classList.add('active');
+      saveState();
+    });
+  });
+  // region textareas
+  document.querySelectorAll('.row textarea').forEach(ta=>{
+    ta.addEventListener('input',()=>{
+      const row = ta.closest('.row');
+      const vid = row.dataset.vid, rid = row.dataset.rid;
+      state[vid].regions[rid].comment = ta.value;
+      ta.classList.toggle('has-content', !!ta.value.trim());
+      saveState();
+    });
+  });
+  // overall
+  document.querySelectorAll('.overall .vote button').forEach(btn=>{
+    btn.addEventListener('click',()=>{
+      const o = btn.closest('.overall');
+      const vid = o.dataset.vid;
+      const cur = state[vid].overall;
+      const next = cur.vote === btn.dataset.vote ? null : btn.dataset.vote;
+      cur.vote = next;
+      o.querySelectorAll('.vote button').forEach(b=>b.classList.remove('active'));
+      if(next) btn.classList.add('active');
+      saveState();
+    });
+  });
+  document.querySelectorAll('.overall textarea').forEach(ta=>{
+    ta.addEventListener('input',()=>{
+      const o = ta.closest('.overall');
+      const vid = o.dataset.vid;
+      state[vid].overall.comment = ta.value;
+      ta.classList.toggle('has-content', !!ta.value.trim());
+      saveState();
+    });
+  });
+  // reload buttons
+  document.querySelectorAll('.reload').forEach(b=>{
+    b.addEventListener('click',()=>{
+      const id = b.dataset.frame;
+      const iframe = document.querySelector(`#${id} iframe`);
+      iframe.src = iframe.src;
+    });
+  });
+}
+
+function buildExport(){
+  const out = {
+    meta:{ generated:new Date().toISOString(), tool:'aegntic design decision gallery v1', source:'design-options/index.html' },
+    summary:{},
+    variants:{}
+  };
+  VARIANTS.forEach(v=>{
+    ensureVariant(v.id);
+    const data = state[v.id];
+    out.variants[v.id] = {
+      title: v.title,
+      file: v.file,
+      overall: data.overall,
+      regions: data.regions
+    };
+  });
+  // tally
+  const tally = {};
+  VARIANTS.forEach(v=>{
+    const d = state[v.id]; let up=0, down=0;
+    REGIONS.forEach(r=>{ if(d.regions[r.key].vote==='up')up++; if(d.regions[r.key].vote==='down')down++; });
+    if(d.overall.vote==='up')up++; if(d.overall.vote==='down')down++;
+    tally[v.id] = { up, down, score: up - down, overall: d.overall.vote };
+  });
+  out.summary.tally = tally;
+  const ranked = Object.entries(tally).sort((a,b)=>b[1].score-a[1].score).map(([id,t])=>({id,score:t.score}));
+  out.summary.ranked = ranked;
+  return out;
+}
+
+function download(filename, text){
+  const a = document.createElement('a');
+  a.href = 'data:application/json;charset=utf-8,'+encodeURIComponent(text);
+  a.download = filename;
+  document.body.appendChild(a); a.click(); a.remove();
+}
+
+function toast(msg){
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'), 1800);
+}
+
+document.addEventListener('click', e=>{
+  if(e.target.id==='export' || e.target.id==='export2'){
+    const data = buildExport();
+    const stamp = new Date().toISOString().replace(/[:.]/g,'-');
+    download(`aegntic-design-feedback-${stamp}.json`, JSON.stringify(data, null, 2));
+    toast('exported · check downloads');
+  }
+  if(e.target.id==='copy'){
+    const data = buildExport();
+    navigator.clipboard.writeText(JSON.stringify(data, null, 2)).then(()=>toast('copied to clipboard'));
+  }
+  if(e.target.id==='reset' || e.target.id==='reset2'){
+    if(confirm('Reset all feedback for every variant?')){
+      localStorage.removeItem(FEEDBACK_NS);
+      Object.keys(state).forEach(k=>delete state[k]);
+      VARIANTS.forEach(v=>ensureVariant(v.id));
+      hydrate();
+      // clear visuals
+      document.querySelectorAll('.vote button.active').forEach(b=>b.classList.remove('active'));
+      document.querySelectorAll('textarea').forEach(t=>{ t.value=''; t.classList.remove('has-content'); });
+      recountProgress();
+      toast('reset · clean slate');
+    }
+  }
+});
+
+// init
+buildNav();
+buildVariants();
+hydrate();
+bind();
+recountProgress();
+</script>
+</body>
+</html>

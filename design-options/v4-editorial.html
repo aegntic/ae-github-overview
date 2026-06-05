@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>aegntic — V4 / Editorial Folio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@300;400;500&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --void:#050505; --deep:#0a0a0f; --text:#f1f1f1; --muted:#8a8a8f;
+  --edge:#1a1a20; --teal:#00d4b8; --bronze:#b38b5e;
+  --paper:#0c0b0a;
+  --ease:cubic-bezier(0.23,1,0.32,1);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{background:var(--paper);color:var(--text);font-family:'Inter',Georgia,serif;-webkit-font-smoothing:antialiased}
+body{
+  min-height:100vh;
+  background-image:
+    radial-gradient(ellipse at 0% 0%, rgba(179,139,94,.06), transparent 60%),
+    radial-gradient(ellipse at 100% 100%, rgba(0,212,184,.05), transparent 60%);
+}
+
+.folio{max-width:1380px;margin:0 auto;padding:36px 48px 80px}
+
+/* masthead */
+.masthead{display:grid;grid-template-columns:1fr auto 1fr;gap:30px;align-items:end;padding-bottom:18px;border-bottom:1px solid var(--text)}
+.masthead .left, .masthead .right{font-family:'JetBrains Mono';font-size:10.5px;letter-spacing:.22em;text-transform:uppercase;color:var(--muted)}
+.masthead .right{text-align:right}
+.masthead .left b, .masthead .right b{color:var(--bronze);font-weight:500}
+.masthead .center{font-family:'Space Grotesk';font-weight:700;font-size:36px;letter-spacing:-.05em;color:var(--text);text-align:center}
+
+.bar2{display:grid;grid-template-columns:1fr auto 1fr;gap:30px;padding:10px 0 0;font-family:'JetBrains Mono';font-size:10px;letter-spacing:.24em;text-transform:uppercase;color:var(--muted)}
+.bar2 .center{text-align:center}
+.bar2 b{color:var(--teal);font-weight:500}
+
+/* layout */
+.layout{display:grid;grid-template-columns:120px 1.4fr 1fr;gap:48px;margin-top:54px}
+
+/* vertical rail */
+.rail{writing-mode:vertical-rl;transform:rotate(180deg);font-family:'JetBrains Mono';font-size:11px;letter-spacing:.32em;text-transform:uppercase;color:var(--muted);height:fit-content;padding:8px 0;border-left:1px solid var(--edge)}
+.rail b{color:var(--text);font-weight:500}
+
+/* lede column */
+.lede h1{font-family:'Space Grotesk';font-weight:600;font-size:clamp(2.6rem, 5.4vw, 4.6rem);line-height:.95;letter-spacing:-.04em;color:var(--text);margin-bottom:24px}
+.lede h1 em{font-style:italic;font-weight:500;color:var(--bronze)}
+.lede .body{font-family:'Inter';font-size:16px;line-height:1.65;color:#d8d6d2;column-count:2;column-gap:32px;column-rule:1px solid var(--edge);margin-top:18px}
+.lede .body::first-letter{
+  font-family:'Space Grotesk';font-weight:600;font-size:5.2rem;line-height:.85;
+  float:left;color:var(--bronze);padding:6px 12px 0 0;letter-spacing:-.05em;
+}
+.lede .body p{margin-bottom:14px;break-inside:avoid}
+.lede .body strong{color:var(--text);font-weight:500}
+
+.byline{margin-top:30px;display:flex;align-items:center;gap:16px;font-family:'JetBrains Mono';font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--muted)}
+.byline b{color:var(--text);font-weight:500}
+.byline .line{flex:1;height:1px;background:var(--edge)}
+
+/* sidebar */
+.aside{padding-left:36px;border-left:1px solid var(--edge);position:relative}
+.aside::before{content:'01';position:absolute;top:-8px;left:-50px;font-family:'Space Grotesk';font-weight:700;color:var(--teal);font-size:60px;letter-spacing:-.06em;line-height:1;opacity:.7}
+
+.aside .kicker{font-family:'JetBrains Mono';font-size:10px;letter-spacing:.24em;text-transform:uppercase;color:var(--teal);margin-bottom:12px}
+.aside h3{font-family:'Space Grotesk';font-weight:600;font-size:22px;letter-spacing:-.02em;line-height:1.15;color:var(--text);margin-bottom:18px;max-width:24ch}
+.aside .pull{font-family:'JetBrains Mono';font-size:13.5px;line-height:1.55;color:var(--bronze);border-top:1px solid var(--edge);border-bottom:1px solid var(--edge);padding:18px 0;margin:18px 0 22px;font-style:normal}
+
+.props{list-style:none;display:grid;gap:0}
+.props li{display:grid;grid-template-columns:36px 1fr auto;gap:14px;padding:14px 0;border-bottom:1px solid var(--edge);align-items:baseline}
+.props li:last-child{border-bottom:0}
+.props .n{font-family:'JetBrains Mono';font-size:10px;color:var(--muted);letter-spacing:.18em}
+.props .name{font-family:'Space Grotesk';font-weight:600;font-size:16px;color:var(--text);letter-spacing:-.01em}
+.props .name span{display:block;font-family:'Inter';font-size:12.5px;color:var(--muted);font-weight:300;margin-top:2px;letter-spacing:0;line-height:1.4}
+.props .tag{font-family:'JetBrains Mono';font-size:10px;color:var(--teal);letter-spacing:.18em;text-transform:uppercase;text-align:right}
+
+/* footer */
+.eof{display:grid;grid-template-columns:1fr auto 1fr;gap:30px;align-items:center;margin-top:60px;padding-top:18px;border-top:1px solid var(--text);font-family:'JetBrains Mono';font-size:10.5px;letter-spacing:.22em;text-transform:uppercase;color:var(--muted)}
+.eof .right{text-align:right}
+.eof .center{color:var(--bronze);letter-spacing:.3em}
+
+/* responsive */
+@media (max-width:980px){
+  .layout{grid-template-columns:1fr}
+  .rail{display:none}
+  .lede .body{column-count:1}
+  .aside{padding-left:0;border-left:0}
+  .aside::before{display:none}
+}
+</style>
+</head>
+<body>
+<div class="folio">
+  <header class="masthead">
+    <div class="left">VOLUME <b>I</b> · ISSUE <b>01</b></div>
+    <div class="center">aegntic</div>
+    <div class="right">SUMMER · <b>2026</b> · 06.04</div>
+  </header>
+  <div class="bar2">
+    <div class="left">A folio on coordination</div>
+    <div class="center">— <b>the visible skeleton</b> —</div>
+    <div class="right">€0 · open at the edges</div>
+  </div>
+
+  <main class="layout">
+    <aside class="rail">aegntic.ai · <b>perception engine</b> · /coordination/0001</aside>
+
+    <section class="lede">
+      <h1>The coordination layer for <em>persistent human–AI intelligence.</em></h1>
+      <div class="body">
+        <p>Once you see the skeleton, everything else becomes obvious. What looked like a portfolio of experiments — a hundred and twenty-seven repositories, a dozen products, a scattering of agents — was always one organism with many organs.</p>
+        <p>Each organ implements a primitive. Together the primitives form a <strong>layer that persists across sessions, processes, and operators</strong>, that authenticates outputs adversarially, that holds memory as a substrate, and that keeps sovereignty with the human at the centre.</p>
+        <p>This is not a SaaS. It is not a research lab. It is the infrastructure for a category that did not exist before agents needed to remember each other.</p>
+      </div>
+      <div class="byline"><span>By <b>aegntic</b></span><span class="line"></span><span>Open at the edges · <b>sovereign at the core</b></span></div>
+    </section>
+
+    <aside class="aside">
+      <div class="kicker">/// the primitives</div>
+      <h3>Five properties that make the layer legible.</h3>
+      <p class="pull">“The post-chat transition is from stateless cognition to persistent, orchestrated, sovereign, memory-bearing systems.”</p>
+      <ul class="props">
+        <li><span class="n">i.</span><span class="name">Orchestration<span>routing across heterogeneous tools and humans</span></span><span class="tag">live</span></li>
+        <li><span class="n">ii.</span><span class="name">Authenticity<span>outputs that survive adversarial inspection</span></span><span class="tag">98%</span></li>
+        <li><span class="n">iii.</span><span class="name">Continuity<span>state and intent across processes</span></span><span class="tag">live</span></li>
+        <li><span class="n">iv.</span><span class="name">Sovereignty<span>override as a first-class primitive</span></span><span class="tag">held</span></li>
+        <li><span class="n">v.</span><span class="name">Experiential Memory<span>trails compound into substrate</span></span><span class="tag">growing</span></li>
+      </ul>
+    </aside>
+  </main>
+
+  <footer class="eof">
+    <div class="left">/eof · folio 0001</div>
+    <div class="center">— enter the layer —</div>
+    <div class="right">aegntic.ai · github · whitepapers</div>
+  </footer>
+</div>
+</body>
+</html>

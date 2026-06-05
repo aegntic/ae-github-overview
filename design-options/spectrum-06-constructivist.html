@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>aegntic — The coordination layer</title>
+<meta name="description" content="The coordination layer for persistent human–AI intelligence. One organism. Many organs.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Oswald:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --cream:#efe7d3;
+    --ink:#111111;
+    --red:#d8261c;
+  }
+
+  *{ margin:0; padding:0; box-sizing:border-box; }
+
+  html,body{ height:100%; }
+
+  body{
+    background:var(--cream);
+    color:var(--ink);
+    font-family:"Oswald", sans-serif;
+    overflow:hidden;
+    -webkit-font-smoothing:antialiased;
+  }
+
+  .stage{
+    position:relative;
+    width:100%;
+    height:100vh;
+    height:100svh;
+    overflow:hidden;
+    background:var(--cream);
+  }
+
+  /* ---------- GEOMETRY: angular agitprop shapes ---------- */
+  .shape{ position:absolute; will-change:transform; }
+
+  /* big red diagonal wedge sweeping bottom-left to top-right */
+  .wedge-red{
+    top:-20%;
+    right:-12%;
+    width:78%;
+    height:150%;
+    background:var(--red);
+    transform:rotate(24deg);
+    transform-origin:center;
+    z-index:1;
+    animation:slideWedge 900ms cubic-bezier(0.16,1,0.3,1) both;
+  }
+
+  /* black angular bar cutting across */
+  .bar-black{
+    bottom:14%;
+    left:-10%;
+    width:130%;
+    height:13vh;
+    background:var(--ink);
+    transform:rotate(-9deg);
+    transform-origin:left center;
+    z-index:2;
+    animation:slideBarBlack 800ms cubic-bezier(0.16,1,0.3,1) 120ms both;
+  }
+
+  /* thin red rule echoing the black bar */
+  .rule-red{
+    bottom:9%;
+    left:-10%;
+    width:130%;
+    height:1.1vh;
+    background:var(--red);
+    transform:rotate(-9deg);
+    transform-origin:left center;
+    z-index:3;
+    animation:slideBarBlack 800ms cubic-bezier(0.16,1,0.3,1) 220ms both;
+  }
+
+  /* black triangle anchoring top-left */
+  .tri-black{
+    top:0; left:0;
+    width:0; height:0;
+    border-style:solid;
+    border-width:34vh 34vh 0 0;
+    border-color:var(--ink) transparent transparent transparent;
+    z-index:1;
+    animation:slideTri 850ms cubic-bezier(0.16,1,0.3,1) 60ms both;
+  }
+
+  /* small red square accent */
+  .sq-red{
+    bottom:24%;
+    right:8%;
+    width:9vh;
+    height:9vh;
+    background:var(--red);
+    transform:rotate(45deg);
+    z-index:4;
+    animation:popSquare 700ms cubic-bezier(0.16,1,0.3,1) 480ms both;
+  }
+
+  /* ---------- CONTENT FRAME ---------- */
+  .frame{
+    position:relative;
+    z-index:6;
+    height:100%;
+    max-width:1440px;
+    margin:0 auto;
+    padding:clamp(20px,4vw,56px);
+    display:flex;
+    flex-direction:column;
+    justify-content:space-between;
+  }
+
+  /* TOP ROW: wordmark + eyebrow */
+  .top{
+    display:flex;
+    align-items:baseline;
+    justify-content:space-between;
+    gap:16px;
+    flex-wrap:wrap;
+    animation:fade 600ms ease both;
+  }
+
+  .wordmark{
+    font-family:"Archivo Black", sans-serif;
+    font-size:clamp(1.6rem,3.2vw,2.6rem);
+    text-transform:lowercase;
+    letter-spacing:-0.02em;
+    color:var(--ink);
+    line-height:1;
+  }
+  .wordmark .dot{ color:var(--red); }
+
+  .eyebrow{
+    font-family:"Oswald", sans-serif;
+    font-weight:600;
+    font-size:clamp(0.65rem,1.2vw,0.85rem);
+    letter-spacing:0.32em;
+    text-transform:uppercase;
+    color:var(--ink);
+    border:3px solid var(--ink);
+    padding:6px 12px;
+    background:var(--cream);
+  }
+
+  /* MIDDLE: headline blocks + giant stat */
+  .middle{
+    position:relative;
+    flex:1;
+    display:flex;
+    align-items:center;
+  }
+
+  .headline{
+    list-style:none;
+    margin-top:2vh;
+  }
+  .headline .block{
+    display:inline-block;
+    font-family:"Archivo Black", sans-serif;
+    font-size:clamp(2.2rem,7.4vw,6rem);
+    line-height:0.9;
+    text-transform:uppercase;
+    letter-spacing:-0.01em;
+    padding:0.05em 0.28em;
+    margin:0.06em 0;
+    animation:snapIn 600ms cubic-bezier(0.16,1,0.3,1) both;
+  }
+  .headline .b1{ background:var(--ink); color:var(--cream); transform:rotate(-2.5deg); animation-delay:380ms; }
+  .headline .b2{ background:var(--red); color:var(--cream); transform:rotate(1.5deg); margin-left:0.6em; animation-delay:480ms; }
+  .headline .b3{ background:var(--cream); color:var(--ink); box-shadow:0 0 0 4px var(--ink); transform:rotate(-1deg); animation-delay:580ms; }
+
+  .lowtail{
+    display:block;
+    font-family:"Oswald", sans-serif;
+    font-weight:700;
+    font-size:clamp(1rem,2.6vw,2rem);
+    text-transform:uppercase;
+    letter-spacing:0.02em;
+    color:var(--ink);
+    transform:rotate(-2deg);
+    margin-top:0.7em;
+    margin-left:0.2em;
+    animation:snapIn 600ms cubic-bezier(0.16,1,0.3,1) 680ms both;
+  }
+
+  /* giant 127 graphic focal point */
+  .stat{
+    position:absolute;
+    top:-4vh;
+    right:-1vw;
+    text-align:right;
+    z-index:5;
+    transform:rotate(8deg);
+    animation:popStat 800ms cubic-bezier(0.16,1,0.3,1) 300ms both;
+    pointer-events:none;
+  }
+  .stat .num{
+    display:block;
+    font-family:"Archivo Black", sans-serif;
+    font-size:clamp(6rem,20vw,17rem);
+    line-height:0.78;
+    color:var(--cream);
+    -webkit-text-stroke:4px var(--ink);
+    text-stroke:4px var(--ink);
+  }
+  .stat .lbl{
+    display:inline-block;
+    font-family:"Oswald", sans-serif;
+    font-weight:700;
+    text-transform:uppercase;
+    letter-spacing:0.3em;
+    font-size:clamp(0.7rem,1.4vw,1rem);
+    background:var(--ink);
+    color:var(--cream);
+    padding:5px 10px;
+    margin-top:0.2em;
+  }
+
+  /* deck */
+  .deck{
+    max-width:42ch;
+    margin-top:2vh;
+    font-family:"Oswald", sans-serif;
+    font-weight:500;
+    font-size:clamp(0.95rem,1.7vw,1.3rem);
+    line-height:1.35;
+    color:var(--ink);
+    background:var(--cream);
+    border-left:6px solid var(--red);
+    padding:0.4em 0 0.4em 0.9em;
+    text-wrap:balance;
+    animation:fade 600ms ease 760ms both;
+  }
+
+  /* BOTTOM: primitives, CTAs, footer */
+  .bottom{
+    position:relative;
+    z-index:6;
+    display:flex;
+    flex-direction:column;
+    gap:clamp(12px,2vh,20px);
+    animation:fade 600ms ease 860ms both;
+  }
+
+  .primitives{
+    list-style:none;
+    display:flex;
+    flex-wrap:wrap;
+    gap:0;
+    font-family:"Oswald", sans-serif;
+    font-weight:600;
+    font-size:clamp(0.6rem,1.15vw,0.85rem);
+    letter-spacing:0.18em;
+    text-transform:uppercase;
+  }
+  .primitives li{
+    color:var(--cream);
+    background:var(--ink);
+    padding:7px 12px;
+    border-right:2px solid var(--red);
+  }
+  .primitives li:nth-child(even){ background:var(--red); border-right-color:var(--ink); }
+  .primitives li:last-child{ border-right:none; }
+
+  .actions{
+    display:flex;
+    flex-wrap:wrap;
+    align-items:center;
+    gap:14px;
+  }
+  .cta{
+    font-family:"Archivo Black", sans-serif;
+    font-size:clamp(0.85rem,1.5vw,1.1rem);
+    text-transform:uppercase;
+    letter-spacing:0.01em;
+    text-decoration:none;
+    padding:0.7em 1.3em;
+    display:inline-block;
+    transition:transform 120ms cubic-bezier(0.23,1,0.32,1);
+  }
+  .cta:focus-visible{ outline:4px solid var(--red); outline-offset:3px; }
+  .cta-primary{ background:var(--red); color:var(--cream); border:3px solid var(--ink); }
+  .cta-secondary{ background:var(--cream); color:var(--ink); border:3px solid var(--ink); }
+  .cta:hover{ transform:translate(-2px,-2px); box-shadow:5px 5px 0 var(--ink); }
+  .cta-primary:hover{ box-shadow:5px 5px 0 var(--ink); }
+
+  .footmeta{
+    font-family:"Oswald", sans-serif;
+    font-weight:500;
+    font-size:clamp(0.65rem,1.1vw,0.8rem);
+    letter-spacing:0.2em;
+    text-transform:uppercase;
+    color:var(--ink);
+  }
+  .footmeta .dot{ color:var(--red); font-weight:700; }
+
+  /* ---------- ANIMATIONS ---------- */
+  @keyframes slideWedge{
+    from{ transform:rotate(24deg) translate(60%,-60%); }
+    to{ transform:rotate(24deg) translate(0,0); }
+  }
+  @keyframes slideBarBlack{
+    from{ transform:rotate(-9deg) translateX(-120%); }
+    to{ transform:rotate(-9deg) translateX(0); }
+  }
+  @keyframes slideTri{
+    from{ transform:translate(-100%,-100%); }
+    to{ transform:translate(0,0); }
+  }
+  @keyframes popSquare{
+    from{ transform:rotate(45deg) scale(0); }
+    to{ transform:rotate(45deg) scale(1); }
+  }
+  @keyframes popStat{
+    from{ transform:rotate(8deg) scale(0.4); opacity:0; }
+    to{ transform:rotate(8deg) scale(1); opacity:1; }
+  }
+  @keyframes snapIn{
+    from{ opacity:0; transform:translateY(28px) rotate(0deg); }
+  }
+  @keyframes fade{
+    from{ opacity:0; transform:translateY(10px); }
+    to{ opacity:1; transform:translateY(0); }
+  }
+
+  /* ---------- RESPONSIVE ---------- */
+  @media (max-width:760px){
+    body{ overflow-y:auto; }
+    .stage{ height:auto; min-height:100vh; min-height:100svh; }
+    .wedge-red{ width:120%; right:-30%; }
+    .stat{ position:relative; top:0; right:0; text-align:left; transform:rotate(4deg); margin:3vh 0; }
+    .middle{ flex-direction:column; align-items:flex-start; padding-top:3vh; }
+    .headline .b2{ margin-left:0; }
+    .deck{ max-width:100%; }
+    .primitives{ font-size:0.62rem; }
+    .primitives li{ border-right:none; margin-bottom:2px; }
+    .actions{ width:100%; }
+    .cta{ flex:1; text-align:center; }
+  }
+
+  /* ---------- REDUCED MOTION: final static composition ---------- */
+  @media (prefers-reduced-motion:reduce){
+    *{ animation:none !important; transition:none !important; }
+    .wedge-red{ transform:rotate(24deg); }
+    .bar-black,.rule-red{ transform:rotate(-9deg) translateX(0); }
+    .tri-black{ transform:none; }
+    .sq-red{ transform:rotate(45deg); }
+    .stat{ transform:rotate(8deg); opacity:1; }
+    .headline .b1{ transform:rotate(-2.5deg); }
+    .headline .b2{ transform:rotate(1.5deg); }
+    .headline .b3{ transform:rotate(-1deg); }
+    .lowtail{ transform:rotate(-2deg); }
+    .top,.deck,.bottom,.headline .block{ opacity:1; }
+  }
+</style>
+</head>
+<body>
+  <main class="stage">
+    <!-- Decorative agitprop geometry -->
+    <div class="shape wedge-red" aria-hidden="true"></div>
+    <div class="shape tri-black" aria-hidden="true"></div>
+    <div class="shape bar-black" aria-hidden="true"></div>
+    <div class="shape rule-red" aria-hidden="true"></div>
+    <div class="shape sq-red" aria-hidden="true"></div>
+
+    <div class="frame">
+      <header class="top">
+        <div class="wordmark">aegntic<span class="dot">.</span></div>
+        <div class="eyebrow">AEGNTIC · COORDINATION LAYER</div>
+      </header>
+
+      <section class="middle">
+        <div class="stat" aria-hidden="true">
+          <span class="num">127</span>
+          <span class="lbl">integrations</span>
+        </div>
+
+        <div>
+          <h1 class="headline">
+            <span class="block b1">The coordination</span>
+            <span class="block b2">layer for persistent</span>
+            <span class="block b3">human–AI</span>
+            <span class="lowtail">intelligence.</span>
+            <span class="visually-hidden" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);">— 127 integrations.</span>
+          </h1>
+
+          <p class="deck">One organism. Many organs. Once you see the skeleton, everything else becomes obvious.</p>
+        </div>
+      </section>
+
+      <footer class="bottom">
+        <ul class="primitives">
+          <li>Orchestration</li>
+          <li>Authenticity</li>
+          <li>Continuity</li>
+          <li>Sovereignty</li>
+          <li>Experiential Memory</li>
+        </ul>
+
+        <div class="actions">
+          <a class="cta cta-primary" href="#enter">Enter the layer</a>
+          <a class="cta cta-secondary" href="#source">View the source</a>
+        </div>
+
+        <div class="footmeta">aegntic.ai <span class="dot">·</span> 2026</div>
+      </footer>
+    </div>
+  </main>
+</body>
+</html>

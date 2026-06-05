@@ -1,0 +1,158 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>aegntic — V1 / Brutalist Specification</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@300;400;500&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --void:#050505; --deep:#0a0a0f; --text:#f1f1f1; --muted:#8a8a8f;
+  --edge:#1a1a20; --teal:#00d4b8; --bronze:#b38b5e;
+  --ease:cubic-bezier(0.23,1,0.32,1);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{background:var(--void);color:var(--text);font-family:'JetBrains Mono',ui-monospace,monospace;font-size:13px;line-height:1.55;-webkit-font-smoothing:antialiased}
+body{
+  background-image:
+    linear-gradient(to right, rgba(255,255,255,.025) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255,255,255,.025) 1px, transparent 1px);
+  background-size: 8px 8px;
+  min-height:100vh;
+}
+.frame{max-width:1280px;margin:0 auto;padding:32px 28px;border-left:1px solid var(--edge);border-right:1px solid var(--edge);min-height:100vh;background:rgba(5,5,5,.6)}
+
+/* document header */
+.docnav{display:grid;grid-template-columns:auto 1fr auto;gap:24px;align-items:end;padding-bottom:14px;border-bottom:1px solid var(--text)}
+.docnav .glyph{font-family:'Space Grotesk';font-weight:700;font-size:20px;letter-spacing:-.04em;color:var(--text)}
+.docnav .id{color:var(--muted);text-transform:uppercase;letter-spacing:.18em;font-size:10px}
+.docnav .meta{color:var(--muted);text-align:right;font-size:11px}
+.docnav .meta b{color:var(--teal);font-weight:500}
+
+.rule-double{border-top:1px solid var(--text);border-bottom:1px solid var(--text);height:3px;margin:6px 0 28px}
+
+/* hero */
+.title-block{display:grid;grid-template-columns:8ch 1fr;gap:24px;padding:24px 0 36px;border-bottom:1px solid var(--edge)}
+.title-block .num{color:var(--bronze);font-size:11px;letter-spacing:.2em;text-transform:uppercase;padding-top:6px}
+.title-block .num span{display:block;color:var(--muted);margin-top:4px}
+.title-block h1{font-family:'Space Grotesk';font-weight:600;font-size:clamp(2rem,4.6vw,3.4rem);line-height:.98;letter-spacing:-.035em;color:var(--text);max-width:24ch}
+.title-block h1 em{font-style:normal;color:var(--teal)}
+.title-block .lede{margin-top:18px;color:var(--muted);max-width:62ch;font-family:'Inter';font-size:15px;line-height:1.55}
+.title-block .lede sup{color:var(--bronze);font-family:'JetBrains Mono';font-size:10px;padding:0 2px}
+
+/* section header */
+.sec{display:grid;grid-template-columns:8ch 1fr;gap:24px;padding:18px 0;border-bottom:1px solid var(--edge)}
+.sec .num{color:var(--bronze);font-size:11px;letter-spacing:.2em;text-transform:uppercase;padding-top:6px}
+.sec h2{font-family:'Space Grotesk';font-weight:600;font-size:18px;letter-spacing:-.01em;color:var(--text);margin-bottom:14px}
+.sec h2::before{content:'§ ';color:var(--teal)}
+.sec p{color:var(--muted);font-family:'Inter';font-size:14px;max-width:64ch;margin-bottom:8px}
+.sec p strong{color:var(--text);font-weight:500}
+
+/* primitives table */
+table.spec{width:100%;border-collapse:collapse;margin-top:6px;font-size:12px}
+table.spec th, table.spec td{padding:10px 12px;border-bottom:1px solid var(--edge);text-align:left;vertical-align:top}
+table.spec thead th{font-family:'JetBrains Mono';font-weight:500;color:var(--teal);text-transform:uppercase;letter-spacing:.18em;font-size:10px;border-bottom:1px solid var(--text)}
+table.spec td:nth-child(1){font-family:'Space Grotesk';font-weight:600;color:var(--text);width:22%}
+table.spec td:nth-child(2){color:var(--muted);font-family:'Inter';width:55%}
+table.spec td:nth-child(3){font-family:'JetBrains Mono';color:var(--bronze);text-align:right;font-size:11px}
+
+/* metric strip */
+.metrics{display:grid;grid-template-columns:repeat(4,1fr);gap:0;border-top:1px solid var(--text);border-bottom:1px solid var(--text);margin:18px 0}
+.metric{padding:18px;border-right:1px solid var(--edge)}
+.metric:last-child{border-right:0}
+.metric .v{font-family:'Space Grotesk';font-weight:700;font-size:32px;letter-spacing:-.02em;color:var(--text);font-variant-numeric:tabular-nums}
+.metric .v small{color:var(--teal);font-size:14px;font-weight:500;margin-left:4px}
+.metric .k{color:var(--muted);text-transform:uppercase;letter-spacing:.18em;font-size:9.5px;margin-top:6px}
+
+/* footnotes */
+.fn{padding:22px 0 4px;border-top:1px solid var(--edge);margin-top:24px;color:var(--muted);font-size:11px}
+.fn p{margin-bottom:6px}
+.fn sup{color:var(--bronze);margin-right:6px}
+.fn a{color:var(--teal);text-decoration:none;border-bottom:1px dashed currentColor}
+
+.footer{display:flex;justify-content:space-between;align-items:center;padding:18px 0;color:var(--muted);font-size:11px;letter-spacing:.18em;text-transform:uppercase}
+.footer .pulse{display:inline-flex;align-items:center;gap:8px}
+.footer .pulse::before{content:'';width:6px;height:6px;background:var(--teal);border-radius:50%;box-shadow:0 0 12px var(--teal);animation:p 2.4s var(--ease) infinite}
+@keyframes p{0%,100%{opacity:.4}50%{opacity:1}}
+
+/* signal line */
+.signal{position:relative;height:1px;background:var(--edge);overflow:hidden}
+.signal::after{content:'';position:absolute;top:0;left:0;width:80px;height:1px;background:linear-gradient(90deg,transparent,var(--teal),transparent);animation:sweep 4.5s linear infinite}
+@keyframes sweep{0%{transform:translateX(-80px)}100%{transform:translateX(1280px)}}
+@media(prefers-reduced-motion:reduce){.signal::after,.footer .pulse::before{animation:none!important}}
+</style>
+</head>
+<body>
+<div class="frame">
+  <header class="docnav">
+    <div class="glyph">ae</div>
+    <div class="id">DOCUMENT 0001 / COORDINATION-LAYER / SPEC</div>
+    <div class="meta">REV <b>2026.06.04</b> · INFRASTRUCTURE / PUBLIC</div>
+  </header>
+  <div class="rule-double"></div>
+
+  <section class="title-block">
+    <div class="num">§ 1.0<span>thesis</span></div>
+    <div>
+      <h1>The coordination layer for <em>persistent human–AI intelligence</em>.</h1>
+      <p class="lede">A specification for systems that orchestrate, authenticate, remember, and remain sovereign across heterogeneous agent populations.<sup>1</sup> Once the skeleton is visible, the experiments stop being a portfolio and start being an organism.<sup>2</sup></p>
+    </div>
+  </section>
+
+  <div class="signal" aria-hidden="true"></div>
+
+  <section class="sec">
+    <div class="num">§ 1.1<span>primitives</span></div>
+    <div>
+      <h2>Five Properties of the Layer</h2>
+      <table class="spec">
+        <thead><tr><th>property</th><th>definition</th><th>state</th></tr></thead>
+        <tbody>
+          <tr><td>Orchestration</td><td>Agents schedule, route, and reconcile work across heterogeneous tools and humans.</td><td>operational</td></tr>
+          <tr><td>Authenticity</td><td>Outputs survive adversarial inspection; humanness is preserved at scale.</td><td>operational</td></tr>
+          <tr><td>Continuity</td><td>State, memory, and intent persist across sessions, processes, and operators.</td><td>operational</td></tr>
+          <tr><td>Sovereignty</td><td>Authority remains with the operator. Override is a first-class primitive, not a setting.</td><td>operational</td></tr>
+          <tr><td>Experiential Memory</td><td>Trails, embeddings, and episodes compound into a substrate the layer learns from.</td><td>operational</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="sec">
+    <div class="num">§ 1.2<span>proof</span></div>
+    <div>
+      <h2>Field Numbers</h2>
+      <div class="metrics">
+        <div class="metric"><div class="v">127<small>+</small></div><div class="k">strategic integrations</div></div>
+        <div class="metric"><div class="v">98<small>%</small></div><div class="k">detector resistance</div></div>
+        <div class="metric"><div class="v">31</div><div class="k">selected organs</div></div>
+        <div class="metric"><div class="v">0</div><div class="k">stateless surfaces</div></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec">
+    <div class="num">§ 1.3<span>posture</span></div>
+    <div>
+      <h2>Operating Posture</h2>
+      <p><strong>This is not a portfolio.</strong> The repositories below are organs of one organism. Each implements one or more primitives in production.</p>
+      <p>The layer is open at the edges and sovereign at the core. You can plug in. You cannot capture it.</p>
+    </div>
+  </section>
+
+  <div class="signal" aria-hidden="true"></div>
+
+  <section class="fn">
+    <p><sup>1</sup> Reference implementations: <a href="#">aegnt-27</a> (authenticity), <a href="#">clawreform</a> (self-rewriting agent OS), <a href="#">soldexter</a> (parallel Solana agents), <a href="#">cldcde</a> (MCP registry).</p>
+    <p><sup>2</sup> See AGENTIC_AI_ASSESSMENT.md for the 127-repo evidence base. Each entry maps to one or more primitives above.</p>
+  </section>
+
+  <footer class="footer">
+    <span class="pulse">LAYER ACTIVE</span>
+    <span>aegntic.ai · perception engine · /coordination/0001</span>
+  </footer>
+</div>
+</body>
+</html>

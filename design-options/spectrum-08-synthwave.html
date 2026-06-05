@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>aegntic — The coordination layer for persistent human–AI intelligence.</title>
+<meta name="description" content="aegntic · the coordination layer for persistent human–AI intelligence. One organism. Many organs." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Audiowide&family=Share+Tech+Mono&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --indigo: #0d0221;
+    --indigo-2: #1a0540;
+    --magenta: #ff2e97;
+    --cyan: #05d9e8;
+    --orange: #ff8a00;
+    --paper: #f6e9ff;
+    --grid: rgba(255, 46, 151, 0.55);
+    --grid-glow: rgba(5, 217, 232, 0.35);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html, body { height: 100%; }
+
+  body {
+    font-family: "Share Tech Mono", ui-monospace, monospace;
+    background: var(--indigo);
+    color: var(--paper);
+    overflow: hidden;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .hero {
+    position: relative;
+    height: 100vh;
+    height: 100dvh;
+    width: 100%;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    background:
+      radial-gradient(120% 80% at 50% 18%, rgba(255, 138, 0, 0.18) 0%, rgba(255, 46, 151, 0.12) 28%, rgba(13, 2, 33, 0) 62%),
+      linear-gradient(180deg, #1a0540 0%, #0d0221 55%, #07010f 100%);
+  }
+
+  /* ---------- Starfield ---------- */
+  .stars {
+    position: absolute;
+    inset: 0 0 50% 0;
+    pointer-events: none;
+    background-image:
+      radial-gradient(1px 1px at 20% 30%, rgba(255,255,255,0.9), transparent),
+      radial-gradient(1px 1px at 70% 20%, rgba(255,255,255,0.7), transparent),
+      radial-gradient(1px 1px at 40% 60%, rgba(5,217,232,0.8), transparent),
+      radial-gradient(1px 1px at 85% 45%, rgba(255,255,255,0.6), transparent),
+      radial-gradient(1px 1px at 15% 70%, rgba(255,46,151,0.7), transparent),
+      radial-gradient(1.5px 1.5px at 55% 12%, rgba(255,255,255,0.85), transparent),
+      radial-gradient(1px 1px at 92% 8%, rgba(255,255,255,0.5), transparent),
+      radial-gradient(1px 1px at 32% 18%, rgba(255,255,255,0.6), transparent);
+    z-index: 1;
+  }
+
+  /* ---------- Sun disc ---------- */
+  .sun {
+    position: absolute;
+    top: 16%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: clamp(260px, 42vw, 520px);
+    height: clamp(260px, 42vw, 520px);
+    border-radius: 50%;
+    background: linear-gradient(180deg, #fff6a0 0%, var(--orange) 38%, var(--magenta) 78%, #7a0d6b 100%);
+    box-shadow:
+      0 0 80px rgba(255, 138, 0, 0.55),
+      0 0 160px rgba(255, 46, 151, 0.45);
+    z-index: 1;
+    -webkit-mask-image: repeating-linear-gradient(180deg, #000 0 18px, transparent 18px 22px, #000 22px 40px);
+            mask-image: repeating-linear-gradient(180deg, #000 0 18px, transparent 18px 22px, #000 22px 40px);
+    -webkit-mask-size: 100% 100%;
+    mask-size: 100% 100%;
+    animation: sunBreathe 6s ease-in-out infinite;
+  }
+  /* fade the stripe gaps toward the top so only lower half is "scan-lined" */
+  .sun::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    background: linear-gradient(180deg, rgba(255,246,160,0.0) 45%, rgba(13,2,33,0.0) 100%);
+  }
+
+  @keyframes sunBreathe {
+    0%, 100% { filter: brightness(1); }
+    50% { filter: brightness(1.12); }
+  }
+
+  /* ---------- Perspective grid ---------- */
+  .grid-wrap {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 50%;
+    overflow: hidden;
+    z-index: 1;
+    perspective: 320px;
+    perspective-origin: 50% 0%;
+  }
+  .grid-wrap::before {
+    /* fade band where horizon meets sky */
+    content: "";
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 60px;
+    background: linear-gradient(180deg, var(--indigo) 0%, rgba(13,2,33,0) 100%);
+    z-index: 2;
+    pointer-events: none;
+  }
+  .grid {
+    position: absolute;
+    top: 0;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    transform: rotateX(78deg);
+    transform-origin: 50% 0%;
+    background-image:
+      linear-gradient(to right, var(--grid) 1px, transparent 1px),
+      linear-gradient(to bottom, var(--grid-glow) 1px, transparent 1px);
+    background-size: 56px 56px;
+    background-position: 0 0;
+    animation: gridMove 1.6s linear infinite;
+    filter: drop-shadow(0 0 4px rgba(255, 46, 151, 0.6));
+  }
+  @keyframes gridMove {
+    from { background-position: 0 0; }
+    to   { background-position: 0 56px; }
+  }
+  /* glowing horizon line */
+  .horizon {
+    position: absolute;
+    left: 0; right: 0;
+    bottom: 50%;
+    height: 2px;
+    background: var(--cyan);
+    box-shadow: 0 0 14px 2px var(--cyan), 0 0 40px 6px rgba(5,217,232,0.5);
+    z-index: 2;
+  }
+
+  /* ---------- Top bar ---------- */
+  .topbar {
+    position: relative;
+    z-index: 5;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: clamp(16px, 3vw, 28px) clamp(18px, 5vw, 56px);
+  }
+  .wordmark {
+    font-family: "Audiowide", "Orbitron", sans-serif;
+    font-size: clamp(1.2rem, 2.4vw, 1.6rem);
+    letter-spacing: 0.04em;
+    color: #fff;
+    text-shadow: 0 0 8px var(--cyan), 0 0 22px rgba(5,217,232,0.6);
+  }
+  .stat {
+    font-family: "Orbitron", sans-serif;
+    font-size: clamp(0.7rem, 1.4vw, 0.85rem);
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--cyan);
+    border: 1px solid rgba(5, 217, 232, 0.55);
+    padding: 7px 14px;
+    border-radius: 999px;
+    box-shadow: 0 0 12px rgba(5,217,232,0.35), inset 0 0 10px rgba(5,217,232,0.12);
+    white-space: nowrap;
+  }
+  .stat b { color: #fff; font-weight: 700; }
+
+  /* ---------- Center content ---------- */
+  .content {
+    position: relative;
+    z-index: 5;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 0 clamp(18px, 5vw, 56px);
+    gap: clamp(14px, 2.4vw, 22px);
+  }
+
+  .eyebrow {
+    font-family: "Orbitron", sans-serif;
+    font-size: clamp(0.62rem, 1.4vw, 0.8rem);
+    letter-spacing: 0.34em;
+    text-transform: uppercase;
+    color: var(--magenta);
+    text-shadow: 0 0 10px rgba(255,46,151,0.7);
+  }
+
+  h1 {
+    font-family: "Orbitron", sans-serif;
+    font-weight: 900;
+    font-size: clamp(1.9rem, 6vw, 4.4rem);
+    line-height: 1.02;
+    letter-spacing: 0.005em;
+    max-width: 16ch;
+    text-wrap: balance;
+    background: linear-gradient(180deg, #ffffff 0%, #d8f7ff 38%, var(--cyan) 60%, var(--magenta) 100%);
+    -webkit-background-clip: text;
+            background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: transparent;
+    filter:
+      drop-shadow(0 0 10px rgba(5, 217, 232, 0.55))
+      drop-shadow(0 2px 14px rgba(255, 46, 151, 0.55));
+    animation: neonFlicker 7s steps(1) infinite;
+  }
+  @keyframes neonFlicker {
+    0%, 100%   { opacity: 1; }
+    47%        { opacity: 1; }
+    48%        { opacity: 0.72; }
+    49%        { opacity: 1; }
+    72%        { opacity: 1; }
+    73%        { opacity: 0.85; }
+    74%        { opacity: 1; }
+  }
+
+  .deck {
+    font-family: "Share Tech Mono", monospace;
+    font-size: clamp(0.9rem, 1.8vw, 1.12rem);
+    line-height: 1.55;
+    max-width: 56ch;
+    color: #efe2ff;
+    text-shadow: 0 0 6px rgba(13,2,33,0.9);
+  }
+
+  .primitives {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: clamp(8px, 1.4vw, 14px);
+    list-style: none;
+    margin-top: 4px;
+  }
+  .primitives li {
+    font-family: "Share Tech Mono", monospace;
+    font-size: clamp(0.62rem, 1.2vw, 0.78rem);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--cyan);
+    padding: 6px 12px;
+    border: 1px solid rgba(255, 46, 151, 0.4);
+    border-radius: 6px;
+    background: rgba(255, 46, 151, 0.06);
+    box-shadow: inset 0 0 10px rgba(5, 217, 232, 0.08), 0 0 8px rgba(255,46,151,0.18);
+    text-shadow: 0 0 8px rgba(5,217,232,0.5);
+  }
+
+  .ctas {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 14px;
+    margin-top: clamp(6px, 1.6vw, 12px);
+  }
+  .btn {
+    font-family: "Orbitron", sans-serif;
+    font-weight: 700;
+    font-size: clamp(0.72rem, 1.4vw, 0.9rem);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    text-decoration: none;
+    padding: 14px 26px;
+    border-radius: 8px;
+    transition: transform 0.18s cubic-bezier(0.23,1,0.32,1), box-shadow 0.18s ease, filter 0.18s ease;
+    cursor: pointer;
+  }
+  .btn-primary {
+    color: #0d0221;
+    background: linear-gradient(90deg, var(--cyan), #7af7ff);
+    box-shadow: 0 0 18px rgba(5,217,232,0.6), 0 0 40px rgba(5,217,232,0.3);
+  }
+  .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 0 28px rgba(5,217,232,0.85), 0 0 60px rgba(5,217,232,0.45); }
+  .btn-secondary {
+    color: #fff;
+    background: transparent;
+    border: 1.5px solid var(--magenta);
+    box-shadow: 0 0 14px rgba(255,46,151,0.45), inset 0 0 10px rgba(255,46,151,0.12);
+    text-shadow: 0 0 8px rgba(255,46,151,0.6);
+  }
+  .btn-secondary:hover { transform: translateY(-2px); box-shadow: 0 0 26px rgba(255,46,151,0.7), inset 0 0 14px rgba(255,46,151,0.2); }
+
+  /* ---------- Footer ---------- */
+  footer {
+    position: relative;
+    z-index: 5;
+    text-align: center;
+    padding: clamp(10px, 2vw, 18px);
+    font-family: "Share Tech Mono", monospace;
+    font-size: clamp(0.62rem, 1.2vw, 0.76rem);
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: rgba(246, 233, 255, 0.6);
+    text-shadow: 0 0 10px rgba(255,46,151,0.4);
+  }
+
+  /* ---------- Scanline overlay ---------- */
+  .scanlines {
+    position: absolute;
+    inset: 0;
+    z-index: 4;
+    pointer-events: none;
+    background: repeating-linear-gradient(180deg, rgba(0,0,0,0) 0 2px, rgba(0,0,0,0.10) 2px 4px);
+    mix-blend-mode: multiply;
+    opacity: 0.5;
+  }
+
+  /* ---------- Responsive ---------- */
+  @media (max-width: 600px) {
+    .grid-wrap { perspective: 220px; }
+    .grid { background-size: 42px 42px; }
+    @keyframes gridMove { from { background-position: 0 0; } to { background-position: 0 42px; } }
+    h1 { max-width: 14ch; }
+    .stat { letter-spacing: 0.1em; padding: 6px 10px; }
+  }
+
+  /* ---------- Reduced motion ---------- */
+  @media (prefers-reduced-motion: reduce) {
+    .grid { animation: none; }
+    .sun { animation: none; }
+    h1 { animation: none; }
+    .btn { transition: none; }
+  }
+</style>
+</head>
+<body>
+  <main class="hero">
+    <div class="stars" aria-hidden="true"></div>
+    <div class="sun" aria-hidden="true"></div>
+
+    <div class="grid-wrap" aria-hidden="true">
+      <div class="horizon"></div>
+      <div class="grid" id="grid"></div>
+    </div>
+
+    <div class="scanlines" aria-hidden="true"></div>
+
+    <header class="topbar">
+      <span class="wordmark">aegntic</span>
+      <span class="stat"><b>127</b> integrations</span>
+    </header>
+
+    <section class="content">
+      <p class="eyebrow">AEGNTIC · COORDINATION LAYER</p>
+      <h1>The coordination layer for persistent human–AI intelligence.</h1>
+      <p class="deck">One organism. Many organs. Once you see the skeleton, everything else becomes obvious.</p>
+
+      <ul class="primitives">
+        <li>Orchestration</li>
+        <li>Authenticity</li>
+        <li>Continuity</li>
+        <li>Sovereignty</li>
+        <li>Experiential Memory</li>
+      </ul>
+
+      <div class="ctas">
+        <a class="btn btn-primary" href="#">Enter the layer</a>
+        <a class="btn btn-secondary" href="#">View the source</a>
+      </div>
+    </section>
+
+    <footer>aegntic.ai · 2026</footer>
+  </main>
+
+  <script>
+    (function () {
+      var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      if (reduce) return;
+
+      // Subtle randomized neon glow "breathing" on the headline beyond CSS flicker.
+      var h1 = document.querySelector('h1');
+      if (!h1) return;
+      var base = 0;
+      function breathe(t) {
+        var pulse = (Math.sin(t / 900) + 1) / 2; // 0..1
+        var cyan = 8 + pulse * 8;
+        var mag = 10 + pulse * 8;
+        h1.style.filter =
+          'drop-shadow(0 0 ' + cyan.toFixed(1) + 'px rgba(5,217,232,0.55)) ' +
+          'drop-shadow(0 2px ' + mag.toFixed(1) + 'px rgba(255,46,151,0.55))';
+        requestAnimationFrame(breathe);
+      }
+      requestAnimationFrame(breathe);
+    })();
+  </script>
+</body>
+</html>

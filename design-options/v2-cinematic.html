@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>aegntic — V2 / Cinematic Void</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@300;400&family=JetBrains+Mono:wght@300;400&display=swap" rel="stylesheet">
+<style>
+:root{
+  --void:#050505; --deep:#0a0a0f; --text:#f1f1f1; --muted:#8a8a8f;
+  --edge:#1a1a20; --teal:#00d4b8; --bronze:#b38b5e;
+  --ease:cubic-bezier(0.23,1,0.32,1);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{background:var(--void);color:var(--text);font-family:'Inter',system-ui,sans-serif;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+body{min-height:100vh;display:grid;grid-template-rows:60px 1fr 60px}
+
+/* letterbox bars */
+.bar{background:#000;position:relative}
+.bar.top{border-bottom:1px solid var(--edge)}
+.bar.bot{border-top:1px solid var(--edge)}
+.bar .row{height:100%;max-width:1440px;margin:0 auto;padding:0 32px;display:flex;align-items:center;justify-content:space-between;color:var(--muted);font-family:'JetBrains Mono';font-size:10.5px;letter-spacing:.22em;text-transform:uppercase}
+.bar .row b{color:var(--text);font-weight:500}
+.bar .row .dot{width:6px;height:6px;border-radius:50%;background:var(--teal);box-shadow:0 0 10px var(--teal);display:inline-block;margin-right:8px;animation:p 2.4s var(--ease) infinite}
+@keyframes p{0%,100%{opacity:.45}50%{opacity:1}}
+
+/* stage */
+.stage{position:relative;display:grid;place-items:center;padding:0 32px;overflow:hidden;background:radial-gradient(ellipse at 50% 60%, rgba(0,212,184,.06), transparent 60%)}
+.stage::before, .stage::after{
+  content:'';position:absolute;left:0;right:0;height:1px;
+}
+.stage::before{top:32%;background:linear-gradient(90deg,transparent 0%,var(--bronze) 30%,var(--bronze) 70%,transparent 100%);opacity:.55}
+.stage::after{top:68%;background:linear-gradient(90deg,transparent 0%,var(--teal) 30%,var(--teal) 70%,transparent 100%);opacity:.55}
+
+.manifesto{
+  position:relative;text-align:center;max-width:18ch;
+  font-family:'Space Grotesk';font-weight:600;
+  font-size:clamp(3rem, 9vw, 8rem);
+  line-height:.92;letter-spacing:-.045em;
+  color:var(--text);
+}
+.manifesto em{font-style:normal;color:var(--teal);position:relative}
+.manifesto em::after{content:'';position:absolute;left:0;right:0;bottom:-.08em;height:2px;background:var(--teal);transform:scaleX(0);transform-origin:left;animation:underline 1.6s var(--ease) .8s forwards}
+@keyframes underline{to{transform:scaleX(1)}}
+
+.below{
+  position:absolute;left:50%;bottom:14%;transform:translateX(-50%);
+  display:flex;align-items:center;gap:18px;
+  font-family:'JetBrains Mono';font-size:11px;color:var(--muted);
+  letter-spacing:.25em;text-transform:uppercase;
+}
+.below .sep{width:42px;height:1px;background:var(--edge)}
+.below b{color:var(--bronze);font-weight:500}
+
+/* traveling signal */
+.signal-track{position:absolute;left:0;right:0;top:50%;height:1px;background:transparent;pointer-events:none}
+.signal-track::before{content:'';position:absolute;top:0;left:0;width:140px;height:1px;background:linear-gradient(90deg,transparent,var(--teal),transparent);animation:sweep 7s linear infinite;filter:drop-shadow(0 0 6px var(--teal))}
+@keyframes sweep{0%{transform:translateX(-140px)}100%{transform:translateX(100vw)}}
+
+/* corner registration marks */
+.reg{position:absolute;width:14px;height:14px;color:var(--muted);opacity:.45}
+.reg.tl{top:18px;left:18px;border-top:1px solid currentColor;border-left:1px solid currentColor}
+.reg.tr{top:18px;right:18px;border-top:1px solid currentColor;border-right:1px solid currentColor}
+.reg.bl{bottom:18px;left:18px;border-bottom:1px solid currentColor;border-left:1px solid currentColor}
+.reg.br{bottom:18px;right:18px;border-bottom:1px solid currentColor;border-right:1px solid currentColor}
+
+@media(prefers-reduced-motion:reduce){
+  .signal-track::before, .bar .row .dot, .manifesto em::after{animation:none!important}
+  .manifesto em::after{transform:scaleX(1)}
+}
+</style>
+</head>
+<body>
+<header class="bar top"><div class="row"><span><span class="dot"></span>LAYER ACTIVE · 127 ORGANS</span><span>aegntic.ai</span><span>VOL <b>I</b> · SCENE <b>01</b></span></div></header>
+
+<main class="stage">
+  <span class="reg tl"></span><span class="reg tr"></span><span class="reg bl"></span><span class="reg br"></span>
+  <div class="signal-track" aria-hidden="true"></div>
+  <h1 class="manifesto">Once you see&nbsp;the <em>skeleton</em>, everything else becomes obvious.</h1>
+  <div class="below">
+    <span>Coordination layer</span><span class="sep"></span>
+    <span><b>persistent</b> human–AI intelligence</span><span class="sep"></span>
+    <span>2026 ·</span>
+  </div>
+</main>
+
+<footer class="bar bot"><div class="row"><span>scroll · enter the layer</span><span>ORCHESTRATION · AUTHENTICITY · CONTINUITY · SOVEREIGNTY · MEMORY</span><span>©AEGNTIC</span></div></footer>
+</body>
+</html>

@@ -1,0 +1,1286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>aegntic.ai — Building the Agentic City</title>
+<meta name="description" content="aegntic — the coordination layer for persistent human–AI intelligence. An agentic city, Sydney built on a microchip, rendered live in WebGL." />
+<meta name="theme-color" content="#050505" />
+<meta property="og:title" content="aegntic.ai — Building the Agentic City" />
+<meta property="og:description" content="One city. Many districts. A self-sustaining coordination layer for persistent human–AI intelligence." />
+<meta property="og:image" content="../aegnticdotai-web-prev-3.png" />
+<meta name="twitter:card" content="summary_large_image" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&family=Archivo:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+
+<script type="importmap">
+{
+  "imports": {
+    "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
+    "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
+  }
+}
+</script>
+
+<style>
+  :root {
+    /* Night-city palette (the reference) */
+    --void:   #050505;
+    --deep:   #0a0a0f;
+    --text:   #f1f1f1;
+    --muted:  #8a8a8f;
+    --edge:   #1a1a20;
+    --teal:   #00d4b8;
+    --bronze: #b38b5e;
+    --gold:   #d8b06a;
+    --cream:  #efe7d3;
+
+    /* Blueprint / master-plan palette */
+    --bp-paper: #e9eef2;
+    --bp-ink:   #0b1f3a;
+    --bp-line:  #1f7ae0;
+    --bp-faint: #9db8d6;
+
+    /* fonts */
+    --font-display: "Sora", "Archivo", sans-serif;
+    --font-body:    "Archivo", sans-serif;
+    --font-mono:    "JetBrains Mono", monospace;
+
+    /* live, mode-aware chrome tokens (re-pointed in blueprint mode) */
+    --ink:        var(--text);
+    --ink-dim:    var(--muted);
+    --hair:       rgba(255,255,255,0.10);
+    --panel-bg:   rgba(8,8,12,0.55);
+    --accent:     var(--teal);
+    --page-bg:    var(--void);
+
+    --reveal-ease: cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { height: 100%; }
+
+  body {
+    font-family: var(--font-body);
+    color: var(--ink);
+    background: var(--page-bg);
+    overflow: hidden;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    transition: background-color 0.85s var(--reveal-ease), color 0.85s var(--reveal-ease);
+  }
+
+  /* ---------- BLUEPRINT MODE: re-point chrome tokens ---------- */
+  body.blueprint {
+    --ink:      var(--bp-ink);
+    --ink-dim:  #3f5a7a;
+    --hair:     rgba(31,122,224,0.30);
+    --panel-bg: rgba(233,238,242,0.72);
+    --accent:   var(--bp-line);
+    --page-bg:  var(--bp-paper);
+  }
+
+  /* ---------- Stage / canvas ---------- */
+  .stage { position: fixed; inset: 0; overflow: hidden; isolation: isolate; }
+  #scene { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+
+  /* WebGL fallback poster */
+  .poster {
+    position: absolute; inset: 0; width: 100%; height: 100%;
+    object-fit: cover; object-position: center; display: none; z-index: 1;
+  }
+  .poster-scrim {
+    position: absolute; inset: 0; z-index: 2; display: none;
+    background:
+      radial-gradient(120% 90% at 50% 0%, rgba(5,5,5,0) 40%, rgba(5,5,5,0.65) 100%),
+      linear-gradient(180deg, rgba(5,5,5,0.35), rgba(5,5,5,0.15) 40%, rgba(5,5,5,0.55));
+  }
+  body.nowebgl .poster,
+  body.nowebgl .poster-scrim { display: block; }
+  body.nowebgl #scene { display: none; }
+
+  /* Atmosphere overlays */
+  .vignette {
+    position: absolute; inset: 0; z-index: 3; pointer-events: none;
+    background: radial-gradient(130% 100% at 50% 38%, rgba(0,0,0,0) 45%, rgba(0,0,0,0.55) 100%);
+    transition: opacity 0.85s var(--reveal-ease);
+  }
+  .grain {
+    position: absolute; inset: 0; z-index: 4; pointer-events: none; opacity: 0.05;
+    mix-blend-mode: overlay;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='140' height='140'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix type='saturate' values='0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)' opacity='0.55'/></svg>");
+  }
+  body.blueprint .vignette { opacity: 0; }
+  body.blueprint .grain { opacity: 0.025; }
+
+  /* Blueprint drafting grid (only visible in blueprint mode) */
+  .bp-grid {
+    position: absolute; inset: 0; z-index: 2; pointer-events: none; opacity: 0;
+    transition: opacity 0.85s var(--reveal-ease);
+    background-image:
+      linear-gradient(rgba(31,122,224,0.10) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(31,122,224,0.10) 1px, transparent 1px),
+      linear-gradient(rgba(31,122,224,0.18) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(31,122,224,0.18) 1px, transparent 1px);
+    background-size: 28px 28px, 28px 28px, 140px 140px, 140px 140px;
+  }
+  body.blueprint .bp-grid { opacity: 1; }
+
+  /* ---------- shared chrome typography ---------- */
+  .eyebrow, .section-label {
+    font-family: var(--font-mono);
+    font-size: 10px; letter-spacing: 0.26em; text-transform: uppercase;
+    color: var(--accent);
+  }
+
+  /* page-load reveal */
+  .reveal { opacity: 0; transform: translateY(12px); }
+  body.ready .reveal {
+    opacity: 1; transform: none;
+    transition: opacity 0.8s var(--reveal-ease), transform 0.9s var(--reveal-ease);
+  }
+  .d1 { transition-delay: 0.05s; }
+  .d2 { transition-delay: 0.22s; }
+  .d3 { transition-delay: 0.34s; }
+  .d4 { transition-delay: 0.46s; }
+  .d5 { transition-delay: 0.60s; }
+  .d6 { transition-delay: 0.74s; }
+
+  /* ---------- Top bar ---------- */
+  .topbar {
+    position: absolute; top: 0; left: 0; right: 0; z-index: 7;
+    display: flex; align-items: center; gap: 28px;
+    padding: 22px clamp(20px, 4vw, 54px);
+  }
+  .brand { display: flex; align-items: center; gap: 12px; }
+  .ae-mark {
+    width: 38px; height: 24px; flex: none;
+    background: var(--cream);
+    -webkit-mask: url("../ae-logo.png") left center / contain no-repeat;
+    mask: url("../ae-logo.png") left center / contain no-repeat;
+    transition: background-color 0.85s var(--reveal-ease);
+  }
+  body.blueprint .ae-mark { background: var(--bp-ink); }
+  .wordmark {
+    font-family: var(--font-display); font-weight: 600; font-size: 21px;
+    letter-spacing: -0.01em; color: var(--ink);
+  }
+  .nav { display: flex; align-items: center; gap: clamp(14px, 1.6vw, 26px); margin-left: 18px; }
+  .nav a {
+    font-family: var(--font-body); font-weight: 500; font-size: 11.5px;
+    letter-spacing: 0.16em; text-transform: uppercase; text-decoration: none;
+    color: var(--ink-dim); white-space: nowrap;
+    transition: color 0.25s ease;
+  }
+  .nav a:hover, .nav a:focus-visible { color: var(--ink); outline: none; }
+  .nav .status-link { display: inline-flex; align-items: center; gap: 7px; }
+  .live-dot {
+    width: 7px; height: 7px; border-radius: 50%; background: var(--teal);
+    box-shadow: 0 0 0 0 rgba(0,212,184,0.6); animation: pulse 2.6s ease-out infinite;
+  }
+  body.blueprint .live-dot { background: var(--bp-line); box-shadow: none; animation: none; }
+  @keyframes pulse {
+    0% { box-shadow: 0 0 0 0 rgba(0,212,184,0.55); }
+    70% { box-shadow: 0 0 0 9px rgba(0,212,184,0); }
+    100% { box-shadow: 0 0 0 0 rgba(0,212,184,0); }
+  }
+  .spacer { flex: 1; }
+  .btn {
+    font-family: var(--font-body); font-weight: 600; font-size: 11.5px;
+    letter-spacing: 0.14em; text-transform: uppercase; cursor: pointer;
+    color: var(--ink); background: transparent;
+    border: 1px solid var(--hair); border-radius: 4px;
+    padding: 11px 18px; display: inline-flex; align-items: center; gap: 9px;
+    transition: border-color 0.25s ease, color 0.25s ease, background-color 0.25s ease, transform 0.2s var(--reveal-ease);
+  }
+  .btn:hover, .btn:focus-visible { border-color: var(--accent); color: var(--ink); outline: none; transform: translateY(-1px); }
+  .btn .arr { color: var(--accent); }
+
+  /* ---------- Hero copy (upper-left, asymmetric) ---------- */
+  .hero {
+    position: absolute; top: clamp(96px, 13vh, 150px);
+    left: clamp(20px, 4vw, 54px); z-index: 6;
+    max-width: min(560px, 86vw);
+  }
+  .hero .eyebrow { display: block; margin-bottom: 18px; }
+  .hero h1 {
+    font-family: var(--font-display); font-weight: 600;
+    font-size: clamp(2.6rem, 6.4vw, 4.6rem);
+    line-height: 0.96; letter-spacing: 0.02em; text-transform: uppercase;
+    color: var(--ink); text-wrap: balance;
+  }
+  .hero h1 .ln2 { display: block; }
+  .hero .deck {
+    margin-top: 22px; max-width: 42ch;
+    font-size: clamp(0.95rem, 1.15vw, 1.06rem); font-weight: 300; line-height: 1.55;
+    color: var(--ink-dim);
+  }
+  .cta-row { margin-top: 28px; display: flex; align-items: center; gap: 22px; flex-wrap: wrap; }
+  .cta-primary {
+    font-family: var(--font-body); font-weight: 600; font-size: 12px;
+    letter-spacing: 0.12em; text-transform: uppercase; cursor: pointer;
+    color: var(--ink); background: transparent;
+    border: 1px solid var(--accent); border-radius: 4px;
+    padding: 14px 22px; display: inline-flex; align-items: center; gap: 10px;
+    transition: background-color 0.3s ease, color 0.3s ease, transform 0.2s var(--reveal-ease), border-color 0.3s ease;
+  }
+  .cta-primary:hover, .cta-primary:focus-visible {
+    background: var(--accent);
+    color: var(--void); outline: none; transform: translateY(-2px);
+  }
+  body.blueprint .cta-primary:hover { color: var(--bp-paper); }
+  .cta-secondary {
+    font-family: var(--font-body); font-weight: 500; font-size: 12px;
+    letter-spacing: 0.1em; text-transform: uppercase; text-decoration: none;
+    color: var(--ink-dim); border-bottom: 1px solid var(--hair); padding-bottom: 3px;
+    transition: color 0.25s ease, border-color 0.25s ease;
+  }
+  .cta-secondary:hover, .cta-secondary:focus-visible { color: var(--ink); border-color: var(--accent); outline: none; }
+  .primitives {
+    margin-top: 30px; font-family: var(--font-mono); font-size: 10.5px;
+    letter-spacing: 0.12em; color: var(--ink-dim); line-height: 1.9;
+  }
+  .primitives .count { color: var(--accent); font-weight: 600; }
+  .primitives .sep { opacity: 0.4; margin: 0 6px; }
+
+  /* ---------- Building labels ---------- */
+  .labels { position: absolute; inset: 0; z-index: 5; pointer-events: none; }
+  .label { position: absolute; top: 0; left: 0; will-change: transform; transition: opacity 0.3s ease; }
+  .label .conn {
+    position: absolute; left: -0.5px; top: -34px; width: 1px; height: 34px;
+    background: linear-gradient(to bottom, transparent, var(--accent));
+  }
+  .label .chip {
+    position: absolute; left: 0; top: -34px; transform: translate(-50%, -100%);
+    white-space: nowrap; padding: 5px 10px;
+    font-family: var(--font-body); font-weight: 500; font-size: 11px; letter-spacing: 0.05em;
+    color: var(--ink); background: var(--panel-bg);
+    border: 1px solid var(--hair); border-radius: 6px;
+    -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px);
+  }
+
+  /* ---------- Telemetry panel (lower-left) ---------- */
+  .telemetry {
+    position: absolute; left: clamp(20px, 4vw, 54px); bottom: 64px; z-index: 6;
+    width: 268px; max-width: 80vw;
+    background: var(--panel-bg); border: 1px solid var(--hair); border-radius: 8px;
+    -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px);
+    padding: 16px 18px 14px;
+  }
+  .telemetry .title { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.22em; color: var(--ink-dim); text-transform: uppercase; margin-bottom: 12px; }
+  .trow { display: flex; align-items: center; justify-content: space-between; padding: 6px 0; border-top: 1px solid var(--hair); }
+  .trow:first-of-type { border-top: none; }
+  .trow .k { display: flex; align-items: center; gap: 9px; font-size: 11px; letter-spacing: 0.06em; color: var(--ink-dim); text-transform: uppercase; }
+  .trow .k .ic { color: var(--accent); font-size: 11px; width: 14px; text-align: center; }
+  .trow .v { font-family: var(--font-mono); font-size: 12px; font-weight: 500; color: var(--ink); font-variant-numeric: tabular-nums; }
+  .trow .v.tealv { color: var(--accent); }
+
+  /* ---------- Bottom status bar ---------- */
+  .statusbar {
+    position: absolute; left: 0; right: 0; bottom: 0; z-index: 6;
+    display: flex; align-items: center; gap: 18px;
+    padding: 14px clamp(20px, 4vw, 54px);
+    border-top: 1px solid var(--hair);
+    background: linear-gradient(0deg, rgba(5,5,5,0.55), rgba(5,5,5,0));
+    transition: background-color 0.85s var(--reveal-ease), border-color 0.85s var(--reveal-ease);
+  }
+  body.blueprint .statusbar { background: linear-gradient(0deg, rgba(233,238,242,0.6), rgba(233,238,242,0)); }
+  .statusbar .seg { font-family: var(--font-mono); font-size: 10.5px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink-dim); display: inline-flex; align-items: center; gap: 9px; }
+  .statusbar .seg b { color: var(--ink); font-weight: 500; }
+  .statusbar .clock { color: var(--accent); }
+  .statusbar .grow { flex: 1; }
+  .statusbar .sysmap { color: var(--ink-dim); cursor: pointer; background: none; border: none; font: inherit; letter-spacing: 0.14em; text-transform: uppercase; display: inline-flex; align-items: center; gap: 8px; transition: color 0.25s ease; }
+  .statusbar .sysmap:hover, .statusbar .sysmap:focus-visible { color: var(--ink); outline: none; }
+
+  /* ---------- Blueprint annotations ---------- */
+  .blueprint-anno { position: absolute; inset: 0; z-index: 5; pointer-events: none; opacity: 0; transition: opacity 0.6s var(--reveal-ease); color: var(--bp-ink); }
+  body.blueprint .blueprint-anno { opacity: 1; }
+  .bp-sheet {
+    position: absolute; top: clamp(96px, 13vh, 150px); right: clamp(20px, 4vw, 54px);
+    text-align: right; font-family: var(--font-mono); color: var(--bp-ink);
+  }
+  .bp-sheet .big { font-size: 13px; letter-spacing: 0.3em; font-weight: 600; }
+  .bp-sheet .sub { font-size: 10px; letter-spacing: 0.2em; color: #3f5a7a; margin-top: 6px; }
+  .bp-north { position: absolute; right: clamp(20px, 4vw, 54px); bottom: 120px; text-align: center; font-family: var(--font-mono); }
+  .bp-north .arrow { font-size: 28px; line-height: 1; color: var(--bp-line); }
+  .bp-north .lbl { font-size: 10px; letter-spacing: 0.2em; color: var(--bp-ink); margin-top: 4px; }
+  .bp-scale { position: absolute; right: clamp(20px, 4vw, 54px); bottom: 78px; font-family: var(--font-mono); font-size: 9px; letter-spacing: 0.16em; color: var(--bp-ink); text-align: center; }
+  .bp-scale .bar { width: 120px; height: 6px; margin: 5px auto 4px; border: 1px solid var(--bp-ink); background: repeating-linear-gradient(90deg, var(--bp-ink) 0 20px, transparent 20px 40px); }
+
+  /* ---------- Responsive ---------- */
+  @media (max-width: 1080px) {
+    .nav { display: none; }
+  }
+  @media (max-width: 760px) {
+    .topbar { padding: 16px 18px; gap: 14px; }
+    .hero { top: 84px; left: 18px; right: 18px; max-width: none; }
+    .telemetry { left: 18px; right: 18px; width: auto; bottom: 92px; }
+    .statusbar { flex-wrap: wrap; gap: 8px 16px; padding: 12px 18px; }
+    .statusbar .grow { flex-basis: 100%; height: 0; }
+    .bp-north, .bp-scale { display: none; }
+    .label .chip { font-size: 10px; padding: 4px 8px; }
+  }
+  @media (max-width: 420px) {
+    .hero h1 { font-size: 2.2rem; }
+    .wordmark { font-size: 18px; }
+    .ae-mark { width: 32px; height: 20px; }
+  }
+
+  /* ---------- Reduced motion ---------- */
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation: none !important; }
+    .reveal { opacity: 1 !important; transform: none !important; transition: none !important; }
+    .live-dot { animation: none !important; }
+    body, .statusbar, .vignette, .bp-grid, .blueprint-anno, .btn, .cta-primary, .ae-mark, .label { transition: none !important; }
+  }
+</style>
+</head>
+<body class="loading">
+  <main class="stage">
+    <canvas id="scene" role="img"
+      aria-label="A live isometric night view of an agentic city — Sydney built on a glowing microchip. Bronze and gold skyscrapers with lit windows rise from a dark printed circuit board laced with teal data-traces. A central supertall tower bears the aegntic 'ae' mark; the Opera House shells and the Harbour Bridge arch span a dark harbour. Tiny luminous agents travel the trace-roads."></canvas>
+
+    <img class="poster" src="../aegnticdotai-web-prev-3.png"
+      alt="Isometric night render of the aegntic agentic city — a Sydney skyline built on a glowing circuit board." />
+    <div class="poster-scrim" aria-hidden="true"></div>
+
+    <div class="bp-grid" aria-hidden="true"></div>
+    <div class="vignette" aria-hidden="true"></div>
+    <div class="grain" aria-hidden="true"></div>
+
+    <!-- Top bar -->
+    <header class="topbar reveal d1">
+      <a class="brand" href="javascript:void(0)" aria-label="aegntic.ai home">
+        <span class="ae-mark" role="img" aria-label="ae mark"></span>
+        <span class="wordmark">aegntic.ai</span>
+      </a>
+      <nav class="nav" aria-label="Primary">
+        <a href="#platform">Platform</a>
+        <a href="#infrastructure">Infrastructure</a>
+        <a href="#solutions">Solutions</a>
+        <a href="#research">Research</a>
+        <a href="#company">Company</a>
+        <a href="#resources">Resources</a>
+        <a class="status-link" href="#status">Status <span class="live-dot" aria-hidden="true"></span></a>
+      </nav>
+      <span class="spacer"></span>
+      <button class="btn" type="button" id="consoleBtn">Access Console <span class="arr" aria-hidden="true">→</span></button>
+    </header>
+
+    <!-- Hero copy -->
+    <section class="hero" aria-labelledby="heroTitle">
+      <span class="eyebrow reveal d2">Aegntic · Coordination Layer</span>
+      <h1 id="heroTitle" class="reveal d2">Building the<span class="ln2">Agentic City</span></h1>
+      <p class="deck reveal d3">One city. Many districts. A self-sustaining coordination layer for persistent human–AI intelligence — engineered for perpetual operation, sovereignty, and scale.</p>
+      <div class="cta-row reveal d4">
+        <button class="cta-primary" type="button" id="bpToggle" aria-pressed="false">
+          <span class="lbl">Explore the master plan</span> <span class="arr" aria-hidden="true">→</span>
+        </button>
+        <a class="cta-secondary" href="javascript:void(0)">View the source</a>
+      </div>
+      <div class="primitives reveal d5">
+        <span class="count">127 integrations</span><br />
+        Orchestration <span class="sep">·</span> Authenticity <span class="sep">·</span> Continuity <span class="sep">·</span> Sovereignty <span class="sep">·</span> Experiential Memory
+      </div>
+    </section>
+
+    <!-- Building labels (positions set by JS each frame) -->
+    <div class="labels" id="labels" aria-hidden="true"></div>
+
+    <!-- Telemetry -->
+    <aside class="telemetry reveal d5" aria-label="City status telemetry">
+      <div class="title">City Status</div>
+      <div class="trow"><span class="k"><span class="ic">✳</span>Agents Online</span><span class="v" data-k="agents">12.48M</span></div>
+      <div class="trow"><span class="k"><span class="ic">▤</span>Tasks Executed</span><span class="v" data-k="tasks">3.72B</span></div>
+      <div class="trow"><span class="k"><span class="ic">◷</span>System Uptime</span><span class="v" data-k="uptime">100.00%</span></div>
+      <div class="trow"><span class="k"><span class="ic">⚡</span>Power Output</span><span class="v" data-k="power">5.2 GW</span></div>
+      <div class="trow"><span class="k"><span class="ic">▦</span>Data Flow</span><span class="v" data-k="flow">18.7 TB/s</span></div>
+      <div class="trow"><span class="k"><span class="live-dot" aria-hidden="true"></span>Coordination</span><span class="v tealv" aria-live="polite">ACTIVE</span></div>
+    </aside>
+
+    <!-- Bottom status bar -->
+    <footer class="statusbar reveal d6">
+      <span class="seg">Coordination Protocol <span class="live-dot" aria-hidden="true"></span> <b>Aegntic Net</b> · Link Stable</span>
+      <span class="grow"></span>
+      <span class="seg"><span class="clock" id="clock">--:--:-- UTC</span></span>
+      <button class="sysmap" type="button" id="sysmapBtn">View System Map <span aria-hidden="true">⤢</span></button>
+    </footer>
+
+    <!-- Blueprint annotations -->
+    <div class="blueprint-anno" aria-hidden="true">
+      <div class="bp-sheet"><div class="big">MASTER PLAN</div><div class="sub">SHEET 01 · AGENTIC CITY · REV. A</div></div>
+      <div class="bp-north"><div class="arrow">↑</div><div class="lbl">N</div></div>
+      <div class="bp-scale"><div>SCALE 1 : 2000</div><div class="bar"></div><div>0 — 50 — 100 m</div></div>
+    </div>
+  </main>
+
+<script type="module">
+import * as THREE from 'three';
+import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
+import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
+import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
+import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
+
+/* ---------------------------------------------------------------------------
+   Globals & config
+--------------------------------------------------------------------------- */
+const COL = {
+  void:   new THREE.Color('#050505'),
+  paper:  new THREE.Color('#e9eef2'),
+  teal:   new THREE.Color('#00d4b8'),
+  bronze: new THREE.Color('#b38b5e'),
+  gold:   new THREE.Color('#d8b06a'),
+  cream:  new THREE.Color('#efe7d3'),
+  bpline: new THREE.Color('#1f7ae0'),
+  darkmetal: new THREE.Color('#1a1712'),
+};
+
+const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+const stage = document.querySelector('.stage');
+
+let renderer, scene, camera, composer, bloomPass, clock;
+let root;                  // parallax root group
+let winMesh, agentMesh, packetMesh, viaMesh;
+let groundMesh, waterMesh;
+const solids = [];         // standard-material building bodies (hidden in blueprint)
+const edgeLines = [];      // cyan line-art (shown in blueprint)
+const wireables = [];      // landmark meshes toggled to wireframe in blueprint
+const traceLines = [];     // teal trace LineSegments (recolored in blueprint)
+const bronzeTraceLines = [];// copper traces (hidden in blueprint)
+const glowDecals = [];     // emissive decals (windows-like) hidden in blueprint
+const labelDefs = [];      // {name, anchor:Vector3, el, conn, chip}
+
+let decalCreamTex = null, decalInkTex = null, decalMesh = null;
+const logoImg = new Image();
+
+let bpTarget = 0, bpT = 0;       // blueprint transition 0..1
+let revealStart = 0, revealDone = reduced;
+const mouse = { x: 0, y: 0, tx: 0, ty: 0 };
+
+/* movers */
+const segments = [];       // {ax,az,bx,bz,len} trace segments used as roads/channels
+const packets = [];        // data packets
+const agents = [];         // agent figures
+const winData = [];        // window base intensities for twinkle
+const dummy = new THREE.Object3D();
+
+/* ---------------------------------------------------------------------------
+   WebGL capability check + graceful fallback
+--------------------------------------------------------------------------- */
+function webglOK() {
+  try {
+    const c = document.createElement('canvas');
+    return !!(window.WebGLRenderingContext && (c.getContext('webgl2') || c.getContext('webgl')));
+  } catch (e) { return false; }
+}
+function showFallback() {
+  document.body.classList.add('nowebgl');
+  document.body.classList.remove('loading');
+  document.body.classList.add('ready');
+}
+
+/* ---------------------------------------------------------------------------
+   Geometry helpers
+--------------------------------------------------------------------------- */
+const inRect = (px, pz, cx, cz, ang, hx, hz, pad = 0) => {
+  const c = Math.cos(-ang), s = Math.sin(-ang);
+  const dx = px - cx, dz = pz - cz;
+  const lx = dx * c - dz * s;
+  const lz = dx * s + dz * c;
+  return Math.abs(lx) <= hx + pad && Math.abs(lz) <= hz + pad;
+};
+
+/* water inlet (diagonal) */
+const WATER = { cx: 55, cz: 42, ang: -0.7, hx: 95, hz: 17 };
+const inWater = (x, z, pad = 0) => inRect(x, z, WATER.cx, WATER.cz, WATER.ang, WATER.hx, WATER.hz, pad);
+
+/* shared materials for windows: instanced, unlit, bloom-friendly */
+function buildWindowsForBox(x, z, w, d, h, accentTeal = 0.16) {
+  const yTop = h;
+  const cols = (len) => Math.max(2, Math.floor(len / 1.7));
+  const rows = Math.max(2, Math.floor(h / 2.3));
+  const faces = [
+    { nx: 0,  nz: 1,  len: w, fixed: d / 2 + 0.06, axis: 'x' },
+    { nx: 0,  nz: -1, len: w, fixed: -d / 2 - 0.06, axis: 'x' },
+    { nx: 1,  nz: 0,  len: d, fixed: w / 2 + 0.06, axis: 'z' },
+    { nx: -1, nz: 0,  len: d, fixed: -w / 2 - 0.06, axis: 'z' },
+  ];
+  for (const f of faces) {
+    const c = cols(f.len);
+    const ry = Math.atan2(f.nx, f.nz);
+    for (let i = 0; i < c; i++) {
+      for (let j = 0; j < rows; j++) {
+        const u = (-(f.len) / 2) + (f.len) * (i + 0.5) / c;
+        const yy = (yTop) * (j + 0.6) / (rows + 0.4);
+        if (yy > h - 0.8) continue;
+        let px, pz;
+        if (f.axis === 'x') { px = x + u; pz = z + f.fixed; }
+        else { px = x + f.fixed; pz = z + u; }
+        dummy.position.set(px, yy, pz);
+        dummy.rotation.set(0, ry, 0);
+        dummy.scale.set(0.78, 1.05, 1);
+        dummy.updateMatrix();
+        const lit = Math.random() > 0.32;
+        let col;
+        if (!lit) {
+          col = new THREE.Color(0.015, 0.015, 0.02);
+        } else if (Math.random() < accentTeal) {
+          col = COL.teal.clone().multiplyScalar(0.55 + Math.random() * 0.35);
+        } else {
+          const warm = 0.55 + Math.random() * 0.45;
+          col = new THREE.Color(warm, warm * 0.74, warm * 0.4);
+        }
+        winData.push({ matrix: dummy.matrix.clone(), base: col, lit });
+      }
+    }
+  }
+}
+
+/* ---------------------------------------------------------------------------
+   Scene construction
+--------------------------------------------------------------------------- */
+function buildPCB() {
+  /* dark substrate */
+  const gGeo = new THREE.PlaneGeometry(360, 360);
+  const gMat = new THREE.MeshStandardMaterial({ color: new THREE.Color('#07070b'), roughness: 0.82, metalness: 0.25 });
+  groundMesh = new THREE.Mesh(gGeo, gMat);
+  groundMesh.rotation.x = -Math.PI / 2;
+  groundMesh.position.y = -0.02;
+  root.add(groundMesh);
+
+  /* generate Manhattan trace network */
+  const tealPos = [], bronzePos = [];
+  const step = 15;
+  const lim = 118;
+  const pushSeg = (arr, ax, az, bx, bz) => {
+    arr.push(ax, 0.05, az, bx, 0.05, bz);
+    const len = Math.hypot(bx - ax, bz - az);
+    segments.push({ ax, az, bx, bz, len });
+  };
+  for (let gx = -lim; gx <= lim; gx += step) {
+    for (let gz = -lim; gz <= lim; gz += step) {
+      if (inWater(gx, gz, 4)) continue;
+      const jitter = () => (Math.random() - 0.5) * 4;
+      const x0 = gx + jitter(), z0 = gz + jitter();
+      // horizontal stub
+      if (Math.random() > 0.25) {
+        const x1 = Math.min(lim, x0 + step * (0.6 + Math.random() * 0.7));
+        if (!inWater((x0 + x1) / 2, z0, 2)) {
+          (Math.random() > 0.32 ? pushSeg.bind(null, tealPos) : pushSeg.bind(null, bronzePos))(x0, z0, x1, z0);
+        }
+      }
+      // vertical stub
+      if (Math.random() > 0.25) {
+        const z1 = Math.min(lim, z0 + step * (0.6 + Math.random() * 0.7));
+        if (!inWater(x0, (z0 + z1) / 2, 2)) {
+          (Math.random() > 0.4 ? pushSeg.bind(null, tealPos) : pushSeg.bind(null, bronzePos))(x0, z0, x0, z1);
+        }
+      }
+    }
+  }
+  const makeLines = (pos, color, store, intensity) => {
+    const g = new THREE.BufferGeometry();
+    g.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3));
+    const m = new THREE.LineBasicMaterial({ color: color.clone().multiplyScalar(intensity), transparent: true, opacity: 0.9, toneMapped: false });
+    const ls = new THREE.LineSegments(g, m);
+    root.add(ls); store.push(ls);
+    return ls;
+  };
+  makeLines(tealPos, COL.teal, traceLines, 1.0);
+  makeLines(bronzePos, COL.bronze, bronzeTraceLines, 0.8);
+
+  /* solder-pad vias at random junctions */
+  const viaGeo = new THREE.CylinderGeometry(0.55, 0.55, 0.22, 14);
+  const viaMat = new THREE.MeshStandardMaterial({ color: COL.bronze, metalness: 0.9, roughness: 0.35, emissive: COL.bronze.clone().multiplyScalar(0.12) });
+  const viaCount = 90;
+  viaMesh = new THREE.InstancedMesh(viaGeo, viaMat, viaCount);
+  let vi = 0;
+  let guard = 0;
+  while (vi < viaCount && guard < 2000) {
+    guard++;
+    const x = (Math.random() - 0.5) * 220, z = (Math.random() - 0.5) * 220;
+    if (inWater(x, z, 3)) continue;
+    dummy.position.set(x, 0.06, z); dummy.rotation.set(0, 0, 0); dummy.scale.set(1, 1, 1);
+    dummy.updateMatrix();
+    viaMesh.setMatrixAt(vi, dummy.matrix);
+    vi++;
+  }
+  viaMesh.count = vi;
+  root.add(viaMesh);
+
+  /* a few SMD-component rectangles around the edges */
+  const smdMat = new THREE.MeshStandardMaterial({ color: new THREE.Color('#15120c'), metalness: 0.6, roughness: 0.5 });
+  const smdEnd = new THREE.MeshStandardMaterial({ color: COL.bronze, metalness: 0.95, roughness: 0.3 });
+  for (let i = 0; i < 22; i++) {
+    const x = (Math.random() - 0.5) * 230, z = (Math.random() - 0.5) * 230;
+    if (inWater(x, z, 6) || Math.hypot(x, z) < 60) continue;
+    const w = 3 + Math.random() * 5, d = 1.6 + Math.random() * 2;
+    const body = new THREE.Mesh(new THREE.BoxGeometry(w, 1.1, d), smdMat);
+    body.position.set(x, 0.55, z); body.rotation.y = (Math.random() < 0.5 ? 0 : Math.PI / 2);
+    root.add(body);
+    for (const s of [-1, 1]) {
+      const cap = new THREE.Mesh(new THREE.BoxGeometry(0.7, 1.15, d), smdEnd);
+      cap.position.set(x + s * (w / 2 - 0.35), 0.58, z);
+      cap.rotation.y = body.rotation.y;
+      root.add(cap);
+    }
+  }
+}
+
+function makeBuilding(x, z, w, d, h, opts = {}) {
+  const bronzeIsh = opts.bronze || Math.random() < 0.28;
+  const bodyCol = bronzeIsh
+    ? new THREE.Color('#3a2e1d').lerp(COL.bronze, 0.25)
+    : COL.darkmetal.clone().lerp(new THREE.Color('#23211b'), Math.random());
+  const mat = new THREE.MeshStandardMaterial({
+    color: bodyCol, metalness: 0.82, roughness: 0.46,
+    transparent: true, opacity: 1, emissive: new THREE.Color('#000000')
+  });
+  const geo = new THREE.BoxGeometry(w, h, d);
+  const mesh = new THREE.Mesh(geo, mat);
+  mesh.position.set(x, h / 2, z);
+  root.add(mesh);
+  solids.push(mesh);
+
+  /* crisp line-art edges for blueprint mode */
+  const eg = new THREE.EdgesGeometry(geo, 1);
+  const em = new THREE.LineBasicMaterial({ color: COL.bpline, transparent: true, opacity: 0, toneMapped: false });
+  const edges = new THREE.LineSegments(eg, em);
+  edges.position.copy(mesh.position);
+  edges.visible = false;
+  root.add(edges);
+  edgeLines.push(edges);
+
+  /* rooftop details on some */
+  if (Math.random() < 0.55) {
+    const r = Math.random();
+    if (r < 0.4) { // antenna
+      const a = new THREE.Mesh(new THREE.CylinderGeometry(0.08, 0.14, 4 + Math.random() * 4, 6),
+        new THREE.MeshStandardMaterial({ color: COL.bronze, metalness: 0.8, roughness: 0.4 }));
+      a.position.set(x + (Math.random() - 0.5) * w * 0.4, h + 2, z + (Math.random() - 0.5) * d * 0.4);
+      root.add(a); solids.push(a);
+    } else if (r < 0.75) { // water tank / box
+      const t = new THREE.Mesh(new THREE.BoxGeometry(w * 0.3, 1.4, d * 0.3),
+        new THREE.MeshStandardMaterial({ color: new THREE.Color('#26221a'), metalness: 0.6, roughness: 0.6 }));
+      t.position.set(x, h + 0.7, z); root.add(t); solids.push(t);
+    } else { // helipad ring (emissive)
+      const ring = new THREE.Mesh(new THREE.TorusGeometry(Math.min(w, d) * 0.28, 0.12, 8, 24),
+        new THREE.MeshBasicMaterial({ color: COL.teal.clone().multiplyScalar(0.7), transparent: true, toneMapped: false }));
+      ring.rotation.x = -Math.PI / 2; ring.position.set(x, h + 0.2, z);
+      root.add(ring); glowDecals.push(ring);
+    }
+  }
+
+  buildWindowsForBox(x, z, w, d, h, opts.tealWin || 0.16);
+  return mesh;
+}
+
+function buildSupertall() {
+  const x = 0, z = 0, w = 17, d = 17, h = 96;
+  const mat = new THREE.MeshStandardMaterial({ color: new THREE.Color('#15130d'), metalness: 0.88, roughness: 0.36, transparent: true, opacity: 1 });
+  const geo = new THREE.BoxGeometry(w, h, d);
+  const mesh = new THREE.Mesh(geo, mat);
+  mesh.position.set(x, h / 2, z);
+  root.add(mesh); solids.push(mesh);
+
+  /* tapered crown */
+  const crown = new THREE.Mesh(new THREE.BoxGeometry(w * 0.7, 8, d * 0.7), mat);
+  crown.position.set(x, h + 4, z); root.add(crown); solids.push(crown);
+
+  /* edges */
+  const eg = new THREE.EdgesGeometry(geo, 1);
+  const em = new THREE.LineBasicMaterial({ color: COL.bpline, transparent: true, opacity: 0, toneMapped: false });
+  const edges = new THREE.LineSegments(eg, em);
+  edges.position.copy(mesh.position); edges.visible = false;
+  root.add(edges); edgeLines.push(edges);
+
+  /* twin spire antennae */
+  for (const s of [-1, 1]) {
+    const spire = new THREE.Mesh(new THREE.CylinderGeometry(0.12, 0.3, 18, 8),
+      new THREE.MeshStandardMaterial({ color: COL.bronze, metalness: 0.85, roughness: 0.35, emissive: COL.bronze.clone().multiplyScalar(0.08) }));
+    spire.position.set(x + s * 3.2, h + 8 + 9, z);
+    root.add(spire); solids.push(spire);
+  }
+
+  buildWindowsForBox(x, z, w, d, h, 0.2);
+
+  /* ae emissive decal on the broad face toward camera */
+  const ry = Math.atan2(1, 1); // face normal toward +x/+z (camera azimuth ~ 40deg)
+  decalMesh = new THREE.Mesh(
+    new THREE.PlaneGeometry(11.5, 7.5),
+    new THREE.MeshBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0.96, toneMapped: false, depthWrite: false })
+  );
+  decalMesh.position.set(x + (w / 2 + 0.2) * Math.sin(ry), h * 0.62, z + (d / 2 + 0.2) * Math.cos(ry));
+  decalMesh.rotation.y = ry;
+  root.add(decalMesh);
+  glowDecals.push(decalMesh);
+}
+
+function makeDecalTexture(hex) {
+  const c = document.createElement('canvas'); c.width = 600; c.height = 400;
+  const ctx = c.getContext('2d');
+  if (logoImg.complete && logoImg.naturalWidth) {
+    const iw = logoImg.naturalWidth, ih = logoImg.naturalHeight;
+    const s = Math.min(c.width / iw, c.height / ih) * 0.9;
+    const dw = iw * s, dh = ih * s;
+    ctx.drawImage(logoImg, (c.width - dw) / 2, (c.height - dh) / 2, dw, dh);
+    ctx.globalCompositeOperation = 'source-in';
+    ctx.fillStyle = hex; ctx.fillRect(0, 0, c.width, c.height);
+    ctx.globalCompositeOperation = 'source-over';
+  } else {
+    ctx.fillStyle = hex; ctx.font = '700 300px Sora, sans-serif';
+    ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    ctx.fillText('\u00e6', c.width / 2, c.height / 2);
+  }
+  const t = new THREE.CanvasTexture(c);
+  t.colorSpace = THREE.SRGBColorSpace; t.anisotropy = 4;
+  return t;
+}
+function applyDecalTextures() {
+  decalCreamTex = makeDecalTexture('#efe7d3');
+  decalInkTex = makeDecalTexture('#0b1f3a');
+  if (decalMesh) { decalMesh.material.map = (bpTarget > 0.5 ? decalInkTex : decalCreamTex); decalMesh.material.needsUpdate = true; }
+}
+
+function buildOpera() {
+  const baseX = -8, baseZ = 64, baseY = 0;
+  const podium = new THREE.Mesh(new THREE.BoxGeometry(26, 2.2, 16),
+    new THREE.MeshStandardMaterial({ color: new THREE.Color('#2a2620'), metalness: 0.5, roughness: 0.6 }));
+  podium.position.set(baseX, 1.1, baseZ); root.add(podium); solids.push(podium);
+
+  const shellMat = new THREE.MeshStandardMaterial({ color: new THREE.Color('#efe9dd'), metalness: 0.2, roughness: 0.32, side: THREE.DoubleSide, emissive: new THREE.Color('#0a0a0a') });
+  const shells = [
+    { x: -7, z: 1, s: 1.0, ry: 0.5 }, { x: -3, z: -2, s: 1.25, ry: 0.5 },
+    { x: 1, z: 1, s: 1.45, ry: 0.5 }, { x: 5, z: -1.5, s: 1.15, ry: 0.5 },
+    { x: 8.5, z: 1.5, s: 0.85, ry: 0.5 },
+  ];
+  for (const sh of shells) {
+    const g = new THREE.SphereGeometry(4.4 * sh.s, 24, 18, 0, Math.PI, 0, Math.PI / 2);
+    const m = new THREE.Mesh(g, shellMat);
+    m.position.set(baseX + sh.x, 2.2, baseZ + sh.z);
+    m.rotation.y = sh.ry; m.rotation.z = -0.32; m.scale.set(0.62, 1, 1);
+    root.add(m); wireables.push(m);
+  }
+}
+
+function buildBridge() {
+  // bridge spans across the inlet near its right end
+  const nx = Math.cos(WATER.ang + Math.PI / 2), nz = Math.sin(WATER.ang + Math.PI / 2);
+  const along = 64; // distance along inlet long axis toward right
+  const ax = Math.cos(WATER.ang), az = Math.sin(WATER.ang);
+  const cx = WATER.cx + ax * along, cz = WATER.cz + az * along;
+  const g = new THREE.Group();
+  g.position.set(cx, 0, cz);
+  g.rotation.y = Math.atan2(-nz, nx); // align local +X to inlet normal
+
+  const span = 50, rise = 13;
+  const steelMat = new THREE.MeshStandardMaterial({ color: new THREE.Color('#6b6b72'), metalness: 0.85, roughness: 0.42 });
+  const bronzeMat = new THREE.MeshStandardMaterial({ color: COL.bronze, metalness: 0.8, roughness: 0.4 });
+
+  // arch via tube along a parabola in local X-Y
+  const pts = [];
+  const N = 28;
+  for (let i = 0; i <= N; i++) {
+    const t = i / N, lx = -span / 2 + span * t;
+    const y = rise * (1 - Math.pow((2 * t - 1), 2)) + 1.5;
+    pts.push(new THREE.Vector3(lx, y, 0));
+  }
+  const curve = new THREE.CatmullRomCurve3(pts);
+  for (const off of [-2.2, 2.2]) {
+    const tube = new THREE.Mesh(new THREE.TubeGeometry(curve, 40, 0.55, 8, false), steelMat);
+    tube.position.z = off; g.add(tube); wireables.push(tube);
+  }
+  // lattice cross-braces between the two arch ribs
+  for (let i = 2; i < N - 1; i += 2) {
+    const p = pts[i];
+    const brace = new THREE.Mesh(new THREE.BoxGeometry(0.25, 0.25, 4.4), steelMat);
+    brace.position.set(p.x, p.y, 0); g.add(brace); wireables.push(brace);
+  }
+  // deck
+  const deck = new THREE.Mesh(new THREE.BoxGeometry(span + 8, 0.7, 6), bronzeMat);
+  deck.position.set(0, 1.6, 0); g.add(deck); wireables.push(deck);
+  // pylons
+  for (const s of [-1, 1]) {
+    const py = new THREE.Mesh(new THREE.BoxGeometry(2, 9, 6.4), new THREE.MeshStandardMaterial({ color: new THREE.Color('#55524c'), metalness: 0.6, roughness: 0.55 }));
+    py.position.set(s * (span / 2 + 2.2), 4.5, 0); g.add(py); wireables.push(py);
+  }
+  // vertical hanger cables
+  for (let i = 3; i < N - 2; i += 2) {
+    const p = pts[i];
+    const hl = p.y - 1.9;
+    if (hl <= 0) continue;
+    const cable = new THREE.Mesh(new THREE.CylinderGeometry(0.06, 0.06, hl, 5), steelMat);
+    cable.position.set(p.x, 1.9 + hl / 2, 0); g.add(cable); wireables.push(cable);
+  }
+  root.add(g);
+
+  // a ferry on the water with a faint wake
+  const ferry = new THREE.Mesh(new THREE.BoxGeometry(4.5, 1.2, 1.8), new THREE.MeshStandardMaterial({ color: new THREE.Color('#d8d2c4'), metalness: 0.3, roughness: 0.5 }));
+  ferry.position.set(WATER.cx + ax * 20, 0.7, WATER.cz + az * 20);
+  ferry.rotation.y = Math.atan2(-az, ax);
+  root.add(ferry); wireables.push(ferry);
+  const wake = new THREE.Mesh(new THREE.PlaneGeometry(10, 2), new THREE.MeshBasicMaterial({ color: COL.teal.clone().multiplyScalar(0.4), transparent: true, opacity: 0.35, toneMapped: false }));
+  wake.rotation.x = -Math.PI / 2; wake.position.set(WATER.cx + ax * 14, 0.12, WATER.cz + az * 14);
+  wake.rotation.z = ferry.rotation.y;
+  root.add(wake); glowDecals.push(wake);
+}
+
+function buildWater() {
+  const g = new THREE.PlaneGeometry(WATER.hx * 2, WATER.hz * 2);
+  const m = new THREE.MeshStandardMaterial({ color: new THREE.Color('#04080a'), metalness: 0.92, roughness: 0.18, emissive: new THREE.Color('#021014') });
+  waterMesh = new THREE.Mesh(g, m);
+  waterMesh.rotation.x = -Math.PI / 2;
+  waterMesh.rotation.z = WATER.ang;
+  waterMesh.position.set(WATER.cx, 0.04, WATER.cz);
+  root.add(waterMesh);
+  // faint teal reflection streaks
+  for (let i = 0; i < 7; i++) {
+    const streak = new THREE.Mesh(new THREE.PlaneGeometry(0.6, 6 + Math.random() * 10),
+      new THREE.MeshBasicMaterial({ color: COL.teal.clone().multiplyScalar(0.35), transparent: true, opacity: 0.18, toneMapped: false }));
+    streak.rotation.x = -Math.PI / 2; streak.rotation.z = WATER.ang;
+    const ax = Math.cos(WATER.ang), az = Math.sin(WATER.ang);
+    const t = (Math.random() - 0.5) * WATER.hx * 1.5;
+    streak.position.set(WATER.cx + ax * t + (Math.random() - 0.5) * 8, 0.08, WATER.cz + az * t + (Math.random() - 0.5) * 8);
+    root.add(streak); glowDecals.push(streak);
+  }
+}
+
+const FEATURES = [
+  { name: 'OpenAI',    x: -28, z: -18, w: 12, d: 12, h: 62 },
+  { name: 'Anthropic', x: -50, z: -2,  w: 11, d: 11, h: 54 },
+  { name: 'GitHub',    x: -72, z: 22,  w: 13, d: 11, h: 40 },
+  { name: 'Perplexity',x: -24, z: 30,  w: 10, d: 10, h: 44 },
+  { name: 'Cursor',    x: -4,  z: 36,  w: 9,  d: 9,  h: 40 },
+  { name: 'Stripe',    x: 18,  z: 30,  w: 11, d: 11, h: 46 },
+  { name: 'LangGraph', x: 34,  z: -26, w: 12, d: 12, h: 58 },
+  { name: 'Ollama',    x: 56,  z: -20, w: 10, d: 10, h: 50 },
+  { name: 'Linear',    x: 40,  z: 26,  w: 10, d: 10, h: 42 },
+  { name: 'Vercel',    x: 70,  z: -6,  w: 12, d: 12, h: 64 },
+];
+
+function buildCity() {
+  buildSupertall();
+  // feature (labeled) buildings
+  for (const f of FEATURES) {
+    makeBuilding(f.x, f.z, f.w, f.d, f.h, { tealWin: 0.18 });
+    labelDefs.push({ name: f.name, anchor: new THREE.Vector3(f.x, f.h + 3, f.z) });
+  }
+  // procedural filler buildings, density falling off from centre
+  let placed = 0, guard = 0;
+  const targetFill = 52;
+  const occupied = (x, z, r) => {
+    if (Math.hypot(x, z) < 16) return true;            // supertall
+    for (const f of FEATURES) if (Math.hypot(x - f.x, z - f.z) < (r + Math.max(f.w, f.d) / 2 + 1)) return true;
+    return false;
+  };
+  while (placed < targetFill && guard < 5000) {
+    guard++;
+    const x = (Math.random() - 0.5) * 230;
+    const z = (Math.random() - 0.5) * 230;
+    const dist = Math.hypot(x, z);
+    // gaussian-ish density bias toward centre
+    if (Math.random() > Math.exp(-Math.pow(dist / 95, 2)) * 1.05) continue;
+    if (inWater(x, z, 6)) continue;
+    if (dist > 135) continue;
+    const w = 5 + Math.random() * 8;
+    const d = 5 + Math.random() * 8;
+    if (occupied(x, z, Math.max(w, d) / 2)) continue;
+    const hBase = THREE.MathUtils.clamp(46 - dist * 0.28, 8, 46);
+    const h = hBase * (0.55 + Math.random() * 0.9);
+    makeBuilding(x, z, w, d, h);
+    placed++;
+  }
+}
+
+function buildWindowsMesh() {
+  const geo = new THREE.PlaneGeometry(1, 1);
+  const mat = new THREE.MeshBasicMaterial({ color: 0xffffff, transparent: true, opacity: 1, toneMapped: false, side: THREE.DoubleSide });
+  winMesh = new THREE.InstancedMesh(geo, mat, winData.length);
+  for (let i = 0; i < winData.length; i++) {
+    winMesh.setMatrixAt(i, winData[i].matrix);
+    winMesh.setColorAt(i, winData[i].base);
+  }
+  winMesh.instanceMatrix.needsUpdate = true;
+  if (winMesh.instanceColor) winMesh.instanceColor.needsUpdate = true;
+  root.add(winMesh);
+}
+
+function buildAgents() {
+  const count = reduced ? 36 : 48;
+  const geo = new THREE.CapsuleGeometry(0.38, 0.9, 3, 6);
+  const mat = new THREE.MeshBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0.95, toneMapped: false });
+  agentMesh = new THREE.InstancedMesh(geo, mat, count);
+  // bias agent roads to land segments near the centre
+  const roadSegs = segments.filter(s => Math.hypot((s.ax + s.bx) / 2, (s.az + s.bz) / 2) < 110);
+  for (let i = 0; i < count; i++) {
+    const seg = roadSegs[(Math.random() * roadSegs.length) | 0] || segments[0];
+    const a = { seg, t: Math.random(), speed: 0.05 + Math.random() * 0.07 };
+    agents.push(a);
+    const col = Math.random() < 0.6 ? COL.teal.clone().multiplyScalar(0.9) : COL.bronze.clone().multiplyScalar(1.1);
+    agentMesh.setColorAt(i, col);
+    placeMover(agentMesh, i, a, 0.9);
+  }
+  if (agentMesh.instanceColor) agentMesh.instanceColor.needsUpdate = true;
+  root.add(agentMesh);
+}
+
+function buildPackets() {
+  const count = reduced ? 0 : 38;
+  const geo = new THREE.SphereGeometry(0.42, 8, 8);
+  const mat = new THREE.MeshBasicMaterial({ color: COL.teal.clone().multiplyScalar(1.6), transparent: true, opacity: 1, toneMapped: false });
+  packetMesh = new THREE.InstancedMesh(geo, mat, Math.max(1, count));
+  for (let i = 0; i < count; i++) {
+    const seg = segments[(Math.random() * segments.length) | 0];
+    const p = { seg, t: Math.random(), speed: 0.2 + Math.random() * 0.4 };
+    packets.push(p);
+    placeMover(packetMesh, i, p, 0.18);
+  }
+  packetMesh.count = count;
+  packetMesh.instanceMatrix.needsUpdate = true;
+  root.add(packetMesh);
+}
+
+function placeMover(mesh, i, m, y) {
+  const x = m.seg.ax + (m.seg.bx - m.seg.ax) * m.t;
+  const z = m.seg.az + (m.seg.bz - m.seg.az) * m.t;
+  dummy.position.set(x, y, z);
+  dummy.rotation.set(0, 0, 0);
+  dummy.scale.set(1, 1, 1);
+  dummy.updateMatrix();
+  mesh.setMatrixAt(i, dummy.matrix);
+}
+
+/* ---------------------------------------------------------------------------
+   Labels
+--------------------------------------------------------------------------- */
+function buildLabels() {
+  const wrap = document.getElementById('labels');
+  for (const def of labelDefs) {
+    const el = document.createElement('div');
+    el.className = 'label';
+    el.innerHTML = '<span class="conn"></span><span class="chip">' + def.name + '</span>';
+    wrap.appendChild(el);
+    def.el = el;
+  }
+}
+const _proj = new THREE.Vector3();
+function updateLabels() {
+  const W = stage.clientWidth, H = stage.clientHeight;
+  for (const def of labelDefs) {
+    _proj.copy(def.anchor).applyMatrix4(root.matrixWorld).project(camera);
+    const behind = _proj.z > 1;
+    const sx = (_proj.x * 0.5 + 0.5) * W;
+    const sy = (-_proj.y * 0.5 + 0.5) * H;
+    const off = behind || sx < 40 || sx > W - 20 || sy < 70 || sy > H - 80;
+    def.el.style.opacity = (off || bpT > 0.55) ? '0' : '1';
+    def.el.style.transform = 'translate(' + sx.toFixed(1) + 'px,' + sy.toFixed(1) + 'px)';
+  }
+}
+
+/* ---------------------------------------------------------------------------
+   Lighting
+--------------------------------------------------------------------------- */
+function buildLights() {
+  scene.add(new THREE.AmbientLight(0x223040, 0.75));
+  const key = new THREE.DirectionalLight(0xffd9a8, 1.4);
+  key.position.set(80, 120, 40); scene.add(key);
+  const fill = new THREE.DirectionalLight(0x1f6f6a, 0.7);
+  fill.position.set(-90, 60, -40); scene.add(fill);
+  const rim = new THREE.PointLight(0x00d4b8, 0.6, 260);
+  rim.position.set(0, 70, 0); scene.add(rim);
+}
+
+/* ---------------------------------------------------------------------------
+   Init
+--------------------------------------------------------------------------- */
+function init() {
+  const canvas = document.getElementById('scene');
+  try {
+    renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: false, preserveDrawingBuffer: true, powerPreference: 'high-performance' });
+  } catch (e) { showFallback(); return; }
+  if (!renderer || !renderer.getContext()) { showFallback(); return; }
+
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  renderer.setSize(stage.clientWidth, stage.clientHeight, false);
+  renderer.setClearColor(0x050505, 1);
+  renderer.toneMapping = THREE.ACESFilmicToneMapping;
+  renderer.toneMappingExposure = 1.3;
+
+  scene = new THREE.Scene();
+  scene.background = COL.void.clone();
+  scene.fog = new THREE.FogExp2(COL.void.clone(), 0.0008);
+
+  root = new THREE.Group();
+  scene.add(root);
+
+  // orthographic dimetric camera (~33deg)
+  camera = new THREE.OrthographicCamera(-1, 1, 1, -1, -800, 2000);
+  setFrustum();
+  const az = THREE.MathUtils.degToRad(40), el = THREE.MathUtils.degToRad(33), R = 180;
+  camera.position.set(R * Math.cos(el) * Math.sin(az), R * Math.sin(el), R * Math.cos(el) * Math.cos(az));
+  camera.lookAt(0, 16, 0);
+
+  buildLights();
+  buildPCB();
+  buildCity();
+  buildOpera();
+  buildBridge();
+  buildWater();
+  buildWindowsMesh();
+  buildAgents();
+  buildPackets();
+  buildLabels();
+
+  // logo decal textures (regenerate when the real logo loads)
+  applyDecalTextures();
+  logoImg.onload = applyDecalTextures;
+  logoImg.src = '../ae-logo.png';
+
+  // post-processing
+  composer = new THREE.WebGLRenderTarget ? null : null; // (noop guard, keep linter calm)
+  composer = new EffectComposer(renderer);
+  composer.addPass(new RenderPass(scene, camera));
+  bloomPass = new UnrealBloomPass(new THREE.Vector2(stage.clientWidth, stage.clientHeight), 0.85, 0.62, 0.82);
+  composer.addPass(bloomPass);
+  composer.addPass(new OutputPass());
+  composer.setSize(stage.clientWidth, stage.clientHeight);
+
+  clock = new THREE.Clock();
+  window.addEventListener('resize', onResize, { passive: true });
+  if (!reduced) window.addEventListener('pointermove', onPointerMove, { passive: true });
+
+  window.__cityReady = true;
+  document.body.classList.remove('loading');
+  requestAnimationFrame(() => document.body.classList.add('ready'));
+
+  if (reduced) {
+    bpT = bpTarget;
+    applyMode(true);
+    root.updateMatrixWorld(true);
+    renderFrame();
+    updateLabels();
+  } else {
+    revealStart = performance.now();
+    animate();
+  }
+}
+
+function setFrustum() {
+  const W = stage.clientWidth, H = stage.clientHeight;
+  const aspect = W / H;
+  const Wd = 150, Hd = 110;
+  const top = Math.max(Hd / 2, (Wd / 2) / aspect);
+  camera.left = -top * aspect; camera.right = top * aspect;
+  camera.top = top; camera.bottom = -top;
+  camera.updateProjectionMatrix();
+}
+
+function onResize() {
+  if (!renderer) return;
+  const W = stage.clientWidth, H = stage.clientHeight;
+  setFrustum();
+  renderer.setSize(W, H, false);
+  composer.setSize(W, H);
+  bloomPass.setSize(W, H);
+  if (reduced) { root.updateMatrixWorld(true); renderFrame(); updateLabels(); }
+}
+
+function onPointerMove(e) {
+  mouse.tx = (e.clientX / window.innerWidth) * 2 - 1;
+  mouse.ty = (e.clientY / window.innerHeight) * 2 - 1;
+}
+
+/* ---------------------------------------------------------------------------
+   Blueprint mode application
+--------------------------------------------------------------------------- */
+function applyMode(snap) {
+  // bpT already updated by caller; here apply derived state
+  const t = bpT;
+  // bloom fades out in blueprint
+  bloomPass.strength = 0.85 * (1 - t);
+  // background + fog lerp void <-> paper
+  scene.background.copy(COL.void).lerp(COL.paper, t);
+  if (scene.fog) { scene.fog.color.copy(COL.void).lerp(COL.paper, t); scene.fog.density = 0.0008 * (1 - t) + 0.0003 * t; }
+  // ground hidden in blueprint (paper shows through)
+  groundMesh.material.opacity = 1; groundMesh.visible = t < 0.985;
+  groundMesh.material.transparent = true; groundMesh.material.opacity = 1 - t;
+  if (waterMesh) { waterMesh.material.transparent = true; waterMesh.material.opacity = 1 - t; waterMesh.visible = t < 0.985; }
+  // building solids fade out; edges fade in
+  for (const m of solids) { m.material.opacity = 1 - t; m.visible = t < 0.985; }
+  for (const e of edgeLines) { e.material.opacity = t; e.visible = t > 0.02; }
+  // windows / agents / packets / glow decals fade with night
+  if (winMesh) { winMesh.material.opacity = 1 - t; winMesh.visible = t < 0.985; }
+  if (agentMesh) { agentMesh.material.opacity = (1 - t) * 0.95; agentMesh.visible = t < 0.985; }
+  if (packetMesh) { packetMesh.material.opacity = 1 - t; packetMesh.visible = t < 0.985; }
+  if (viaMesh) { viaMesh.visible = t < 0.5; }
+  for (const g of glowDecals) {
+    if (g === decalMesh) continue;
+    if (g.material) { g.material.transparent = true; g.material.opacity = (g.userData.baseOp ?? 0.35) * (1 - t); }
+  }
+  // traces: teal -> cyan; bronze traces fade out
+  for (const ls of traceLines) ls.material.color.copy(COL.teal).lerp(COL.bpline, t);
+  for (const ls of bronzeTraceLines) { ls.material.opacity = 0.8 * (1 - t); ls.visible = t < 0.985; }
+  // landmarks -> wireframe cyan in blueprint
+  const wf = t > 0.5;
+  for (const m of wireables) {
+    if (m.material.wireframe !== wf) { m.material.wireframe = wf; m.material.needsUpdate = true; }
+    if (wf) { m.material.color.copy(COL.bpline); }
+    else { if (m.userData.baseColor) m.material.color.copy(m.userData.baseColor); }
+  }
+  // ae decal recolor (swap at midpoint)
+  if (decalMesh) {
+    const tex = (t > 0.5 ? decalInkTex : decalCreamTex);
+    if (tex && decalMesh.material.map !== tex) { decalMesh.material.map = tex; decalMesh.material.needsUpdate = true; }
+    decalMesh.material.opacity = 0.96;
+  }
+}
+
+function captureBaseColors() {
+  for (const m of wireables) m.userData.baseColor = m.material.color.clone();
+  for (const g of glowDecals) if (g.material && g !== decalMesh) g.userData.baseOp = g.material.opacity;
+}
+
+function toggleBlueprint() {
+  bpTarget = bpTarget > 0.5 ? 0 : 1;
+  const on = bpTarget > 0.5;
+  document.body.classList.toggle('blueprint', on);
+  const btn = document.getElementById('bpToggle');
+  btn.setAttribute('aria-pressed', String(on));
+  btn.querySelector('.lbl').textContent = on ? 'Return to night city' : 'Explore the master plan';
+  btn.querySelector('.arr').textContent = on ? '←' : '→';
+  if (reduced) {
+    bpT = bpTarget;
+    applyMode(true);
+    root.updateMatrixWorld(true);
+    renderFrame();
+    updateLabels();
+  }
+}
+
+/* ---------------------------------------------------------------------------
+   Frame
+--------------------------------------------------------------------------- */
+let twinkleAcc = 0;
+function renderFrame() { composer.render(); }
+
+function animate() {
+  requestAnimationFrame(animate);
+  const dt = Math.min(clock.getDelta(), 0.05);
+  const now = performance.now();
+
+  // blueprint transition easing (exponential ease-out)
+  bpT += (bpTarget - bpT) * Math.min(1, dt * 6.5);
+  if (Math.abs(bpT - bpTarget) < 0.001) bpT = bpTarget;
+  applyMode(false);
+
+  // page-load "boom in"
+  if (!revealDone) {
+    const p = THREE.MathUtils.clamp((now - revealStart) / 1200, 0, 1);
+    const e = 1 - Math.pow(1 - p, 3);
+    root.scale.setScalar(0.955 + 0.045 * e);
+    bloomPass.strength = (0.85 * (1 - bpT)) * (1 + (1 - e) * 0.8);
+    if (p >= 1) { revealDone = true; root.scale.setScalar(1); }
+  }
+
+  // parallax
+  mouse.x += (mouse.tx - mouse.x) * 0.05;
+  mouse.y += (mouse.ty - mouse.y) * 0.05;
+  root.rotation.y = mouse.x * 0.045;
+  root.rotation.x = -mouse.y * 0.018;
+
+  // move packets
+  for (let i = 0; i < packets.length; i++) {
+    const p = packets[i];
+    p.t += p.speed * dt / Math.max(2, p.seg.len);
+    if (p.t >= 1) { p.seg = segments[(Math.random() * segments.length) | 0]; p.t = 0; }
+    placeMover(packetMesh, i, p, 0.16);
+  }
+  if (packets.length) packetMesh.instanceMatrix.needsUpdate = true;
+
+  // move agents
+  for (let i = 0; i < agents.length; i++) {
+    const a = agents[i];
+    a.t += a.speed * dt / Math.max(2, a.seg.len);
+    if (a.t >= 1) {
+      const cands = segments.filter(s => (Math.abs(s.ax - a.seg.bx) < 0.5 && Math.abs(s.az - a.seg.bz) < 0.5));
+      a.seg = cands.length ? cands[(Math.random() * cands.length) | 0] : segments[(Math.random() * segments.length) | 0];
+      a.t = 0;
+    }
+    placeMover(agentMesh, i, a, 0.85);
+  }
+  if (agents.length) agentMesh.instanceMatrix.needsUpdate = true;
+
+  // subtle window twinkle
+  twinkleAcc += dt;
+  if (twinkleAcc > 0.08 && winMesh && winMesh.instanceColor && bpT < 0.4) {
+    twinkleAcc = 0;
+    for (let n = 0; n < 26; n++) {
+      const idx = (Math.random() * winData.length) | 0;
+      const wd = winData[idx];
+      if (!wd.lit) continue;
+      const f = 0.78 + Math.random() * 0.4;
+      winMesh.setColorAt(idx, wd.base.clone().multiplyScalar(f));
+    }
+    winMesh.instanceColor.needsUpdate = true;
+  }
+
+  root.updateMatrixWorld(true);
+  updateLabels();
+  renderFrame();
+}
+
+/* ---------------------------------------------------------------------------
+   Chrome: telemetry, clock, buttons
+--------------------------------------------------------------------------- */
+function fmt(n, d) { return n.toLocaleString('en-US', { minimumFractionDigits: d, maximumFractionDigits: d }); }
+function startTelemetry() {
+  const state = { agents: 12.48, tasks: 3.72, power: 5.2, flow: 18.7 };
+  const set = (k, v) => { const el = document.querySelector('[data-k="' + k + '"]'); if (el) el.textContent = v; };
+  const tick = () => {
+    state.agents += (Math.random() - 0.4) * 0.02;
+    state.tasks += Math.random() * 0.004;
+    state.power += (Math.random() - 0.5) * 0.06;
+    state.flow += (Math.random() - 0.5) * 0.3;
+    set('agents', fmt(state.agents, 2) + 'M');
+    set('tasks', fmt(state.tasks, 2) + 'B');
+    set('power', fmt(Math.max(4.6, state.power), 1) + ' GW');
+    set('flow', fmt(Math.max(15, state.flow), 1) + ' TB/s');
+  };
+  if (!reduced) setInterval(tick, 1600);
+}
+function startClock() {
+  const el = document.getElementById('clock');
+  const upd = () => {
+    const d = new Date();
+    const p = (n) => String(n).padStart(2, '0');
+    el.textContent = p(d.getUTCHours()) + ':' + p(d.getUTCMinutes()) + ':' + p(d.getUTCSeconds()) + ' UTC';
+  };
+  upd(); setInterval(upd, 1000);
+}
+
+/* ---------------------------------------------------------------------------
+   Boot
+--------------------------------------------------------------------------- */
+document.getElementById('bpToggle').addEventListener('click', toggleBlueprint);
+document.getElementById('consoleBtn').addEventListener('click', () => { /* noop: stay on local preview */ });
+document.getElementById('sysmapBtn').addEventListener('click', toggleBlueprint);
+startClock();
+startTelemetry();
+
+if (!webglOK()) {
+  showFallback();
+} else {
+  try {
+    init();
+    captureBaseColors();
+  } catch (err) {
+    console.error('City init failed:', err);
+    showFallback();
+  }
+  // safety net: if module/scene never came up, show poster
+  setTimeout(() => { if (!window.__cityReady) showFallback(); }, 5000);
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>aegntic — The coordination layer for persistent human–AI intelligence</title>
+<meta name="description" content="aegntic — the coordination layer for persistent human–AI intelligence. One organism. Many organs." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Work+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --sand: #ece3d4;
+    --clay: #b5734f;
+    --moss: #6b7a4f;
+    --olive: #3a3f2a;
+    --cream: #f5efe2;
+    --ink: #2b2c22;
+    --muted: #6f6a5c;
+    --line: rgba(58, 63, 42, 0.18);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html, body { height: 100%; }
+
+  body {
+    font-family: "Work Sans", system-ui, sans-serif;
+    color: var(--ink);
+    background:
+      radial-gradient(120% 90% at 12% 8%, var(--cream) 0%, var(--sand) 55%, #e3d8c4 100%);
+    overflow: hidden;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  .hero {
+    position: relative;
+    min-height: 100vh;
+    min-height: 100svh;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    padding: clamp(1.25rem, 3vw, 2.5rem) clamp(1.25rem, 5vw, 4rem);
+    isolation: isolate;
+  }
+
+  /* ---------- ambient organic field ---------- */
+  .field {
+    position: absolute;
+    inset: 0;
+    z-index: -2;
+    overflow: hidden;
+    pointer-events: none;
+  }
+
+  .blob {
+    position: absolute;
+    border-radius: 60% 40% 55% 45% / 55% 45% 60% 40%;
+    filter: blur(2px);
+    opacity: 0.55;
+    will-change: transform;
+  }
+
+  .blob-1 {
+    width: 46vw; height: 46vw;
+    top: -10vw; right: -8vw;
+    background: radial-gradient(circle at 35% 35%, rgba(181, 115, 79, 0.55), rgba(181, 115, 79, 0) 70%);
+    animation: float-a 22s ease-in-out infinite;
+  }
+  .blob-2 {
+    width: 38vw; height: 38vw;
+    bottom: -12vw; left: -10vw;
+    background: radial-gradient(circle at 50% 50%, rgba(107, 122, 79, 0.5), rgba(107, 122, 79, 0) 70%);
+    animation: float-b 27s ease-in-out infinite;
+  }
+  .blob-3 {
+    width: 26vw; height: 26vw;
+    top: 38%; left: 30%;
+    background: radial-gradient(circle at 50% 50%, rgba(245, 239, 226, 0.85), rgba(245, 239, 226, 0) 72%);
+    animation: float-c 19s ease-in-out infinite;
+  }
+  .blob-4 {
+    width: 22vw; height: 22vw;
+    bottom: 6vh; right: 8vw;
+    background: radial-gradient(circle at 45% 45%, rgba(58, 63, 42, 0.22), rgba(58, 63, 42, 0) 70%);
+    animation: float-a 31s ease-in-out infinite reverse;
+  }
+
+  @keyframes float-a {
+    0%, 100% { transform: translate(0, 0) scale(1) rotate(0deg); }
+    50%      { transform: translate(-2.5vw, 3vh) scale(1.08) rotate(8deg); }
+  }
+  @keyframes float-b {
+    0%, 100% { transform: translate(0, 0) scale(1) rotate(0deg); }
+    50%      { transform: translate(3vw, -2.5vh) scale(1.06) rotate(-6deg); }
+  }
+  @keyframes float-c {
+    0%, 100% { transform: translate(0, 0) scale(1); }
+    50%      { transform: translate(2vw, 2vh) scale(0.92); }
+  }
+
+  /* grain / paper texture */
+  .field::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.4'/%3E%3C/svg%3E");
+    opacity: 0.05;
+    mix-blend-mode: multiply;
+  }
+
+  /* ---------- top bar ---------- */
+  .topbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    z-index: 2;
+  }
+
+  .wordmark {
+    font-family: "Fraunces", serif;
+    font-weight: 600;
+    font-size: clamp(1.4rem, 2.4vw, 1.75rem);
+    letter-spacing: -0.02em;
+    color: var(--olive);
+    display: inline-flex;
+    align-items: center;
+    gap: 0.55rem;
+  }
+  .seed {
+    width: 0.7em; height: 0.7em;
+    border-radius: 60% 40% 55% 45% / 55% 45% 60% 40%;
+    background: linear-gradient(135deg, var(--clay), var(--moss));
+    display: inline-block;
+    animation: breathe 6s ease-in-out infinite;
+  }
+  @keyframes breathe {
+    0%, 100% { transform: scale(1) rotate(0deg); }
+    50%      { transform: scale(1.15) rotate(12deg); }
+  }
+
+  .eyebrow {
+    font-size: 0.7rem;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--muted);
+    font-weight: 500;
+  }
+
+  /* ---------- main ---------- */
+  .main {
+    flex: 1;
+    display: grid;
+    grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
+    align-items: center;
+    gap: clamp(2rem, 5vw, 5rem);
+    z-index: 1;
+    padding: clamp(1.5rem, 4vh, 3rem) 0;
+  }
+
+  .copy { max-width: 36rem; }
+
+  .label {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.68rem;
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
+    color: var(--clay);
+    font-weight: 600;
+    margin-bottom: clamp(1rem, 2.5vh, 1.75rem);
+  }
+  .label::before {
+    content: "";
+    width: 1.6rem; height: 1px;
+    background: var(--clay);
+    display: inline-block;
+  }
+
+  h1 {
+    font-family: "Fraunces", serif;
+    font-weight: 500;
+    font-size: clamp(2.4rem, 5.4vw, 4.5rem);
+    line-height: 1.02;
+    letter-spacing: -0.025em;
+    color: var(--olive);
+    text-wrap: balance;
+  }
+  h1 em {
+    font-style: italic;
+    color: var(--clay);
+  }
+
+  .deck {
+    margin-top: clamp(1.1rem, 2.5vh, 1.6rem);
+    font-size: clamp(1rem, 1.4vw, 1.18rem);
+    line-height: 1.6;
+    color: var(--muted);
+    max-width: 32rem;
+    font-weight: 300;
+    text-wrap: pretty;
+  }
+
+  .cta-row {
+    margin-top: clamp(1.5rem, 3.5vh, 2.4rem);
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.85rem;
+    align-items: center;
+  }
+
+  .btn {
+    font-family: inherit;
+    font-size: 0.95rem;
+    font-weight: 500;
+    padding: 0.85rem 1.6rem;
+    border-radius: 999px;
+    border: 1px solid transparent;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: transform 0.4s cubic-bezier(0.23, 1, 0.32, 1), box-shadow 0.4s ease, background-color 0.4s ease, color 0.4s ease;
+  }
+  .btn-primary {
+    background: var(--olive);
+    color: var(--cream);
+    box-shadow: 0 10px 30px -12px rgba(58, 63, 42, 0.6);
+  }
+  .btn-primary:hover {
+    background: var(--clay);
+    transform: translateY(-2px);
+    box-shadow: 0 16px 36px -12px rgba(181, 115, 79, 0.6);
+  }
+  .btn-secondary {
+    background: transparent;
+    color: var(--olive);
+    border-color: var(--line);
+  }
+  .btn-secondary:hover {
+    border-color: var(--moss);
+    color: var(--moss);
+    transform: translateY(-2px);
+  }
+  .btn:focus-visible {
+    outline: 2px solid var(--clay);
+    outline-offset: 3px;
+  }
+
+  .stat {
+    margin-left: 0.5rem;
+    display: inline-flex;
+    align-items: baseline;
+    gap: 0.4rem;
+    font-size: 0.85rem;
+    color: var(--muted);
+  }
+  .stat b {
+    font-family: "Fraunces", serif;
+    font-weight: 600;
+    font-size: 1.25rem;
+    color: var(--moss);
+  }
+
+  /* ---------- organism diagram ---------- */
+  .organism {
+    position: relative;
+    width: 100%;
+    max-width: 30rem;
+    margin: 0 auto;
+    aspect-ratio: 1 / 1;
+  }
+  .organism svg { width: 100%; height: 100%; overflow: visible; display: block; }
+
+  .link {
+    fill: none;
+    stroke: var(--moss);
+    stroke-width: 1.4;
+    stroke-linecap: round;
+    stroke-dasharray: 6 5;
+    opacity: 0.55;
+    stroke-dashoffset: 600;
+    animation: draw 3.4s ease-out forwards;
+  }
+  @keyframes draw { to { stroke-dashoffset: 0; } }
+
+  .node-core {
+    fill: url(#coreGrad);
+    animation: pulse 7s ease-in-out infinite;
+    transform-box: fill-box;
+    transform-origin: center;
+  }
+  @keyframes pulse {
+    0%, 100% { transform: scale(1); }
+    50%      { transform: scale(1.06); }
+  }
+
+  .node {
+    fill: var(--cream);
+    stroke: var(--clay);
+    stroke-width: 1.2;
+  }
+  .node-dot {
+    fill: var(--clay);
+    transform-box: fill-box;
+    transform-origin: center;
+  }
+  .organ-g { animation: bob 9s ease-in-out infinite; transform-box: view-box; }
+  .organ-g:nth-of-type(2) { animation-delay: -1.5s; }
+  .organ-g:nth-of-type(3) { animation-delay: -3s; }
+  .organ-g:nth-of-type(4) { animation-delay: -4.5s; }
+  .organ-g:nth-of-type(5) { animation-delay: -6s; }
+  @keyframes bob {
+    0%, 100% { transform: translateY(0); }
+    50%      { transform: translateY(-5px); }
+  }
+
+  .organ-label {
+    font-family: "Work Sans", sans-serif;
+    font-size: 9.5px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    fill: var(--olive);
+  }
+  .core-label {
+    font-family: "Fraunces", serif;
+    font-size: 13px;
+    font-weight: 600;
+    fill: var(--cream);
+    text-anchor: middle;
+  }
+
+  /* mobile-only chip list */
+  .primitives-mobile {
+    display: none;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: 1.4rem;
+  }
+  .chip {
+    font-size: 0.7rem;
+    letter-spacing: 0.04em;
+    color: var(--olive);
+    background: rgba(245, 239, 226, 0.7);
+    border: 1px solid var(--line);
+    padding: 0.4rem 0.75rem;
+    border-radius: 999px;
+  }
+
+  /* ---------- footer ---------- */
+  .footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+    font-size: 0.75rem;
+    color: var(--muted);
+    z-index: 2;
+  }
+  .footer .meta { font-variant-numeric: tabular-nums; letter-spacing: 0.06em; }
+
+  /* ---------- responsive ---------- */
+  @media (max-width: 860px) {
+    body { overflow-y: auto; }
+    .hero { min-height: 100svh; }
+    .main {
+      grid-template-columns: 1fr;
+      gap: 2rem;
+    }
+    .organism { display: none; }
+    .primitives-mobile { display: flex; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .blob-1, .blob-2, .blob-3, .blob-4,
+    .seed, .node-core, .organ-g {
+      animation: none !important;
+    }
+    .link {
+      animation: none !important;
+      stroke-dashoffset: 0;
+    }
+    .btn { transition: none; }
+  }
+</style>
+</head>
+<body>
+  <div class="field" aria-hidden="true">
+    <span class="blob blob-1"></span>
+    <span class="blob blob-2"></span>
+    <span class="blob blob-3"></span>
+    <span class="blob blob-4"></span>
+  </div>
+
+  <header class="hero">
+    <div class="topbar">
+      <span class="wordmark"><span class="seed" aria-hidden="true"></span>aegntic</span>
+      <span class="eyebrow">AEGNTIC · COORDINATION LAYER</span>
+    </div>
+
+    <main class="main">
+      <div class="copy">
+        <span class="label">AEGNTIC · COORDINATION LAYER</span>
+        <h1>The coordination layer for <em>persistent</em> human–AI intelligence.</h1>
+        <p class="deck">One organism. Many organs. Once you see the skeleton, everything else becomes obvious.</p>
+
+        <div class="cta-row">
+          <a class="btn btn-primary" href="#">Enter the layer</a>
+          <a class="btn btn-secondary" href="#">View the source</a>
+          <span class="stat"><b>127</b> integrations</span>
+        </div>
+
+        <ul class="primitives-mobile" aria-label="Primitives">
+          <li class="chip">Orchestration</li>
+          <li class="chip">Authenticity</li>
+          <li class="chip">Continuity</li>
+          <li class="chip">Sovereignty</li>
+          <li class="chip">Experiential Memory</li>
+        </ul>
+      </div>
+
+      <div class="organism" role="img" aria-label="Five primitives — Orchestration, Authenticity, Continuity, Sovereignty, and Experiential Memory — orbiting a central core, linked like organs of one organism.">
+        <svg viewBox="0 0 400 400" aria-hidden="true">
+          <defs>
+            <radialGradient id="coreGrad" cx="40%" cy="35%" r="75%">
+              <stop offset="0%" stop-color="#7d8a5b" />
+              <stop offset="60%" stop-color="#6b7a4f" />
+              <stop offset="100%" stop-color="#3a3f2a" />
+            </radialGradient>
+          </defs>
+
+          <!-- connecting lines: core (200,200) to each node -->
+          <path class="link" d="M200,200 C190,150 160,110 110,80" />
+          <path class="link" d="M200,200 C260,160 300,140 330,95" />
+          <path class="link" d="M200,200 C290,210 330,250 350,300" />
+          <path class="link" d="M200,200 C210,280 180,320 130,335" />
+          <path class="link" d="M200,200 C140,250 90,260 60,215" />
+
+          <!-- core -->
+          <circle class="node-core" cx="200" cy="200" r="46" />
+          <text class="core-label" x="200" y="196">one</text>
+          <text class="core-label" x="200" y="212" style="font-size:10px;font-style:italic;">organism</text>
+
+          <!-- organ nodes -->
+          <g class="organ-g">
+            <circle class="node" cx="110" cy="80" r="9" />
+            <circle class="node-dot" cx="110" cy="80" r="3.5" />
+            <text class="organ-label" x="110" y="62" text-anchor="middle">Orchestration</text>
+          </g>
+          <g class="organ-g">
+            <circle class="node" cx="330" cy="95" r="9" />
+            <circle class="node-dot" cx="330" cy="95" r="3.5" />
+            <text class="organ-label" x="330" y="77" text-anchor="middle">Authenticity</text>
+          </g>
+          <g class="organ-g">
+            <circle class="node" cx="350" cy="300" r="9" />
+            <circle class="node-dot" cx="350" cy="300" r="3.5" />
+            <text class="organ-label" x="350" y="324" text-anchor="middle">Continuity</text>
+          </g>
+          <g class="organ-g">
+            <circle class="node" cx="130" cy="335" r="9" />
+            <circle class="node-dot" cx="130" cy="335" r="3.5" />
+            <text class="organ-label" x="130" y="359" text-anchor="middle">Sovereignty</text>
+          </g>
+          <g class="organ-g">
+            <circle class="node" cx="60" cy="215" r="9" />
+            <circle class="node-dot" cx="60" cy="215" r="3.5" />
+            <text class="organ-label" x="60" y="197" text-anchor="middle">Experiential Memory</text>
+          </g>
+        </svg>
+      </div>
+    </main>
+
+    <footer class="footer">
+      <span class="meta">aegntic.ai · 2026</span>
+      <span class="eyebrow">One organism. Many organs.</span>
+    </footer>
+  </header>
+</body>
+</html>

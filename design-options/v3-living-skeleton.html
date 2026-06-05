@@ -1,0 +1,240 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>aegntic — V3 / Living Skeleton</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@300;400;500&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --void:#050505; --deep:#0a0a0f; --text:#f1f1f1; --muted:#8a8a8f;
+  --edge:#1a1a20; --teal:#00d4b8; --bronze:#b38b5e;
+  --ease:cubic-bezier(0.23,1,0.32,1);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{background:var(--void);color:var(--text);font-family:'Inter',system-ui,sans-serif;overflow:hidden;height:100vh;-webkit-font-smoothing:antialiased}
+body{
+  background-image:
+    linear-gradient(to right, rgba(255,255,255,.02) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255,255,255,.02) 1px, transparent 1px),
+    radial-gradient(ellipse at 50% 50%, rgba(0,212,184,.04), transparent 70%);
+  background-size: 72px 72px, 72px 72px, 100% 100%;
+}
+
+.viewport{position:fixed;inset:0}
+
+#sk{position:absolute;inset:0;width:100%;height:100%}
+#field{position:absolute;inset:0;width:100%;height:100%;opacity:.65}
+
+/* corner HUD overlays */
+.hud{position:absolute;font-family:'JetBrains Mono';font-size:10.5px;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);padding:18px;backdrop-filter:blur(6px);background:rgba(5,5,5,.35);border:1px solid var(--edge);border-radius:2px;max-width:340px}
+.hud .lab{color:var(--teal);font-size:9.5px;display:block;margin-bottom:8px}
+.hud b{color:var(--text);font-weight:500;letter-spacing:.04em;text-transform:none;font-family:'Space Grotesk';font-size:13px}
+.hud.tl{top:24px;left:24px}
+.hud.tr{top:24px;right:24px;text-align:right}
+.hud.bl{bottom:24px;left:24px;max-width:520px}
+.hud.br{bottom:24px;right:24px;text-align:right}
+
+/* the thesis */
+.thesis{font-family:'Space Grotesk';font-weight:600;font-size:clamp(1.4rem,2.5vw,2.1rem);line-height:1.05;letter-spacing:-.025em;color:var(--text);margin-bottom:10px;text-transform:none}
+.thesis em{font-style:normal;color:var(--teal)}
+.sub{color:var(--muted);text-transform:none;letter-spacing:.02em;font-family:'Inter';font-size:13px;margin-top:8px;line-height:1.5}
+
+/* metric stream */
+.metric-row{display:flex;gap:18px;justify-content:flex-end;align-items:baseline}
+.metric-row .m b{display:block;font-family:'Space Grotesk';font-size:24px;color:var(--text);letter-spacing:-.02em;font-variant-numeric:tabular-nums}
+.metric-row .m span{font-size:9px;color:var(--muted)}
+.metric-row .m b small{color:var(--teal);font-size:13px;margin-left:2px}
+
+/* glyph */
+.glyph{font-family:'Space Grotesk';font-weight:700;font-size:22px;color:var(--text);letter-spacing:-.05em;text-transform:none}
+
+/* live counter */
+.counter{color:var(--bronze);font-variant-numeric:tabular-nums}
+
+/* enter cta */
+.enter{display:inline-flex;align-items:center;gap:8px;color:var(--teal);text-decoration:none;border-bottom:1px solid var(--teal);padding-bottom:2px;font-family:'JetBrains Mono';font-size:11px;letter-spacing:.22em}
+.enter::after{content:'→';transition:transform .3s var(--ease)}
+.enter:hover::after{transform:translateX(4px)}
+
+/* node legend */
+.legend{display:flex;gap:14px;align-items:center;font-size:9px;letter-spacing:.18em}
+.dot{width:7px;height:7px;border-radius:50%;display:inline-block;margin-right:5px;vertical-align:middle}
+.dot.t{background:var(--teal);box-shadow:0 0 8px var(--teal)}
+.dot.b{background:var(--bronze);box-shadow:0 0 8px var(--bronze)}
+
+@media(prefers-reduced-motion:reduce){
+  #sk, #field{display:none}
+}
+</style>
+</head>
+<body>
+<div class="viewport">
+  <canvas id="field"></canvas>
+  <svg id="sk" viewBox="0 0 1600 900" preserveAspectRatio="xMidYMid slice" aria-hidden="true"></svg>
+
+  <div class="hud tl">
+    <span class="lab">/// identity</span>
+    <span class="glyph">ae</span><br>
+    <span style="margin-top:8px;display:block">aegntic.ai · <b style="font-family:'JetBrains Mono';font-size:11px">/coordination/0001</b></span>
+  </div>
+
+  <div class="hud tr">
+    <span class="lab">/// telemetry</span>
+    <div class="metric-row">
+      <div class="m"><b>127<small>+</small></b><span>integrations</span></div>
+      <div class="m"><b>31</b><span>organs</span></div>
+      <div class="m"><b>98<small>%</small></b><span>auth</span></div>
+    </div>
+    <div style="margin-top:10px;font-size:9.5px">UPTIME <span class="counter" id="up">T+0:00:00</span></div>
+  </div>
+
+  <div class="hud bl">
+    <span class="lab">/// thesis</span>
+    <h1 class="thesis">The coordination layer for <em>persistent human–AI intelligence</em>.</h1>
+    <p class="sub">Once you see the skeleton, everything else becomes obvious. Each node is an organ. Each line is a primitive in motion: orchestration, authenticity, continuity, sovereignty, experiential memory.</p>
+  </div>
+
+  <div class="hud br">
+    <span class="lab">/// enter</span>
+    <a class="enter" href="#">enter the layer</a>
+    <div class="legend" style="margin-top:12px;justify-content:flex-end;color:var(--muted)">
+      <span><span class="dot t"></span>signal</span>
+      <span><span class="dot b"></span>memory</span>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const svg = document.getElementById('sk');
+  const ns = 'http://www.w3.org/2000/svg';
+  const W=1600, H=900, cx=W/2, cy=H/2;
+
+  // 12 nodes around center
+  const nodes = [];
+  const N=14;
+  for(let i=0;i<N;i++){
+    const a = (i/N)*Math.PI*2 - Math.PI/2;
+    const r = 280 + (i%3)*70;
+    nodes.push({x: cx + Math.cos(a)*r, y: cy + Math.sin(a)*r, a});
+  }
+
+  // central node
+  const core = document.createElementNS(ns,'circle');
+  core.setAttribute('cx',cx); core.setAttribute('cy',cy); core.setAttribute('r',8);
+  core.setAttribute('fill','#00d4b8'); core.setAttribute('opacity','.95');
+  core.setAttribute('filter','url(#glow)');
+  // glow filter
+  const defs = document.createElementNS(ns,'defs');
+  defs.innerHTML = `<filter id="glow" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="4" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>`;
+  svg.appendChild(defs);
+
+  // sovereignty rings (bronze)
+  for(let i=0;i<3;i++){
+    const ring = document.createElementNS(ns,'circle');
+    ring.setAttribute('cx',cx); ring.setAttribute('cy',cy);
+    ring.setAttribute('r', 110+i*55);
+    ring.setAttribute('fill','none');
+    ring.setAttribute('stroke','#b38b5e');
+    ring.setAttribute('stroke-opacity', 0.25 - i*0.06);
+    ring.setAttribute('stroke-width', 1);
+    ring.setAttribute('stroke-dasharray', i===1?'2 6':'none');
+    svg.appendChild(ring);
+  }
+
+  // connections + nodes
+  const paths=[];
+  nodes.forEach((n,i)=>{
+    const p = document.createElementNS(ns,'path');
+    const mx = (cx+n.x)/2 + (Math.random()*40-20);
+    const my = (cy+n.y)/2 + (Math.random()*40-20);
+    const d = `M ${cx} ${cy} Q ${mx} ${my} ${n.x} ${n.y}`;
+    p.setAttribute('d', d);
+    p.setAttribute('fill','none');
+    p.setAttribute('stroke','#1a1a20');
+    p.setAttribute('stroke-width','1');
+    svg.appendChild(p);
+    paths.push(p);
+
+    const c = document.createElementNS(ns,'circle');
+    c.setAttribute('cx',n.x); c.setAttribute('cy',n.y);
+    c.setAttribute('r',4);
+    c.setAttribute('fill', i%4===0 ? '#b38b5e' : '#f1f1f1');
+    c.setAttribute('opacity','.85');
+    svg.appendChild(c);
+  });
+  svg.appendChild(core);
+
+  // animate signals
+  if(!reduce){
+    function travel(){
+      const idx = Math.floor(Math.random()*paths.length);
+      const path = paths[idx];
+      const dot = document.createElementNS(ns,'circle');
+      dot.setAttribute('r',3);
+      dot.setAttribute('fill','#00d4b8');
+      dot.setAttribute('filter','url(#glow)');
+      svg.appendChild(dot);
+      const len = path.getTotalLength();
+      let t=0;
+      const dur = 1200 + Math.random()*1400;
+      const start = performance.now();
+      function step(now){
+        t = (now-start)/dur;
+        if(t>=1){ svg.removeChild(dot); return; }
+        const pt = path.getPointAtLength(len*t);
+        dot.setAttribute('cx', pt.x); dot.setAttribute('cy', pt.y);
+        dot.setAttribute('opacity', Math.sin(t*Math.PI));
+        requestAnimationFrame(step);
+      }
+      requestAnimationFrame(step);
+    }
+    setInterval(travel, 380);
+  }
+
+  // ambient field
+  const field = document.getElementById('field');
+  const fctx = field.getContext('2d');
+  function fit(){
+    const dpr = devicePixelRatio||1;
+    field.width = innerWidth*dpr; field.height = innerHeight*dpr;
+    fctx.setTransform(dpr,0,0,dpr,0,0);
+  }
+  fit(); addEventListener('resize',fit);
+  const FN=70;
+  const fnodes=[]; for(let i=0;i<FN;i++) fnodes.push({x:Math.random()*innerWidth,y:Math.random()*innerHeight,vx:(Math.random()-.5)*.18,vy:(Math.random()-.5)*.18});
+  function draw(){
+    fctx.clearRect(0,0,innerWidth,innerHeight);
+    fnodes.forEach(n=>{n.x+=n.vx;n.y+=n.vy;if(n.x<0||n.x>innerWidth)n.vx*=-1;if(n.y<0||n.y>innerHeight)n.vy*=-1});
+    for(let i=0;i<FN;i++){
+      for(let j=i+1;j<FN;j++){
+        const a=fnodes[i],b=fnodes[j];
+        const d=Math.hypot(a.x-b.x,a.y-b.y);
+        if(d<140){
+          fctx.strokeStyle=`rgba(0,212,184,${(1-d/140)*0.08})`;
+          fctx.lineWidth=.6;
+          fctx.beginPath();fctx.moveTo(a.x,a.y);fctx.lineTo(b.x,b.y);fctx.stroke();
+        }
+      }
+      fctx.fillStyle='rgba(241,241,241,.18)';
+      fctx.beginPath();fctx.arc(fnodes[i].x,fnodes[i].y,1.1,0,Math.PI*2);fctx.fill();
+    }
+    if(!reduce) requestAnimationFrame(draw);
+  }
+  draw();
+
+  // uptime counter
+  const t0 = Date.now();
+  function pad(n){return String(n).padStart(2,'0')}
+  setInterval(()=>{
+    const s=Math.floor((Date.now()-t0)/1000);
+    document.getElementById('up').textContent=`T+${Math.floor(s/3600)}:${pad(Math.floor(s/60)%60)}:${pad(s%60)}`;
+  },1000);
+})();
+</script>
+</body>
+</html>
