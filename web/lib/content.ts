@@ -71,6 +71,64 @@ export const atlas = {
       },
     ],
   },
+  districts: {
+    expedition: "EX.004",
+    date: "Catalogue",
+    title: "Districts",
+    lede: "Where the primitives have been observed in the wild. Each district is a settlement that has, knowingly or not, been built on top of one or more specimens above.",
+    districts: [
+      {
+        name: "sovereign-operator",
+        kind: "habitat",
+        observed: "primitives 03, 04",
+        description: "An open reference implementation of a self-hosted operator stack. Files, keys, audit log, and an LLM in the loop — all on hardware the operator controls.",
+        marginalia: "the only one that ships a kill switch",
+      },
+      {
+        name: "DAILYDOCO",
+        kind: "field camp",
+        observed: "primitive 01",
+        description: "An agent that films, narrates, and edits your work into a publishable demo, on a cadence. The first place a single prompt was observed to grow a team.",
+        marginalia: "prompt → pipeline → published",
+      },
+      {
+        name: "Soldexter",
+        kind: "outpost",
+        observed: "primitives 02, 03",
+        description: "A signed, queryable log of agent actions and decisions. The first district where an agent's own history became a primitive an operator could audit.",
+        marginalia: "the receipt, before it was a primitive",
+      },
+      {
+        name: "MCP registry",
+        kind: "transit",
+        observed: "primitives 01, 04",
+        description: "A typed directory of agent capabilities. The seam through which one operator's agents discover and compose with another operator's tools.",
+        marginalia: "the only seam with its own RFC",
+      },
+      {
+        name: "whitepapers",
+        kind: "library",
+        observed: "all five",
+        description: "Long-form surveys of the layer — published open, peer-cited, deliberately boring. The atlas's reference shelf.",
+        marginalia: "read the second one first",
+      },
+    ],
+  },
+  coordinationLayer: {
+    expedition: "EX.005",
+    date: "Diagram",
+    title: "Coordination Layer",
+    lede: "How the five primitives compose. Each one is small and typed. None of them is a product. The layer is what emerges when they co-occur in a single operator's stack.",
+    caption:
+      "An inked field diagram. Each primitive is a typed contract; the lines between them are typed events; the operator at the centre holds the keys, the audit log, and the kill switch.",
+    primitives: [
+      { n: "01", name: "Orchestration", angle: 270 },
+      { n: "02", name: "Authenticity", angle: 342 },
+      { n: "03", name: "Continuity", angle: 54 },
+      { n: "04", name: "Sovereignty", angle: 126 },
+      { n: "05", name: "Experiential Memory", angle: 198 },
+    ],
+  },
 } as const;
 
 export type Atlas = typeof atlas;
