@@ -3,8 +3,9 @@ import { atlas } from "@/lib/content";
 
 export function Cover() {
   const c = atlas.cover;
+  const titleId = `sheet-${c.expedition.replace(".", "").replace(" ", "")}`;
   return (
-    <article aria-labelledby="cover-title">
+    <article aria-labelledby={titleId}>
       <div className="relative mx-auto my-12 w-full max-w-[1180px] px-6 md:px-10">
         <div
           aria-hidden
@@ -35,6 +36,7 @@ export function Cover() {
         date={c.date}
         title={c.title}
         stampVariant="rubric"
+        headingLevel={1}
       >
         <div className="grid gap-12 md:grid-cols-12">
           <div className="md:col-span-7">

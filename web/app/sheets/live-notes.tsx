@@ -41,19 +41,19 @@ export function LiveNotes() {
       lede={n.lede}
       stampVariant="rubric"
     >
-      <dl className="grid grid-cols-1 gap-6 border-y border-ink-2/20 py-8 md:grid-cols-3">
+      <ul className="grid grid-cols-1 gap-6 border-y border-ink-2/20 py-8 md:grid-cols-3">
         {n.counters.map((c) => (
-          <div
+          <li
             key={c.label}
             className="flex flex-col gap-2 border-l-2 border-signal/40 pl-4 md:border-l-0 md:border-t-2 md:pl-0 md:pt-4"
           >
             <LiveCounter target={c.value} />
-            <dt className="font-mono text-[10px] uppercase tracking-[0.22em] text-graphite">
+            <span className="font-mono text-[10px] uppercase tracking-[0.22em] text-graphite">
               {c.label}
-            </dt>
-          </div>
+            </span>
+          </li>
         ))}
-      </dl>
+      </ul>
 
       <h3 className="mt-10 font-mono text-[11px] uppercase tracking-[0.22em] text-graphite">
         Taped to the page

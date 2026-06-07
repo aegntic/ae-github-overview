@@ -51,6 +51,7 @@ export function LiveCounter({ target, duration = 1200 }: LiveCounterProps) {
     <span
       ref={ref}
       className="font-mono text-5xl font-light tabular-nums text-ink md:text-6xl"
+      role="img"
       aria-label={target.toLocaleString()}
     >
       {value.toLocaleString()}

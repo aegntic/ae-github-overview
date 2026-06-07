@@ -8,6 +8,7 @@ type SheetFrameProps = {
   title: string;
   lede?: string;
   stampVariant?: "ink" | "rubric";
+  headingLevel?: 1 | 2;
   children: ReactNode;
 };
 
@@ -17,15 +18,18 @@ export function SheetFrame({
   title,
   lede,
   stampVariant = "ink",
+  headingLevel = 2,
   children,
 }: SheetFrameProps) {
+  const titleId = `sheet-${expedition.replace(".", "").replace(" ", "")}`;
+  const Heading = headingLevel === 1 ? "h1" : "h2";
+
   return (
     <section
-      aria-labelledby={`sheet-${expedition.replace(".", "").replace(" ", "")}`}
+      aria-labelledby={titleId}
       className="relative mx-auto my-16 w-full max-w-[1180px] px-6 md:px-10"
     >
       <div
-        aria-hidden
         className="border border-ink-2/20 bg-paper-2/40"
         style={{
           backgroundImage:
@@ -45,13 +49,13 @@ export function SheetFrame({
 
         <Reveal>
           <div className="px-6 pb-12 pt-10 md:px-12 md:pb-16 md:pt-14">
-            <h2
-              id={`sheet-${expedition.replace(".", "").replace(" ", "")}`}
+            <Heading
+              id={titleId}
               className="font-display text-4xl font-light text-ink md:text-5xl"
               style={{ fontVariationSettings: '"opsz" 96, "SOFT" 50' }}
             >
               {title}
-            </h2>
+            </Heading>
             {lede ? (
               <p className="mt-4 max-w-2xl font-prose text-lg leading-relaxed text-ink-2">
                 {lede}
