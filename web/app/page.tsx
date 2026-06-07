@@ -4,6 +4,8 @@ import { Primitives } from "./sheets/primitives";
 import { Districts } from "./sheets/districts";
 import { CoordinationLayer } from "./sheets/coordination-layer";
 import { LiveNotes } from "./sheets/live-notes";
+import { Join } from "./sheets/join";
+import { Colophon } from "./sheets/colophon";
 
 export default function Page() {
   return (
@@ -14,6 +16,8 @@ export default function Page() {
       <Districts />
       <CoordinationLayer />
       <LiveNotes />
+      <Join />
+      <Colophon />
     </main>
   );
 }

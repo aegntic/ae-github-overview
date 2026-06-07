@@ -154,6 +154,51 @@ export const atlas = {
       },
     ],
   },
+  join: {
+    expedition: "EX.007",
+    date: "Open",
+    title: "Join the Survey",
+    lede: "Three ways to make the next observation. The atlas is filed open — there is no application form.",
+    actions: [
+      {
+        n: "01",
+        verb: "Read the source",
+        href: "https://github.com/aegntic",
+        description: "All five whitepapers, the sovereign-operator reference, and the Soldexter spec. Open. Peer-cited. Free to fork.",
+        marginalia: "read the second one first",
+      },
+      {
+        n: "02",
+        verb: "File a sighting",
+        href: "https://github.com/aegntic/field-atlas/issues",
+        description: "If you have observed one of the primitives in the wild — or a primitive the atlas has missed — file a note. Every sighting is read.",
+        marginalia: "a primitive seen in the wild is a new district",
+      },
+      {
+        n: "03",
+        verb: "Build on the layer",
+        href: "https://github.com/aegntic/sovereign-operator",
+        description: "Ship an agent, a tool, or a registry entry that respects the contracts. The atlas gets richer with each new district.",
+        marginalia: "the layer is the substrate, not the product",
+      },
+    ],
+  },
+  colophon: {
+    expedition: "EX.008",
+    date: "Filed",
+    title: "Colophon",
+    lede: "The end of the survey. The atlas is filed open — the next observation is yours.",
+    credits: [
+      ["Scribe", "ae (Claude)"],
+      ["Editor", "aegntic research"],
+      ["Edition", "1 / 2026"],
+      ["Type", "Fraunces · Newsreader · JetBrains Mono · Caveat"],
+      ["Code", "Next.js · React · Tailwind v4"],
+      ["Filed", "2026-06-07"],
+    ],
+    also:
+      "An older, darker reading of the same thesis lives at aegntic.ai — the control surface, not the field notebook. Filed alongside, not against.",
+  },
 } as const;
 
 export type Atlas = typeof atlas;
