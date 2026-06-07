@@ -3,6 +3,7 @@ import { FieldSite } from "./sheets/field-site";
 import { Primitives } from "./sheets/primitives";
 import { Districts } from "./sheets/districts";
 import { CoordinationLayer } from "./sheets/coordination-layer";
+import { LiveNotes } from "./sheets/live-notes";
 
 export default function Page() {
   return (
@@ -12,6 +13,7 @@ export default function Page() {
       <Primitives />
       <Districts />
       <CoordinationLayer />
+      <LiveNotes />
     </main>
   );
 }

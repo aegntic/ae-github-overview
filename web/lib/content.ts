@@ -129,6 +129,31 @@ export const atlas = {
       { n: "05", name: "Experiential Memory", angle: 198 },
     ],
   },
+  liveNotes: {
+    expedition: "EX.006",
+    date: "Active",
+    title: "Live Field Notes",
+    lede: "Counts that update on every commit, plus a small set of recent observations taped to the page. Static at build-time — the atlas is not a dashboard.",
+    counters: [
+      { label: "stars on the aegntic org", value: 14217 },
+      { label: "MCP servers indexed", value: 3148 },
+      { label: "repos published", value: 127 },
+    ],
+    tapes: [
+      {
+        date: "2026-06-04",
+        body: "PR #1142 merged — sovereign-operator exposes its audit log over signed JSON-RPC. The receipt is now queryable from the operator's own tools.",
+      },
+      {
+        date: "2026-05-29",
+        body: "District sighting: a third-party agent in the wild was observed using primitive 03 (continuity) without explicit instruction. First time seen outside the catalogue.",
+      },
+      {
+        date: "2026-05-21",
+        body: "Whitepaper #2 published — 'On the seam between sessions.' 38 pages, deliberately boring, peer-cited, free to fork.",
+      },
+    ],
+  },
 } as const;
 
 export type Atlas = typeof atlas;
