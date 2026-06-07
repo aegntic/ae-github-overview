@@ -48,7 +48,14 @@ export default function RootLayout({
       lang="en"
       className={`${fraunces.variable} ${newsreader.variable} ${jetbrains.variable} ${caveat.variable}`}
     >
-      <body>{children}</body>
+      <body>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: "document.documentElement.classList.add('js')",
+          }}
+        />
+        {children}
+      </body>
     </html>
   );
 }

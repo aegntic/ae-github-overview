@@ -1,4 +1,7 @@
+"use client";
+
 import { SheetFrame } from "@/components/sheet-frame";
+import { useReveal } from "@/components/reveal";
 import { atlas } from "@/lib/content";
 
 const VB_W = 760;
@@ -39,6 +42,8 @@ export function CoordinationLayer() {
     };
   });
 
+  const [linesRef, linesRevealed] = useReveal<SVGGElement>(0.3);
+
   return (
     <SheetFrame
       expedition={d.expedition}
@@ -65,6 +70,7 @@ export function CoordinationLayer() {
           </desc>
 
           <g
+            ref={linesRef}
             fill="none"
             stroke="var(--color-ink-2)"
             strokeWidth="1.2"
@@ -72,7 +78,14 @@ export function CoordinationLayer() {
             opacity="0.55"
           >
             {nodes.map((n) => (
-              <path key={n.n} d={wobblyLine({ x: CX, y: CY }, { x: n.x, y: n.y })} />
+              <path
+                key={n.n}
+                d={wobblyLine({ x: CX, y: CY }, { x: n.x, y: n.y })}
+                pathLength="100"
+                className={`reveal-stroke${
+                  linesRevealed ? " is-revealed" : ""
+                }`}
+              />
             ))}
           </g>
 

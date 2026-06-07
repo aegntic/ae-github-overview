@@ -48,6 +48,32 @@
   }
 }
 
+@layer utilities {
+  .js .reveal {
+    opacity: 0;
+    transform: translateY(8px);
+    transition:
+      opacity 700ms ease-out,
+      transform 700ms ease-out;
+    will-change: opacity, transform;
+  }
+  .js .reveal.is-revealed {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  .js .reveal-stroke {
+    stroke-dasharray: 100;
+    stroke-dashoffset: 100;
+    transition:
+      stroke-dashoffset 1600ms ease-out,
+      opacity 400ms ease-out;
+    transition-delay: 200ms;
+  }
+  .js .reveal-stroke.is-revealed {
+    stroke-dashoffset: 0;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
@@ -55,5 +81,12 @@
     animation-duration: 0.001ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.001ms !important;
+  }
+  .js .reveal {
+    opacity: 1;
+    transform: none;
+  }
+  .js .reveal-stroke {
+    stroke-dashoffset: 0;
   }
 }
