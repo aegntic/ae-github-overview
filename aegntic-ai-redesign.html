@@ -608,11 +608,11 @@
                 try { localStorage.setItem(CACHE_KEY, JSON.stringify(data)); } catch(e) {}
             }
 
-            async function fetch() {
+            async function fetchData() {
                 try {
                     const [profileRes, reposRes] = await Promise.all([
-                        fetch('https://api.github.com/users/aegntic'),
-                        fetch('https://api.github.com/users/aegntic/repos?per_page=100&sort=stars&type=public')
+                        window.fetch('https://api.github.com/users/aegntic'),
+                        window.fetch('https://api.github.com/users/aegntic/repos?per_page=100&sort=stars&type=public')
                     ]);
                     const profile = await profileRes.json();
                     const repos = await reposRes.json();
@@ -634,7 +634,7 @@
                 }
             }
 
-            return { loadCache, fetch, FALLBACK };
+            return { loadCache, fetch: fetchData, FALLBACK };
         })();
 
         function countUp(el, target, duration = 800) {
