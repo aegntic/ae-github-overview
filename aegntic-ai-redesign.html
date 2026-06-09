@@ -27,16 +27,17 @@
     <script type="application/ld+json">
     {"@context":"https://schema.org","@type":"ItemList","name":"Coordination Primitives","numberOfItems":5,"itemListElement":[{"@type":"ListItem","position":1,"name":"Orchestration"},{"@type":"ListItem","position":2,"name":"Authenticity"},{"@type":"ListItem","position":3,"name":"Continuity"},{"@type":"ListItem","position":4,"name":"Sovereignty"},{"@type":"ListItem","position":5,"name":"Experiential Memory"}]}
     </script>
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Syne:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;450;500;600&family=JetBrains+Mono:wght@400;500&display=swap">
     <style>
-        :root{--void:#050505;--deep:#0a0a0f;--text:#f1f1f1;--muted:#8a8a8f;--teal:#00d4b8;--bronze:#b38b5e;--edge:#1a1a20}
+        :root{--black:#000;--deep-black:#030303;--border-dark:#27272a;--cool-slate:#767d88;--mid-slate:#7d848e;--white:#ffffff;--teal:#00d4b8;--bronze:#b38b5e}
         *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-        body{font-family:'Syne','Helvetica Neue',Arial,sans-serif;background:var(--void);color:var(--text);overflow:hidden;-webkit-font-smoothing:antialiased}
-        .fd{font-family:'Instrument Serif',Georgia,serif}.fm{font-family:'JetBrains Mono',monospace}
+        body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;background:var(--black);color:var(--mid-slate);overflow:hidden;-webkit-font-smoothing:antialiased;line-height:1.5;font-size:16px}
+        h1,h2,h3{font-weight:500;color:var(--white);line-height:1.0;letter-spacing:-0.9px}
+        .fd{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif}.fm{font-family:'JetBrains Mono',monospace}
 
         /* FX CANVAS */
         #fx-canvas{position:fixed;inset:0;width:100vw;height:100dvh;z-index:0;pointer-events:none}
-        #vignette{position:fixed;inset:0;z-index:1;pointer-events:none;background:radial-gradient(ellipse at center,transparent 25%,rgba(5,5,5,0.65) 80%,rgba(5,5,5,0.9) 100%)}
+        #vignette{position:fixed;inset:0;z-index:1;pointer-events:none;background:radial-gradient(ellipse at center,transparent 15%,rgba(0,0,0,0.7) 70%,rgba(0,0,0,0.95) 100%)}
 
         /* VIEWPORT */
         #viewport{position:fixed;inset:0;overflow:hidden;width:100vw;height:100dvh;z-index:10}
@@ -44,55 +45,55 @@
         .panel{position:absolute;width:100vw;height:100dvh;display:flex;align-items:center;justify-content:center;overflow:hidden}
 
         /* NAV */
-        #nav{position:fixed;top:0;left:0;right:0;z-index:200;background:rgba(5,5,5,0.88);border-bottom:1px solid rgba(255,255,255,0.06);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);height:54px}
+        #nav{position:fixed;top:0;left:0;right:0;z-index:200;background:rgba(0,0,0,0.8);border-bottom:1px solid var(--border-dark);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);height:54px}
         #nav-inner{max-width:80rem;margin:0 auto;padding:0 1.5rem;height:100%;display:flex;align-items:center;justify-content:space-between}
         #nav-logo-link{display:flex;align-items:center;gap:0.6rem;text-decoration:none;color:inherit}
         #nav-logo{height:22px;width:auto}
-        .nav-brand{font-family:'Syne','Helvetica Neue',Arial,sans-serif;font-weight:600;font-size:0.75rem;letter-spacing:-0.02em}
+        .nav-brand{font-family:'Inter',sans-serif;font-weight:600;font-size:0.75rem;letter-spacing:-0.5px;color:var(--white)}
 
         /* DROPDOWN */
-        #menu-btn{display:flex;align-items:center;gap:0.45rem;background:none;border:1px solid rgba(255,255,255,0.08);border-radius:8px;color:var(--muted);font-size:0.7rem;font-family:'JetBrains Mono',monospace;letter-spacing:0.08em;text-transform:uppercase;padding:0.35rem 0.75rem;cursor:pointer;transition:border-color 200ms,color 200ms}
-        #menu-btn:hover{border-color:rgba(255,255,255,0.18);color:var(--text)}
+        #menu-btn{display:flex;align-items:center;gap:0.45rem;background:none;border:1px solid var(--border-dark);border-radius:6px;color:var(--cool-slate);font-size:0.7rem;font-family:'JetBrains Mono',monospace;letter-spacing:0.08em;text-transform:uppercase;padding:0.35rem 0.75rem;cursor:pointer;transition:border-color 150ms,color 150ms}
+        #menu-btn:hover{border-color:var(--white);color:var(--white)}
         #menu-btn svg{transition:transform 300ms cubic-bezier(0.23,1,0.32,1)}
         #menu-btn.open svg{transform:rotate(180deg)}
-        #menu-dropdown{position:absolute;top:calc(100% + 6px);right:0;background:rgba(10,10,15,0.97);border:1px solid rgba(255,255,255,0.07);border-radius:12px;backdrop-filter:blur(28px);-webkit-backdrop-filter:blur(28px);min-width:210px;padding:0.4rem;opacity:0;visibility:hidden;transform:translateY(-8px) scale(0.96);transition:opacity 250ms cubic-bezier(0.23,1,0.32,1),transform 250ms cubic-bezier(0.23,1,0.32,1),visibility 250ms}
+        #menu-dropdown{position:absolute;top:calc(100% + 6px);right:0;background:rgba(3,3,3,0.97);border:1px solid var(--border-dark);border-radius:8px;backdrop-filter:blur(28px);-webkit-backdrop-filter:blur(28px);min-width:210px;padding:0.4rem;opacity:0;visibility:hidden;transform:translateY(-8px) scale(0.96);transition:opacity 200ms ease,transform 200ms ease,visibility 200ms}
         #menu-dropdown.open{opacity:1;visibility:visible;transform:translateY(0) scale(1)}
         .menu-item{display:flex;align-items:center;gap:0.65rem;padding:0.55rem 0.75rem;border-radius:8px;cursor:pointer;transition:background 150ms;text-decoration:none;color:inherit}
         .menu-item:hover{background:rgba(255,255,255,0.04)}
         .menu-item.active .menu-label{color:var(--teal)}
-        .menu-num{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--muted);width:18px}
-        .menu-label{font-size:0.78rem;color:var(--text);transition:color 150ms}
-        .menu-sep{height:1px;background:var(--edge);margin:0.3rem 0.75rem}
-        .menu-ext{font-size:0.72rem;color:var(--muted)}
-        .menu-ext:hover .menu-label{color:var(--text)}
+        .menu-num{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--mid-slate);width:18px}
+        .menu-label{font-size:0.78rem;color:var(--white);transition:color 150ms}
+        .menu-sep{height:1px;background:var(--border-dark);margin:0.3rem 0.75rem}
+        .menu-ext{font-size:0.72rem;color:var(--mid-slate)}
+        .menu-ext:hover .menu-label{color:var(--white)}
 
         /* PROGRESS */
         #progress{position:fixed;bottom:1.25rem;left:50%;transform:translateX(-50%);z-index:101;display:flex;align-items:center;gap:5px}
-        .prog-dot{width:22px;height:2px;border-radius:1px;background:var(--edge);transition:background 300ms,width 300ms}
-        .prog-dot.active{background:var(--teal);width:34px}
-        .prog-dot.passed{background:rgba(0,212,184,0.25)}
+        .prog-dot{width:22px;height:2px;border-radius:1px;background:var(--border-dark);transition:background 300ms,width 300ms}
+        .prog-dot.active{background:var(--white);width:34px}
+        .prog-dot.passed{background:rgba(255,255,255,0.15)}
 
         /* SECTION LABEL */
-        .slabel{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.2em;text-transform:uppercase;color:var(--teal)}
+        .slabel{font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:450;letter-spacing:0.35px;text-transform:uppercase;color:var(--cool-slate)}
 
         /* GLASS */
-        .glass{background:rgba(255,255,255,0.015);border:1px solid rgba(255,255,255,0.06);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)}
+        .glass{background:var(--deep-black);border:1px solid var(--border-dark);border-radius:8px}
 
         /* ACCORDION */
-        .prim-item{border-bottom:1px solid var(--edge);cursor:pointer;transition:background 200ms}
+        .prim-item{border-bottom:1px solid var(--border-dark);cursor:pointer;transition:background 150ms}
         .prim-item:last-child{border-bottom:none}
         .prim-item:hover{background:rgba(255,255,255,0.02)}
         .prim-head{display:flex;align-items:center;justify-content:space-between;padding:0.8rem 1rem}
-        .prim-name{font-family:'Instrument Serif',Georgia,serif;font-size:0.95rem;font-weight:600;letter-spacing:-0.02em}
+        .prim-name{font-family:'Inter',sans-serif;font-size:0.95rem;font-weight:500;letter-spacing:-0.5px;color:var(--white)}
         .prim-tag{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:0.1em;text-transform:uppercase;padding:2px 6px;border-radius:4px}
         .prim-body{max-height:0;overflow:hidden;transition:max-height 400ms cubic-bezier(0.23,1,0.32,1),padding 300ms;padding:0 1rem}
         .prim-item.open .prim-body{max-height:200px;padding:0 1rem 0.75rem}
-        .prim-chev{transition:transform 300ms ease-out;color:var(--muted)}
+        .prim-chev{transition:transform 300ms ease-out;color:var(--mid-slate)}
         .prim-item.open .prim-chev{transform:rotate(180deg)}
 
         /* PROJECT CARDS */
-        .pcard{background:rgba(255,255,255,0.015);border:1px solid rgba(255,255,255,0.06);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-radius:12px;padding:0.9rem;transition:border-color 200ms,background 200ms;text-decoration:none;color:inherit;display:block}
-        .pcard:hover{border-color:rgba(0,212,184,0.25);background:rgba(255,255,255,0.025)}
+        .pcard{background:var(--deep-black);border:1px solid var(--border-dark);border-radius:8px;padding:0.9rem;transition:border-color 150ms,background 150ms;text-decoration:none;color:inherit;display:block}
+        .pcard:hover{border-color:var(--mid-slate);background:#0a0a0a}
 
         /* ANIMATIONS */
         @keyframes pulse{0%,100%{opacity:0.3}50%{opacity:1}}
@@ -166,24 +167,30 @@
     <!-- 0: HERO -->
     <div class="panel visible" id="p0" style="left:0vw;top:0vh">
         <div class="inner" style="position:relative;z-index:10;text-align:center;max-width:46rem;padding:0 2rem">
+            <div class="reveal fm" style="font-family:'SF Mono','Fira Code','Cascadia Code',ui-monospace,monospace;font-size:clamp(5px,1.2vw,10px);color:var(--cool-slate);margin-bottom:48px;white-space:pre;opacity:0.4;line-height:1.2">
+       aa       ee       gg       nn       tt       ii       cc
+     a    a   e  e     g  g     n  n     t  t         c
+    a      a  eee     g         n  n     t            c
+    a      a  e       g  ggg    n  n     tttt    ii   ccccc
+     a    a   e      g    g     n n       t     ii   c
+      aa a     eeee    gggg      nn        t    ii   ccccc</div>
             <div class="slabel reveal" style="margin-bottom:1.1rem">LAYER ZERO</div>
-            <h1 class="fd reveal" style="font-size:clamp(2.2rem,5.5vw,3.8rem);font-weight:600;line-height:0.95;letter-spacing:-0.035em">
-                What if intelligence<br>
-                <span style="background:linear-gradient(135deg,var(--teal),var(--bronze));-webkit-background-clip:text;background-clip:text;color:transparent">could persist?</span>
+            <h1 class="fd reveal" style="font-size:clamp(40px,8vw,72px);font-weight:500;line-height:1.0;letter-spacing:-1.2px">
+                What if intelligence<br>could persist?
             </h1>
-            <p class="reveal" style="margin-top:1.1rem;font-size:0.95rem;line-height:1.6;color:var(--muted);max-width:26rem;margin-left:auto;margin-right:auto">
+            <p class="reveal" style="margin-top:1.5rem;font-size:18px;line-height:1.6;color:var(--mid-slate);max-width:540px;margin-left:auto;margin-right:auto">
                 Not stateless prompts. Not sessions that forget.<br>
                 Coordinated, sovereign, memory-bearing systems.
             </p>
             <div class="reveal" style="margin-top:1.5rem;display:flex;align-items:center;justify-content:center;gap:1rem;flex-wrap:wrap">
-                <div class="fm" style="font-size:0.7rem"><span id="stat-repos" style="color:var(--teal);font-weight:500">42</span> <span style="color:var(--muted)">REPOS</span></div>
-                <div style="color:var(--edge)">&middot;</div>
-                <div class="fm" style="font-size:0.7rem"><span id="stat-stars" style="color:var(--teal);font-weight:500">72</span> <span style="color:var(--muted)">STARS</span></div>
-                <div style="color:var(--edge)">&middot;</div>
-                <div class="fm" style="font-size:0.7rem"><span id="stat-followers" style="color:var(--teal);font-weight:500">16</span> <span style="color:var(--muted)">BUILDERS</span></div>
+                <div class="fm" style="font-size:0.7rem"><span id="stat-repos" style="color:var(--white);font-weight:500">42</span> <span style="color:var(--mid-slate)">REPOS</span></div>
+                <div style="color:var(--border-dark)">&middot;</div>
+                <div class="fm" style="font-size:0.7rem"><span id="stat-stars" style="color:var(--white);font-weight:500">72</span> <span style="color:var(--mid-slate)">STARS</span></div>
+                <div style="color:var(--border-dark)">&middot;</div>
+                <div class="fm" style="font-size:0.7rem"><span id="stat-followers" style="color:var(--white);font-weight:500">16</span> <span style="color:var(--mid-slate)">BUILDERS</span></div>
             </div>
             <div class="reveal" style="margin-top:2.5rem">
-                <span class="fm scroll-hint" style="font-size:9px;letter-spacing:0.15em;color:var(--muted)">SCROLL TO CONTINUE &rarr;</span>
+                <span class="fm scroll-hint" style="font-size:9px;letter-spacing:0.15em;color:var(--cool-slate)">SCROLL TO CONTINUE &rarr;</span>
             </div>
         </div>
     </div>
@@ -192,32 +199,32 @@
     <div class="panel" id="p1" style="left:100vw;top:0vh">
         <div class="inner" style="max-width:38rem;padding:0 2rem">
             <div class="slabel reveal" style="margin-bottom:1.25rem">THE PROBLEM</div>
-            <h2 class="fd reveal" style="font-size:clamp(1.5rem,3.5vw,2.3rem);font-weight:600;line-height:1.08;letter-spacing:-0.025em;margin-bottom:1rem">
+            <h2 class="fd reveal" style="font-size:clamp(32px,5vw,48px);font-weight:500;line-height:1.0;letter-spacing:-1px;margin-bottom:1rem">
                 Every AI breakthrough<br>works in isolation.
             </h2>
-            <p class="reveal" style="font-size:0.9rem;line-height:1.65;color:var(--muted);margin-bottom:1.75rem">
+            <p class="reveal" style="font-size:0.9rem;line-height:1.65;color:var(--mid-slate);margin-bottom:1.75rem">
                 The tools get better every week. But connecting them into something that persists, coordinates, and remains under human control? That infrastructure does not exist. So we are building it.
             </p>
-            <div class="reveal" style="display:flex;flex-direction:column;gap:0.5rem">
-                <div style="display:flex;align-items:flex-start;gap:0.65rem;padding:0.65rem 0.85rem;background:rgba(255,255,255,0.015);border:1px solid rgba(255,255,255,0.04);border-radius:10px">
-                    <span class="fm" style="color:var(--edge);font-size:0.7rem;min-width:105px;text-decoration:line-through;text-decoration-color:rgba(255,255,255,0.12)">PROMPTS</span>
-                    <span style="font-size:0.78rem;color:var(--muted);line-height:1.45">Context resets every session. No memory. No continuity of thought.</span>
+            <div class="reveal" style="display:flex;flex-direction:column;gap:1px;background:var(--border-dark);border:1px solid var(--border-dark);border-radius:8px;overflow:hidden">
+                <div style="display:flex;align-items:flex-start;gap:0.65rem;padding:0.85rem 1rem;background:var(--deep-black)">
+                    <span class="fm" style="color:var(--cool-slate);font-size:0.7rem;min-width:105px;text-decoration:line-through;text-decoration-color:rgba(255,255,255,0.15)">PROMPTS</span>
+                    <span style="font-size:0.78rem;color:var(--mid-slate);line-height:1.45">Context resets every session. No memory. No continuity of thought.</span>
                 </div>
-                <div style="display:flex;align-items:flex-start;gap:0.65rem;padding:0.65rem 0.85rem;background:rgba(255,255,255,0.015);border:1px solid rgba(255,255,255,0.04);border-radius:10px">
-                    <span class="fm" style="color:var(--edge);font-size:0.7rem;min-width:105px;text-decoration:line-through;text-decoration-color:rgba(255,255,255,0.12)">FINE-TUNING</span>
-                    <span style="font-size:0.78rem;color:var(--muted);line-height:1.45">Brittle, expensive. Cannot adapt in real-time to new contexts.</span>
+                <div style="display:flex;align-items:flex-start;gap:0.65rem;padding:0.85rem 1rem;background:var(--deep-black)">
+                    <span class="fm" style="color:var(--cool-slate);font-size:0.7rem;min-width:105px;text-decoration:line-through;text-decoration-color:rgba(255,255,255,0.15)">FINE-TUNING</span>
+                    <span style="font-size:0.78rem;color:var(--mid-slate);line-height:1.45">Brittle, expensive. Cannot adapt in real-time to new contexts.</span>
                 </div>
-                <div style="display:flex;align-items:flex-start;gap:0.65rem;padding:0.65rem 0.85rem;background:rgba(255,255,255,0.015);border:1px solid rgba(255,255,255,0.04);border-radius:10px">
-                    <span class="fm" style="color:var(--edge);font-size:0.7rem;min-width:105px;text-decoration:line-through;text-decoration-color:rgba(255,255,255,0.12)">RAG</span>
-                    <span style="font-size:0.78rem;color:var(--muted);line-height:1.45">Retrieval, not understanding. Stitches text without comprehension.</span>
+                <div style="display:flex;align-items:flex-start;gap:0.65rem;padding:0.85rem 1rem;background:var(--deep-black)">
+                    <span class="fm" style="color:var(--cool-slate);font-size:0.7rem;min-width:105px;text-decoration:line-through;text-decoration-color:rgba(255,255,255,0.15)">RAG</span>
+                    <span style="font-size:0.78rem;color:var(--mid-slate);line-height:1.45">Retrieval, not understanding. Stitches text without comprehension.</span>
                 </div>
-                <div style="display:flex;align-items:flex-start;gap:0.65rem;padding:0.65rem 0.85rem;background:rgba(255,255,255,0.015);border:1px solid rgba(255,255,255,0.04);border-radius:10px">
-                    <span class="fm" style="color:var(--edge);font-size:0.7rem;min-width:105px;text-decoration:line-through;text-decoration-color:rgba(255,255,255,0.12)">MANUAL ORCH</span>
-                    <span style="font-size:0.78rem;color:var(--muted);line-height:1.45">Human bottleneck. Breaks at multi-agent scale.</span>
+                <div style="display:flex;align-items:flex-start;gap:0.65rem;padding:0.85rem 1rem;background:var(--deep-black)">
+                    <span class="fm" style="color:var(--cool-slate);font-size:0.7rem;min-width:105px;text-decoration:line-through;text-decoration-color:rgba(255,255,255,0.15)">MANUAL ORCH</span>
+                    <span style="font-size:0.78rem;color:var(--mid-slate);line-height:1.45">Human bottleneck. Breaks at multi-agent scale.</span>
                 </div>
             </div>
             <div class="reveal" style="margin-top:1.5rem">
-                <p style="font-size:0.9rem;line-height:1.5;color:var(--text);opacity:0.85">The missing piece is not another model. It is a <span style="color:var(--teal)">coordination layer</span>.</p>
+                <p style="font-size:0.9rem;line-height:1.5;color:var(--white);opacity:0.85">The missing piece is not another model. It is a <strong style="color:var(--white)">coordination layer</strong>.</p>
             </div>
         </div>
     </div>
@@ -226,32 +233,32 @@
     <div class="panel" id="p2" style="left:200vw;top:0vh">
         <div class="inner" style="max-width:40rem;padding:0 2rem">
             <div class="slabel reveal" style="margin-bottom:1.25rem">THE LAYER</div>
-            <h2 class="fd reveal" style="font-size:clamp(1.5rem,3.5vw,2.3rem);font-weight:600;line-height:1.08;letter-spacing:-0.025em;margin-bottom:0.5rem">
+            <h2 class="fd reveal" style="font-size:clamp(32px,5vw,48px);font-weight:500;line-height:1.0;letter-spacing:-1px;margin-bottom:0.5rem">
                 Five primitives. One infrastructural thesis.
             </h2>
-            <p class="reveal" style="font-size:0.9rem;line-height:1.5;color:var(--muted);margin-bottom:1.25rem">
+            <p class="reveal" style="font-size:0.9rem;line-height:1.5;color:var(--mid-slate);margin-bottom:1.25rem">
                 Not a product. A commitment. Five interdependent primitives that make persistent intelligence possible.
             </p>
-            <div class="reveal glass" style="border-radius:14px;overflow:hidden" id="accordion">
+            <div class="reveal glass" style="overflow:hidden" id="accordion">
                 <div class="prim-item" data-p="orch">
-                    <div class="prim-head"><div style="display:flex;align-items:center;gap:0.5rem"><span style="color:var(--teal)">&#x2726;</span><span class="prim-name">Orchestration</span></div><div style="display:flex;align-items:center;gap:0.5rem"><span class="prim-tag" style="color:var(--teal);background:rgba(0,212,184,0.08)">COORDINATION</span><svg class="prim-chev" width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M4 6L8 10L12 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></div></div>
-                    <div class="prim-body"><p style="font-size:0.78rem;line-height:1.6;color:var(--muted)">Multi-agent signal routing and distributed task coordination. The layer connects specialized agents, routes signals, and manages execution without a single point of failure.</p></div>
+                    <div class="prim-head"><div style="display:flex;align-items:center;gap:0.5rem"><span style="color:var(--teal)">&#x2726;</span><span class="prim-name">Orchestration</span></div><div style="display:flex;align-items:center;gap:0.5rem"><span class="prim-tag" style="color:var(--cool-slate);background:rgba(118,125,136,0.1)">COORDINATION</span><svg class="prim-chev" width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M4 6L8 10L12 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></div></div>
+                    <div class="prim-body"><p style="font-size:0.78rem;line-height:1.6;color:var(--mid-slate)">Multi-agent signal routing and distributed task coordination. The layer connects specialized agents, routes signals, and manages execution without a single point of failure.</p></div>
                 </div>
                 <div class="prim-item" data-p="auth">
-                    <div class="prim-head"><div style="display:flex;align-items:center;gap:0.5rem"><span style="color:var(--bronze)">&#x2726;</span><span class="prim-name">Authenticity</span></div><div style="display:flex;align-items:center;gap:0.5rem"><span class="prim-tag" style="color:var(--bronze);background:rgba(179,139,94,0.08)">HUMAN-LIKE</span><svg class="prim-chev" width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M4 6L8 10L12 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></div></div>
-                    <div class="prim-body"><p style="font-size:0.78rem;line-height:1.6;color:var(--muted)">27 behavioral patterns. 98%+ detector resistance. Intelligence that feels and reads as human in real production environments, not just benchmarks.</p></div>
+                    <div class="prim-head"><div style="display:flex;align-items:center;gap:0.5rem"><span style="color:var(--bronze)">&#x2726;</span><span class="prim-name">Authenticity</span></div><div style="display:flex;align-items:center;gap:0.5rem"><span class="prim-tag" style="color:var(--cool-slate);background:rgba(118,125,136,0.1)">HUMAN-LIKE</span><svg class="prim-chev" width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M4 6L8 10L12 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></div></div>
+                    <div class="prim-body"><p style="font-size:0.78rem;line-height:1.6;color:var(--mid-slate)">27 behavioral patterns. 98%+ detector resistance. Intelligence that feels and reads as human in real production environments, not just benchmarks.</p></div>
                 </div>
                 <div class="prim-item" data-p="cont">
-                    <div class="prim-head"><div style="display:flex;align-items:center;gap:0.5rem"><span style="color:var(--teal)">&#x2726;</span><span class="prim-name">Continuity</span></div><div style="display:flex;align-items:center;gap:0.5rem"><span class="prim-tag" style="color:var(--teal);background:rgba(0,212,184,0.08)">PERSISTENCE</span><svg class="prim-chev" width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M4 6L8 10L12 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></div></div>
-                    <div class="prim-body"><p style="font-size:0.78rem;line-height:1.6;color:var(--muted)">State that survives sessions and compounds over time. Agents remember, learn, and build on prior interactions instead of starting from zero each time.</p></div>
+                    <div class="prim-head"><div style="display:flex;align-items:center;gap:0.5rem"><span style="color:var(--teal)">&#x2726;</span><span class="prim-name">Continuity</span></div><div style="display:flex;align-items:center;gap:0.5rem"><span class="prim-tag" style="color:var(--cool-slate);background:rgba(118,125,136,0.1)">PERSISTENCE</span><svg class="prim-chev" width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M4 6L8 10L12 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></div></div>
+                    <div class="prim-body"><p style="font-size:0.78rem;line-height:1.6;color:var(--mid-slate)">State that survives sessions and compounds over time. Agents remember, learn, and build on prior interactions instead of starting from zero each time.</p></div>
                 </div>
                 <div class="prim-item" data-p="sov">
-                    <div class="prim-head"><div style="display:flex;align-items:center;gap:0.5rem"><span style="color:var(--bronze)">&#x2726;</span><span class="prim-name">Sovereignty</span></div><div style="display:flex;align-items:center;gap:0.5rem"><span class="prim-tag" style="color:var(--bronze);background:rgba(179,139,94,0.08)">OVERSIGHT</span><svg class="prim-chev" width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M4 6L8 10L12 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></div></div>
-                    <div class="prim-body"><p style="font-size:0.78rem;line-height:1.6;color:var(--muted)">Human oversight that never fully relinquishes control. Autonomous systems remain supervised, steerable, and accountable at every layer.</p></div>
+                    <div class="prim-head"><div style="display:flex;align-items:center;gap:0.5rem"><span style="color:var(--bronze)">&#x2726;</span><span class="prim-name">Sovereignty</span></div><div style="display:flex;align-items:center;gap:0.5rem"><span class="prim-tag" style="color:var(--cool-slate);background:rgba(118,125,136,0.1)">OVERSIGHT</span><svg class="prim-chev" width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M4 6L8 10L12 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></div></div>
+                    <div class="prim-body"><p style="font-size:0.78rem;line-height:1.6;color:var(--mid-slate)">Human oversight that never fully relinquishes control. Autonomous systems remain supervised, steerable, and accountable at every layer.</p></div>
                 </div>
                 <div class="prim-item" data-p="mem">
-                    <div class="prim-head"><div style="display:flex;align-items:center;gap:0.5rem"><span style="color:var(--teal)">&#x2726;</span><span class="prim-name">Experiential Memory</span></div><div style="display:flex;align-items:center;gap:0.5rem"><span class="prim-tag" style="color:var(--teal);background:rgba(0,212,184,0.08)">COMPOUNDING</span><svg class="prim-chev" width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M4 6L8 10L12 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></div></div>
-                    <div class="prim-body"><p style="font-size:0.78rem;line-height:1.6;color:var(--muted)">Intelligence that remembers and compounds. Not data storage, but experiential understanding that grows richer with each interaction and decision cycle.</p></div>
+                    <div class="prim-head"><div style="display:flex;align-items:center;gap:0.5rem"><span style="color:var(--teal)">&#x2726;</span><span class="prim-name">Experiential Memory</span></div><div style="display:flex;align-items:center;gap:0.5rem"><span class="prim-tag" style="color:var(--cool-slate);background:rgba(118,125,136,0.1)">COMPOUNDING</span><svg class="prim-chev" width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M4 6L8 10L12 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></div></div>
+                    <div class="prim-body"><p style="font-size:0.78rem;line-height:1.6;color:var(--mid-slate)">Intelligence that remembers and compounds. Not data storage, but experiential understanding that grows richer with each interaction and decision cycle.</p></div>
                 </div>
             </div>
         </div>
@@ -261,14 +268,14 @@
     <div class="panel" id="p3" style="left:300vw;top:0vh">
         <div class="inner" style="max-width:52rem;padding:0 2rem">
             <div class="slabel reveal" style="margin-bottom:1.25rem">PROOF IT SHIPS</div>
-            <h2 class="fd reveal" style="font-size:clamp(1.3rem,3vw,1.9rem);font-weight:600;line-height:1.1;letter-spacing:-0.02em;margin-bottom:1.25rem">
+            <h2 class="fd reveal" style="font-size:clamp(32px,5vw,48px);font-weight:500;line-height:1.0;letter-spacing:-1px;margin-bottom:1.25rem">
                 Not a pitch deck. Live systems you can inspect right now.
             </h2>
             <div class="reveal" style="margin-bottom:1rem">
-                <div class="glass" style="border-radius:14px;overflow:hidden;position:relative;height:10rem;background:var(--void)">
+                <div class="glass" style="overflow:hidden;position:relative;height:10rem;background:var(--black)">
                     <canvas id="continuity-canvas" style="position:absolute;inset:0;width:100%;height:100%"></canvas>
-                    <div id="continuity-state" role="status" aria-live="polite" class="fm" style="position:absolute;bottom:0.6rem;right:0.6rem;font-size:9px;letter-spacing:0.15em;color:var(--teal);background:rgba(0,0,0,0.4);padding:2px 6px;border-radius:4px">PERSISTING</div>
-                    <div class="fm" style="position:absolute;bottom:0.6rem;left:0.6rem;font-size:8px;letter-spacing:0.1em;color:var(--muted)">DRAG TO RE-ORCHESTRATE</div>
+                    <div id="continuity-state" role="status" aria-live="polite" class="fm" style="position:absolute;bottom:0.6rem;right:0.6rem;font-size:9px;letter-spacing:0.15em;color:var(--white);background:rgba(0,0,0,0.6);padding:2px 6px;border-radius:4px">PERSISTING</div>
+                    <div class="fm" style="position:absolute;bottom:0.6rem;left:0.6rem;font-size:8px;letter-spacing:0.1em;color:var(--cool-slate)">DRAG TO RE-ORCHESTRATE</div>
                 </div>
             </div>
             <div id="project-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(185px,1fr));gap:0.5rem"></div>
@@ -279,31 +286,31 @@
     <div class="panel" id="p4" style="left:400vw;top:0vh">
         <div class="inner" style="max-width:36rem;padding:0 2rem">
             <div class="slabel reveal" style="margin-bottom:1.25rem">ABOUT</div>
-            <h2 class="fd reveal" style="font-size:clamp(1.4rem,3.2vw,2.1rem);font-weight:600;line-height:1.08;letter-spacing:-0.025em;margin-bottom:1rem">
+            <h2 class="fd reveal" style="font-size:clamp(32px,5vw,48px);font-weight:500;line-height:1.0;letter-spacing:-1px;margin-bottom:1rem">
                 Solo-built. Open source.<br>Thesis-driven infrastructure.
             </h2>
-            <p class="reveal" style="font-size:0.9rem;line-height:1.65;color:var(--muted);margin-bottom:1.25rem">
+            <p class="reveal" style="font-size:0.9rem;line-height:1.65;color:var(--mid-slate);margin-bottom:1.25rem">
                 Aegntic is one developer building the coordination layer for persistent human&ndash;AI intelligence. 198 public repositories. Every project expresses one or more of the five primitives. No venture funding. No team of fifty. One thesis, pursued relentlessly.
             </p>
-            <div class="reveal" style="display:grid;grid-template-columns:1fr 1fr;gap:0.6rem;margin-bottom:1.25rem">
-                <div style="padding:0.85rem;background:rgba(255,255,255,0.015);border:1px solid rgba(255,255,255,0.04);border-radius:10px">
-                    <div class="fm" style="font-size:9px;letter-spacing:0.12em;color:var(--muted);margin-bottom:0.3rem">REPOS</div>
-                    <div class="fd" style="font-size:1.6rem;font-weight:600;color:var(--teal)" id="about-repos">198</div>
+            <div class="reveal" style="display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--border-dark);border:1px solid var(--border-dark);border-radius:8px;overflow:hidden;margin-bottom:1.25rem">
+                <div style="padding:1.5rem 1rem;background:var(--deep-black);text-align:center">
+                    <div class="fm" style="font-size:9px;letter-spacing:0.12em;color:var(--cool-slate);margin-bottom:0.5rem">REPOS</div>
+                    <div class="fd" style="font-size:clamp(36px,5vw,56px);font-weight:500;color:var(--white);letter-spacing:-1px" id="about-repos">198</div>
                 </div>
-                <div style="padding:0.85rem;background:rgba(255,255,255,0.015);border:1px solid rgba(255,255,255,0.04);border-radius:10px">
-                    <div class="fm" style="font-size:9px;letter-spacing:0.12em;color:var(--muted);margin-bottom:0.3rem">STARS</div>
-                    <div class="fd" style="font-size:1.6rem;font-weight:600;color:var(--teal)" id="about-stars">46</div>
+                <div style="padding:1.5rem 1rem;background:var(--deep-black);text-align:center">
+                    <div class="fm" style="font-size:9px;letter-spacing:0.12em;color:var(--cool-slate);margin-bottom:0.5rem">STARS</div>
+                    <div class="fd" style="font-size:clamp(36px,5vw,56px);font-weight:500;color:var(--white);letter-spacing:-1px" id="about-stars">46</div>
                 </div>
             </div>
             <div class="reveal" style="display:flex;align-items:center;gap:0.6rem;flex-wrap:wrap">
-                <span class="fm" style="font-size:10px;padding:3px 7px;border-radius:4px;background:rgba(49,120,198,0.12);color:#3178c6">TypeScript</span>
-                <span class="fm" style="font-size:10px;padding:3px 7px;border-radius:4px;background:rgba(53,114,165,0.12);color:#3572A5">Python</span>
-                <span class="fm" style="font-size:10px;padding:3px 7px;border-radius:4px;background:rgba(222,165,132,0.12);color:#dea584">Rust</span>
-                <span class="fm" style="font-size:10px;padding:3px 7px;border-radius:4px;background:rgba(241,224,90,0.12);color:#f1e05a">JavaScript</span>
-                <span class="fm" style="font-size:10px;padding:3px 7px;border-radius:4px;background:rgba(0,173,216,0.12);color:#00ADD8">Go</span>
+                <span class="fm" style="font-size:11px;font-weight:450;letter-spacing:0.35px;text-transform:uppercase;color:var(--cool-slate);padding:8px 12px;background:#0a0a0a;border-radius:4px">TypeScript</span>
+                <span class="fm" style="font-size:11px;font-weight:450;letter-spacing:0.35px;text-transform:uppercase;color:var(--cool-slate);padding:8px 12px;background:#0a0a0a;border-radius:4px">Python</span>
+                <span class="fm" style="font-size:11px;font-weight:450;letter-spacing:0.35px;text-transform:uppercase;color:var(--cool-slate);padding:8px 12px;background:#0a0a0a;border-radius:4px">Rust</span>
+                <span class="fm" style="font-size:11px;font-weight:450;letter-spacing:0.35px;text-transform:uppercase;color:var(--cool-slate);padding:8px 12px;background:#0a0a0a;border-radius:4px">JavaScript</span>
+                <span class="fm" style="font-size:11px;font-weight:450;letter-spacing:0.35px;text-transform:uppercase;color:var(--cool-slate);padding:8px 12px;background:#0a0a0a;border-radius:4px">Go</span>
             </div>
-            <p class="reveal" style="margin-top:1rem;font-size:0.78rem;line-height:1.5;color:var(--muted)">
-                Building in public since 2025. Follow the build on <a href="https://x.com/AEGNTIC" target="_blank" style="color:var(--teal);text-decoration:none">X</a> or browse the <a href="https://github.com/aegntic" target="_blank" style="color:var(--teal);text-decoration:none">source</a>.
+            <p class="reveal" style="margin-top:1rem;font-size:0.78rem;line-height:1.5;color:var(--mid-slate)">
+                Building in public since 2025. Follow the build on <a href="https://x.com/AEGNTIC" target="_blank" style="color:var(--white);text-decoration:none">X</a> or browse the <a href="https://github.com/aegntic" target="_blank" style="color:var(--white);text-decoration:none">source</a>.
             </p>
         </div>
     </div>
@@ -312,23 +319,22 @@
     <div class="panel" id="p5" style="left:500vw;top:0vh">
         <div class="inner" style="position:relative;z-index:10;max-width:32rem;padding:0 2rem;text-align:center">
             <div class="slabel reveal" style="margin-bottom:1.25rem">ENTER THE LAYER</div>
-            <h2 class="fd reveal" style="font-size:clamp(1.5rem,3.5vw,2.3rem);font-weight:600;line-height:1.08;letter-spacing:-0.025em;margin-bottom:0.85rem">
-                Agentic Empowerment.<br>
-                <span style="background:linear-gradient(135deg,var(--teal),var(--bronze));-webkit-background-clip:text;background-clip:text;color:transparent">Verified. Layer zero.</span>
+            <h2 class="fd reveal" style="font-size:clamp(40px,8vw,72px);font-weight:500;line-height:1.0;letter-spacing:-1.2px;margin-bottom:0.85rem">
+                Agentic Empowerment.<br>Verified. Layer zero.
             </h2>
-            <p class="reveal" style="font-size:0.9rem;line-height:1.6;color:var(--muted);margin-bottom:1.75rem">
+            <p class="reveal" style="font-size:0.9rem;line-height:1.6;color:var(--mid-slate);margin-bottom:1.75rem">
                 The coordination layer is open, sovereign, and compounding. Browse the source. Build on the primitives. See it in production.
             </p>
-            <div class="reveal" style="display:flex;align-items:center;justify-content:center;gap:0.65rem;flex-wrap:wrap">
-                <a href="https://github.com/aegntic" target="_blank" style="display:inline-flex;align-items:center;height:2.5rem;padding:0 1.75rem;border-radius:0.875rem;background:var(--teal);color:var(--void);font-size:0.8rem;font-weight:500;text-decoration:none;transition:background 150ms" onmouseover="this.style.background='#00c5aa'" onmouseout="this.style.background='var(--teal)'">BROWSE THE SOURCE</a>
-                <a href="https://tools.aegntic.ai" target="_blank" style="display:inline-flex;align-items:center;height:2.5rem;padding:0 1.75rem;border-radius:0.875rem;border:1px solid rgba(179,139,94,0.4);font-size:0.8rem;text-decoration:none;color:var(--bronze);transition:background 150ms" onmouseover="this.style.background='rgba(179,139,94,0.1)'" onmouseout="this.style.background='transparent'">SEE THE LAYER IN PRODUCTS</a>
+            <div class="reveal" style="display:flex;align-items:center;justify-content:center;gap:0.75rem;flex-wrap:wrap">
+                <a href="https://github.com/aegntic" target="_blank" style="display:inline-flex;align-items:center;height:2.5rem;padding:0 1.25rem;border-radius:6px;background:var(--white);color:var(--black);font-size:14px;font-weight:600;text-decoration:none;transition:opacity 150ms" onmouseover="this.style.opacity='0.85'" onmouseout="this.style.opacity='1'">BROWSE THE SOURCE</a>
+                <a href="https://tools.aegntic.ai" target="_blank" style="display:inline-flex;align-items:center;height:2.5rem;padding:0 1.25rem;border-radius:6px;border:1px solid var(--border-dark);font-size:14px;font-weight:500;text-decoration:none;color:var(--cool-slate);transition:all 150ms" onmouseover="this.style.color='var(--white)';this.style.borderColor='var(--white)'" onmouseout="this.style.color='var(--cool-slate)';this.style.borderColor='var(--border-dark)'">SEE THE LAYER IN PRODUCTS</a>
             </div>
-            <div class="reveal" style="margin-top:2rem;padding-top:1rem;border-top:1px solid var(--edge);font-size:0.65rem;color:var(--muted);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:0.4rem">
+            <div class="reveal" style="margin-top:2rem;padding-top:1rem;border-top:1px solid var(--border-dark);font-size:0.65rem;color:var(--mid-slate);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:0.4rem">
                 <span>&copy; aegntic &mdash; Solo-built infrastructure for persistent intelligence.</span>
                 <div style="display:flex;gap:0.75rem">
-                    <a href="https://tools.aegntic.ai" style="color:var(--muted);text-decoration:none" onmouseover="this.style.color='#f1f1f1'" onmouseout="this.style.color='var(--muted)'">Tools</a>
-                    <a href="https://x.com/AEGNTIC" style="color:var(--muted);text-decoration:none" onmouseover="this.style.color='#f1f1f1'" onmouseout="this.style.color='var(--muted)'">X</a>
-                    <a href="https://github.com/aegntic" style="color:var(--muted);text-decoration:none" onmouseover="this.style.color='#f1f1f1'" onmouseout="this.style.color='var(--muted)'">GitHub</a>
+                    <a href="https://tools.aegntic.ai" style="color:var(--mid-slate);text-decoration:none" onmouseover="this.style.color='var(--white)'" onmouseout="this.style.color='var(--mid-slate)'">Tools</a>
+                    <a href="https://x.com/AEGNTIC" style="color:var(--mid-slate);text-decoration:none" onmouseover="this.style.color='var(--white)'" onmouseout="this.style.color='var(--mid-slate)'">X</a>
+                    <a href="https://github.com/aegntic" style="color:var(--mid-slate);text-decoration:none" onmouseover="this.style.color='var(--white)'" onmouseout="this.style.color='var(--mid-slate)'">GitHub</a>
                 </div>
             </div>
         </div>
@@ -422,14 +428,14 @@ const FX = (() => {
     }
 
     function colorFromHue(h) {
-        // 0 = teal, 0.5+ = bronze
-        if (h < 0.25) return { r: 0, g: 212, b: 184 };
-        if (h > 0.75) return { r: 179, g: 139, b: 94 };
+        // Muted monochrome with subtle teal/bronze tint
+        if (h < 0.25) return { r: 40, g: 60, b: 70 };      // muted teal
+        if (h > 0.75) return { r: 60, g: 50, b: 40 };      // muted bronze
         const f = h;
         return {
-            r: Math.round(lerp(0, 179, f)),
-            g: Math.round(lerp(212, 139, f)),
-            b: Math.round(lerp(184, 94, f))
+            r: Math.round(lerp(40, 60, f)),
+            g: Math.round(lerp(60, 50, f)),
+            b: Math.round(lerp(70, 40, f))
         };
     }
 
@@ -833,7 +839,7 @@ function countUp(el, t, d=800) {
 function renderGrid(tr) {
     const g = document.getElementById('project-grid'); if(!g||!tr||!tr.length) return;
     const lc = {TypeScript:'#3178c6',Python:'#3572A5',Rust:'#dea584',JavaScript:'#f1e05a',Go:'#00ADD8',Shell:'#89e051'};
-    g.innerHTML = tr.map(r=>`<a href="https://github.com/aegntic/${r.name}" target="_blank" class="pcard"><div style="display:flex;align-items:center;justify-content:space-between"><span class="fd" style="font-weight:600;font-size:0.78rem">${r.name}</span>${r.language?`<span class="fm" style="font-size:9px;padding:1px 5px;border-radius:3px;background:${lc[r.language]||'#8a8a8f'}22;color:${lc[r.language]||'#8a8a8f'}">${r.language}</span>`:''}</div><div style="margin-top:0.3rem;font-size:0.68rem;color:var(--muted);line-height:1.4;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden">${r.description||''}</div><div style="margin-top:0.4rem" class="fm"><span style="font-size:9px;color:var(--muted)">&#9733; ${r.stargazers_count}</span></div></a>`).join('');
+    g.innerHTML = tr.map(r=>`<a href="https://github.com/aegntic/${r.name}" target="_blank" class="pcard"><div style="display:flex;align-items:center;justify-content:space-between"><span class="fd" style="font-weight:500;font-size:0.78rem;color:var(--white)">${r.name}</span>${r.language?`<span class="fm" style="font-size:9px;padding:1px 5px;border-radius:3px;background:rgba(118,125,136,0.12);color:var(--cool-slate)">${r.language}</span>`:''}</div><div style="margin-top:0.3rem;font-size:0.68rem;color:var(--mid-slate);line-height:1.4;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden">${r.description||''}</div><div style="margin-top:0.4rem" class="fm"><span style="font-size:9px;color:var(--cool-slate)">&#9733; ${r.stargazers_count}</span></div></a>`).join('');
 }
 
 async function bootGH() {
@@ -876,11 +882,11 @@ function aCont() {
     if(!cX||!cC)return;
     const d=window.devicePixelRatio||1; cX.clearRect(0,0,cC.offsetWidth*d,cC.offsetHeight*d);
     const t=Date.now()/900;
-    cX.strokeStyle='rgba(179,139,94,0.3)';cX.lineWidth=1;
+    cX.strokeStyle='rgba(60,60,60,0.3)';cX.lineWidth=1;
     for(let i=0;i<cN.length;i++)for(let j=i+1;j<cN.length;j++){const a=cN[i],b=cN[j];if(Math.hypot(a.x-b.x,a.y-b.y)<140){cX.beginPath();cX.moveTo(a.x,a.y);cX.lineTo(b.x,b.y);cX.stroke();}}
-    cN.forEach((n,i)=>{const p=Math.sin(t+n.ph)*0.7+1;cX.fillStyle='rgba(0,212,184,0.1)';for(let k=0;k<3;k++){cX.beginPath();cX.arc(n.bx+(n.x-n.bx)*0.3*k,n.by+(n.y-n.by)*0.3*k,n.sz*p*(0.5-k*0.15),0,Math.PI*2);cX.fill();}
-    cX.fillStyle=i%2===0?'#00d4b8':'#b38b5e';cX.beginPath();cX.arc(n.x,n.y,n.sz*p*0.85,0,Math.PI*2);cX.fill();
-    cX.strokeStyle='rgba(255,255,255,0.1)';cX.lineWidth=0.8;cX.beginPath();cX.arc(n.x,n.y,n.sz*p*1.3,0,Math.PI*2);cX.stroke();});
+    cN.forEach((n,i)=>{const p=Math.sin(t+n.ph)*0.7+1;cX.fillStyle='rgba(40,60,70,0.08)';for(let k=0;k<3;k++){cX.beginPath();cX.arc(n.bx+(n.x-n.bx)*0.3*k,n.by+(n.y-n.by)*0.3*k,n.sz*p*(0.5-k*0.15),0,Math.PI*2);cX.fill();}
+    cX.fillStyle=i%2===0?'rgba(40,60,70,0.6)':'rgba(60,50,40,0.6)';cX.beginPath();cX.arc(n.x,n.y,n.sz*p*0.85,0,Math.PI*2);cX.fill();
+    cX.strokeStyle='rgba(255,255,255,0.06)';cX.lineWidth=0.8;cX.beginPath();cX.arc(n.x,n.y,n.sz*p*1.3,0,Math.PI*2);cX.stroke();});
     if(!PRM) requestAnimationFrame(aCont);
 }
 
