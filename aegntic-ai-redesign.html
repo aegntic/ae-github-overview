@@ -233,10 +233,10 @@
         <div class="inner" style="max-width:40rem;padding:0 2rem">
             <div class="slabel reveal" style="margin-bottom:1.25rem">THE LAYER</div>
             <h2 class="fd reveal" style="font-size:clamp(32px,5vw,48px);font-weight:500;line-height:1.0;letter-spacing:-1px;margin-bottom:0.5rem">
-                Five primitives. One infrastructural thesis.
+                5 Core Elements. One foundation.
             </h2>
             <p class="reveal" style="font-size:0.9rem;line-height:1.5;color:var(--mid-slate);margin-bottom:1.25rem">
-                Not a product. A commitment. Five interdependent primitives that make persistent intelligence possible.
+                Modular, independent features. Each one valuable alone. Combined, they exponentially raise each other's value.
             </p>
             <div class="reveal glass" style="overflow:hidden" id="accordion">
                 <div class="prim-item" data-p="orch">
@@ -344,8 +344,8 @@
 
 <script>
 // ============================================================
-// FX ENGINE — Full-viewport 3D wireframe + particles + rings
-// Scroll-reactive scene morphing across 6 panels
+// FX ENGINE — Progressive Sacred Geometry
+// Tetrahedron → Cube → Octahedron → Dodecahedron → Icosahedron → Metatron
 // ============================================================
 const FX = (() => {
     const C = document.getElementById('fx-canvas');
@@ -356,29 +356,86 @@ const FX = (() => {
     let t = 0;
     const PRM_FX = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-    // Icosahedron geometry (normalized to radius ~1)
+    // ── Platonic Solid Geometry Library ──
     const PHI = (1 + Math.sqrt(5)) / 2;
-    const NORM = Math.sqrt(1 + PHI * PHI);
-    const RAW = [[-1,PHI,0],[1,PHI,0],[-1,-PHI,0],[1,-PHI,0],[0,-1,PHI],[0,1,PHI],[0,-1,-PHI],[0,1,-PHI],[PHI,0,-1],[PHI,0,1],[-PHI,0,-1],[-PHI,0,1]];
-    const VERTS = RAW.map(v => [v[0]/NORM, v[1]/NORM, v[2]/NORM]);
-    const EDGES = [[0,1],[0,5],[0,7],[0,10],[0,11],[1,5],[1,7],[1,8],[1,9],[2,3],[2,4],[2,6],[2,10],[2,11],[3,4],[3,6],[3,8],[3,9],[4,5],[4,9],[4,11],[5,9],[5,11],[6,7],[6,8],[6,10],[7,8],[7,10],[8,9],[10,11]];
 
-    // Scatter directions (random unit vectors per vertex)
-    const sDirs = VERTS.map(() => {
-        const th = Math.random() * Math.PI * 2;
-        const ph = Math.acos(Math.random() * 2 - 1);
-        return [Math.sin(ph)*Math.cos(th), Math.sin(ph)*Math.sin(th), Math.cos(ph)];
-    });
+    function norm(v) { const l = Math.sqrt(v[0]*v[0]+v[1]*v[1]+v[2]*v[2]) || 1; return [v[0]/l,v[1]/l,v[2]/l]; }
+    function edgesFromVerts(verts, maxDist) {
+        const edges = [];
+        for (let i = 0; i < verts.length; i++)
+            for (let j = i+1; j < verts.length; j++) {
+                const dx=verts[i][0]-verts[j][0], dy=verts[i][1]-verts[j][1], dz=verts[i][2]-verts[j][2];
+                if (Math.sqrt(dx*dx+dy*dy+dz*dz) < maxDist + 0.01) edges.push([i,j]);
+            }
+        return edges;
+    }
 
-    // Scene keyframes per panel
-    const SC = [
-        { sc: 1.35, scatter: 0,    rings: 3, rSpeed: 0.35, pSpd: 0.3, glow: 14, hue: 0   },
-        { sc: 1.6,  scatter: 0.6,  rings: 1, rSpeed: 0.12, pSpd: 0.7, glow: 5,  hue: 0.6 },
-        { sc: 1.05, scatter: 0.03, rings: 5, rSpeed: 0.28, pSpd: 0.4, glow: 10, hue: 0.1 },
-        { sc: 1.15, scatter: 0,    rings: 5, rSpeed: 0.45, pSpd: 0.65,glow: 18, hue: 0   },
-        { sc: 0.85, scatter: 0,    rings: 3, rSpeed: 0.18, pSpd: 0.2, glow: 7,  hue: 0.7 },
-        { sc: 1.55, scatter: 0,    rings: 4, rSpeed: 0.32, pSpd: 0.5, glow: 22, hue: 0.1 }
+    // Tetrahedron: 4 verts, 6 edges
+    const TET_V = [[1,1,1],[1,-1,-1],[-1,1,-1],[-1,-1,1]].map(norm);
+    const TET_E = [[0,1],[0,2],[0,3],[1,2],[1,3],[2,3]];
+
+    // Cube (hexahedron): 8 verts, 12 edges
+    const CUBE_V = [[-1,-1,-1],[1,-1,-1],[1,1,-1],[-1,1,-1],[-1,-1,1],[1,-1,1],[1,1,1],[-1,1,1]].map(v => norm(v));
+    const CUBE_E = [[0,1],[1,2],[2,3],[3,0],[4,5],[5,6],[6,7],[7,4],[0,4],[1,5],[2,6],[3,7]];
+
+    // Octahedron: 6 verts, 12 edges
+    const OCT_V = [[1,0,0],[-1,0,0],[0,1,0],[0,-1,0],[0,0,1],[0,0,-1]];
+    const OCT_E = [[0,2],[0,3],[0,4],[0,5],[1,2],[1,3],[1,4],[1,5],[2,4],[2,5],[3,4],[3,5]];
+
+    // Dodecahedron: 20 verts, 30 edges
+    const DODE_V = (function() {
+        const a = 1/PHI, b = PHI;
+        return [
+            [a,a,a],[a,a,-a],[a,-a,a],[a,-a,-a],[-a,a,a],[-a,a,-a],[-a,-a,a],[-a,-a,-a],
+            [0,1/b,b],[0,1/b,-b],[0,-1/b,b],[0,-1/b,-b],[1/b,b,0],[1/b,-b,0],[-1/b,b,0],[-1/b,-b,0],
+            [b,0,1/b],[b,0,-1/b],[-b,0,1/b],[-b,0,-1/b]
+        ].map(v => norm(v));
+    })();
+    const DODE_E = edgesFromVerts(DODE_V, 0.72);
+
+    // Icosahedron: 12 verts, 30 edges
+    const ICO_NORM = Math.sqrt(1 + PHI*PHI);
+    const ICO_V = [[-1,PHI,0],[1,PHI,0],[-1,-PHI,0],[1,-PHI,0],[0,-1,PHI],[0,1,PHI],[0,-1,-PHI],[0,1,-PHI],[PHI,0,-1],[PHI,0,1],[-PHI,0,-1],[-PHI,0,1]].map(v => [v[0]/ICO_NORM,v[1]/ICO_NORM,v[2]/ICO_NORM]);
+    const ICO_E = edgesFromVerts(ICO_V, 1.2);
+
+    // Metatron's Cube: 13 points (center + 12 around) with sacred connections
+    const META_V = (function() {
+        const pts = [[0,0,0]]; // center
+        for (let i = 0; i < 6; i++) { // inner hex
+            const a = i * Math.PI / 3;
+            pts.push([Math.cos(a)*0.5, Math.sin(a)*0.5, 0]);
+        }
+        for (let i = 0; i < 6; i++) { // outer hex
+            const a = i * Math.PI / 3 + Math.PI / 6;
+            pts.push([Math.cos(a), Math.sin(a), 0]);
+        }
+        return pts.map(norm);
+    })();
+    const META_E = (function() {
+        const e = [];
+        // Center to all
+        for (let i = 1; i < 13; i++) e.push([0,i]);
+        // Inner hex ring
+        for (let i = 1; i <= 6; i++) e.push([i, i%6+1]);
+        // Outer hex ring
+        for (let i = 7; i <= 12; i++) e.push([i, i%6+7]);
+        // Cross connections (inner to outer)
+        for (let i = 1; i <= 6; i++) { e.push([i, i+6]); e.push([i, ((i+1)%6)+7]); }
+        return e;
+    })();
+
+    // Geometry per panel: [verts, edges, scale, rotSpeed, glow, hue, innerRings, particleDensity]
+    const GEO = [
+        { v: null,  e: null, sc: 0,   rs: 0,   glow: 0,  hue: 0,   rings: 0, pDen: 0.3 }, // Panel 0: HERO — empty/no shape
+        { v: TET_V, e: TET_E, sc: 1.3, rs: 0.3, glow: 8,  hue: 0.6, rings: 1, pDen: 0.4 }, // Panel 1: PROBLEM — tetrahedron
+        { v: CUBE_V,e: CUBE_E,sc: 1.1, rs: 0.22,glow: 10, hue: 0.15,rings: 2, pDen: 0.5 }, // Panel 2: LAYER — cube
+        { v: OCT_V, e: OCT_E, sc: 1.0, rs: 0.35,glow: 12, hue: 0.1, rings: 3, pDen: 0.6 }, // Panel 3: PROOF — octahedron
+        { v: DODE_V,e: DODE_E,sc: 1.05,rs: 0.18,glow: 14, hue: 0.7, rings: 3, pDen: 0.5 }, // Panel 4: ABOUT — dodecahedron
+        { v: null,  e: null, sc: 0,   rs: 0,   glow: 0,  hue: 0,   rings: 0, pDen: 0.3 }, // Panel 5: CTA — transitions to Metatron
     ];
+
+    // Final panel: Metatron's Cube with Flower of Life overlay
+    const META_SCENE = { v: META_V, e: META_E, sc: 1.8, rs: 0.12, glow: 24, hue: 0.1, rings: 5, pDen: 0.8 };
 
     // Particles
     const PARTS = [];
@@ -411,31 +468,69 @@ const FX = (() => {
         W = window.innerWidth; H = window.innerHeight;
         C.width = W * dpr; C.height = H * dpr;
     }
-
-    // 3D rotation
-    function rX(p, a) { const c=Math.cos(a),s=Math.sin(a); return [p[0], p[1]*c-p[2]*s, p[1]*s+p[2]*c]; }
-    function rY(p, a) { const c=Math.cos(a),s=Math.sin(a); return [p[0]*c+p[2]*s, p[1], -p[0]*s+p[2]*c]; }
-    function rZ(p, a) { const c=Math.cos(a),s=Math.sin(a); return [p[0]*c-p[1]*s, p[0]*s+p[1]*c, p[2]]; }
-
-    function lerp(a, b, f) { return a + (b - a) * f; }
-
-    function sceneParam(key) {
-        const idx = Math.min(Math.floor(prog), SC.length - 2);
-        const frac = prog - Math.floor(prog);
-        const smooth = frac * frac * (3 - 2 * frac); // smoothstep
-        return lerp(SC[idx][key], SC[Math.min(idx + 1, SC.length - 1)][key], smooth);
-    }
+    function rX(p,a){const c=Math.cos(a),s=Math.sin(a);return[p[0],p[1]*c-p[2]*s,p[1]*s+p[2]*c];}
+    function rY(p,a){const c=Math.cos(a),s=Math.sin(a);return[p[0]*c+p[2]*s,p[1],-p[0]*s+p[2]*c];}
+    function rZ(p,a){const c=Math.cos(a),s=Math.sin(a);return[p[0]*c-p[1]*s,p[0]*s+p[1]*c,p[2]];}
+    function lerp(a,b,f){return a+(b-a)*f;}
+    function smoothstep(f){return f*f*(3-2*f);}
+    function clamp(v,lo,hi){return Math.max(lo,Math.min(hi,v));}
 
     function colorFromHue(h) {
-        // Muted monochrome with subtle teal/bronze tint
-        if (h < 0.25) return { r: 40, g: 60, b: 70 };      // muted teal
-        if (h > 0.75) return { r: 60, g: 50, b: 40 };      // muted bronze
-        const f = h;
+        if (h < 0.25) return {r:40,g:60,b:70};
+        if (h > 0.75) return {r:60,g:50,b:40};
+        return {r:Math.round(lerp(40,60,h)),g:Math.round(lerp(60,50,h)),b:Math.round(lerp(70,40,h))};
+    }
+
+    function lerpScene(a, b, f) {
+        const s = smoothstep(f);
         return {
-            r: Math.round(lerp(40, 60, f)),
-            g: Math.round(lerp(60, 50, f)),
-            b: Math.round(lerp(70, 40, f))
+            sc: lerp(a.sc, b.sc, s), rs: lerp(a.rs, b.rs, s), glow: lerp(a.glow, b.glow, s),
+            hue: lerp(a.hue, b.hue, s), rings: lerp(a.rings, b.rings, s), pDen: lerp(a.pDen, b.pDen, s)
         };
+    }
+
+    function getScene() {
+        const idx = Math.floor(prog);
+        const frac = prog - idx;
+        if (idx >= GEO.length - 1) {
+            const metaFrac = clamp((prog - (GEO.length - 1)), 0, 1);
+            return { geo: metaFrac > 0.3 ? META_SCENE : GEO[GEO.length-2], params: lerpScene(GEO[GEO.length-1], META_SCENE, metaFrac) };
+        }
+        const geo = frac < 0.5 ? GEO[idx] : GEO[idx+1];
+        const params = lerpScene(GEO[idx], GEO[Math.min(idx+1, GEO.length-1)], frac);
+        return { geo, params };
+    }
+
+    function drawFlowerOfLife(cx, cy, baseR, alpha, cs, time) {
+        const r = baseR * 0.45;
+        X.globalAlpha = alpha * 0.15;
+        X.strokeStyle = cs;
+        X.lineWidth = 0.5;
+        X.beginPath(); X.arc(cx, cy, r, 0, Math.PI*2); X.stroke();
+        for (let i = 0; i < 6; i++) {
+            const a = i * Math.PI / 3 + time * 0.05;
+            X.beginPath(); X.arc(cx + Math.cos(a)*r, cy + Math.sin(a)*r, r, 0, Math.PI*2); X.stroke();
+        }
+        X.globalAlpha = alpha * 0.08;
+        X.beginPath(); X.arc(cx, cy, r*2, 0, Math.PI*2); X.stroke();
+    }
+
+    function drawSriYantra(cx, cy, baseR, alpha, cs, time) {
+        X.globalAlpha = alpha * 0.12;
+        X.strokeStyle = cs;
+        X.lineWidth = 0.4;
+        const sizes = [1.0, 0.82, 0.65, 0.5, 0.38, 0.28, 0.2, 0.14, 0.09];
+        sizes.forEach((s, idx) => {
+            const r = baseR * 0.5 * s;
+            const rot = (idx % 2 === 0 ? 1 : -1) * (idx * 0.18 + time * 0.03);
+            X.beginPath();
+            for (let i = 0; i <= 3; i++) {
+                const a = rot + i * Math.PI * 2 / 3;
+                const px = cx + Math.cos(a) * r, py = cy + Math.sin(a) * r;
+                if (i === 0) X.moveTo(px, py); else X.lineTo(px, py);
+            }
+            X.closePath(); X.stroke();
+        });
     }
 
     function render() {
@@ -444,255 +539,185 @@ const FX = (() => {
         X.clearRect(0, 0, W, H);
 
         const cx = W / 2, cy = H / 2;
-        const scale = sceneParam('sc');
-        const scatter = sceneParam('scatter');
-        const ringCount = Math.round(sceneParam('rings'));
-        const rotSpd = sceneParam('rSpeed');
-        const pSpd = sceneParam('pSpd');
-        const glow = sceneParam('glow');
-        const hue = sceneParam('hue');
+        const { geo, params } = getScene();
+        const scale = params.sc;
+        const rotSpd = params.rs;
+        const glow = params.glow;
+        const hue = params.hue;
+        const ringCount = Math.round(params.rings);
+        const pSpd = params.pDen;
 
         const col = colorFromHue(hue);
-        const col2 = colorFromHue(1 - hue); // secondary (complementary)
+        const col2 = colorFromHue(1 - hue);
         const cs = `rgb(${col.r},${col.g},${col.b})`;
         const cs2 = `rgb(${col2.r},${col2.g},${col2.b})`;
-        const csA = (a) => `rgba(${col.r},${col.g},${col.b},${a})`;
-        const cs2A = (a) => `rgba(${col2.r},${col2.g},${col2.b},${a})`;
+        const csA = a => `rgba(${col.r},${col.g},${col.b},${a})`;
 
-        // Mouse parallax
         const px = (mx - 0.5) * 0.2;
         const py = (my - 0.5) * 0.12;
-
-        // Rotation
         const ry = t * rotSpd + prog * 0.6 + px;
         const rx = t * rotSpd * 0.25 + py + 0.3;
         const rz = t * rotSpd * 0.12;
-
-        const baseR = Math.min(W, H) * 0.22 * scale;
+        const baseR = Math.min(W, H) * 0.22 * Math.max(scale, 0.01);
         const FOV = 1500;
 
-        // Project a 3D point
         function proj(p) {
             const z = p[2] + FOV * 0.5;
             const f = FOV / Math.max(z, 50);
-            return { x: p[0] * f, y: p[1] * f, z: z, f: f };
+            return {x:p[0]*f, y:p[1]*f, z:z, f:f};
         }
 
-        // === CENTER GLOW ===
-        const grd = X.createRadialGradient(cx, cy, 0, cx, cy, baseR * 2);
-        grd.addColorStop(0, csA(0.04));
-        grd.addColorStop(0.5, csA(0.015));
-        grd.addColorStop(1, 'rgba(0,0,0,0)');
-        X.fillStyle = grd;
-        X.fillRect(0, 0, W, H);
-
-        // === GRID FLOOR ===
-        X.globalAlpha = 0.03;
-        X.strokeStyle = cs;
-        X.lineWidth = 0.5;
-        const gridY = cy + baseR * 1.2;
-        const gridLines = 12;
-        const gridSpread = baseR * 3;
-        for (let i = -gridLines; i <= gridLines; i++) {
-            const frac = i / gridLines;
-            const x1 = cx + frac * gridSpread;
-            const x2 = cx + frac * gridSpread * 0.3;
-            X.beginPath();
-            X.moveTo(cx - gridSpread, gridY + (frac * gridSpread * 0.15));
-            X.lineTo(cx + gridSpread, gridY + (frac * gridSpread * 0.15));
-            X.stroke();
-            X.beginPath();
-            X.moveTo(cx + frac * gridSpread, gridY - gridSpread * 0.1);
-            X.lineTo(cx + frac * gridSpread * 0.3, gridY + gridSpread * 0.2);
-            X.stroke();
+        // Center glow
+        if (glow > 0) {
+            const grd = X.createRadialGradient(cx, cy, 0, cx, cy, baseR * 2);
+            grd.addColorStop(0, csA(0.04));
+            grd.addColorStop(0.5, csA(0.015));
+            grd.addColorStop(1, 'rgba(0,0,0,0)');
+            X.fillStyle = grd;
+            X.fillRect(0, 0, W, H);
         }
 
-        // === ORBITAL RINGS ===
+        // Grid floor
+        if (scale > 0.5) {
+            X.globalAlpha = 0.03;
+            X.strokeStyle = cs;
+            X.lineWidth = 0.5;
+            const gridY = cy + baseR * 1.2;
+            for (let i = -12; i <= 12; i++) {
+                const frac = i / 12;
+                const gs = baseR * 3;
+                X.beginPath(); X.moveTo(cx - gs, gridY + (frac * gs * 0.15)); X.lineTo(cx + gs, gridY + (frac * gs * 0.15)); X.stroke();
+                X.beginPath(); X.moveTo(cx + frac * gs, gridY - gs * 0.1); X.lineTo(cx + frac * gs * 0.3, gridY + gs * 0.2); X.stroke();
+            }
+        }
+
+        // Orbital rings
         for (let r = 0; r < ringCount; r++) {
-            const tiltX = (r / Math.max(ringCount, 1)) * Math.PI * 0.8 - Math.PI * 0.3;
+            const tiltX = (r/Math.max(ringCount,1))*Math.PI*0.8 - Math.PI*0.3;
             const tiltZ = r * 0.4;
             const ringR = baseR * (1.6 + r * 0.35);
             const ringSpd = rotSpd * (0.6 + r * 0.18);
-
-            // Draw ring
-            X.globalAlpha = 0.06 + (1 / (r + 1)) * 0.04;
-            X.strokeStyle = cs;
-            X.lineWidth = 0.6;
+            X.globalAlpha = 0.06 + (1/(r+1))*0.04;
+            X.strokeStyle = cs; X.lineWidth = 0.6;
             X.beginPath();
-            const segs = 80;
-            for (let s = 0; s <= segs; s++) {
-                const a = (s / segs) * Math.PI * 2 + t * ringSpd;
-                let p = [Math.cos(a) * ringR, 0, Math.sin(a) * ringR];
-                p = rX(p, tiltX);
-                p = rZ(p, tiltZ);
-                p = rY(p, ry);
-                p = rX(p, rx);
+            for (let s = 0; s <= 80; s++) {
+                const a = (s/80)*Math.PI*2 + t*ringSpd;
+                let p = [Math.cos(a)*ringR, 0, Math.sin(a)*ringR];
+                p = rX(p,tiltX); p = rZ(p,tiltZ); p = rY(p,ry); p = rX(p,rx);
                 const pr = proj(p);
-                const sx = cx + pr.x, sy = cy + pr.y;
-                if (s === 0) X.moveTo(sx, sy); else X.lineTo(sx, sy);
+                if (s === 0) X.moveTo(cx+pr.x, cy+pr.y); else X.lineTo(cx+pr.x, cy+pr.y);
             }
             X.stroke();
-
-            // Ring nodes
-            const nodeCount = 3 + r;
-            for (let n = 0; n < nodeCount; n++) {
-                const a = (n / nodeCount) * Math.PI * 2 + t * ringSpd;
-                let p = [Math.cos(a) * ringR, 0, Math.sin(a) * ringR];
-                p = rX(p, tiltX);
-                p = rZ(p, tiltZ);
-                p = rY(p, ry);
-                p = rX(p, rx);
+            for (let n = 0; n < 3+r; n++) {
+                const a = (n/(3+r))*Math.PI*2 + t*ringSpd;
+                let p = [Math.cos(a)*ringR, 0, Math.sin(a)*ringR];
+                p = rX(p,tiltX); p = rZ(p,tiltZ); p = rY(p,ry); p = rX(p,rx);
                 const pr = proj(p);
-                X.globalAlpha = 0.35;
-                X.fillStyle = cs2;
-                X.beginPath();
-                X.arc(cx + pr.x, cy + pr.y, 1.5, 0, Math.PI * 2);
-                X.fill();
+                X.globalAlpha = 0.35; X.fillStyle = cs2;
+                X.beginPath(); X.arc(cx+pr.x, cy+pr.y, 1.5, 0, Math.PI*2); X.fill();
             }
         }
 
-        // === SIGNAL PARTICLES (travel along rings) ===
+        // Signal particles
         for (let i = 0; i < SIGNALS.length; i++) {
             const sig = SIGNALS[i];
             if (sig.ringIdx >= ringCount) continue;
             sig.angle += sig.speed * 0.02 * pSpd;
-
             const r = sig.ringIdx;
-            const tiltX = (r / Math.max(ringCount, 1)) * Math.PI * 0.8 - Math.PI * 0.3;
-            const tiltZ = r * 0.4;
-            const ringR = baseR * (1.6 + r * 0.35);
-            const ringSpd = rotSpd * (0.6 + r * 0.18);
-
-            let p = [Math.cos(sig.angle) * ringR, 0, Math.sin(sig.angle) * ringR];
-            p = rX(p, tiltX);
-            p = rZ(p, tiltZ);
-            p = rY(p, ry);
-            p = rX(p, rx);
+            const tiltX = (r/Math.max(ringCount,1))*Math.PI*0.8 - Math.PI*0.3;
+            const tiltZ = r*0.4;
+            const ringR = baseR*(1.6+r*0.35);
+            let p = [Math.cos(sig.angle)*ringR, 0, Math.sin(sig.angle)*ringR];
+            p = rX(p,tiltX); p = rZ(p,tiltZ); p = rY(p,ry); p = rX(p,rx);
             const pr = proj(p);
-            const sx = cx + pr.x, sy = cy + pr.y;
-
-            sig.trail.push({ x: sx, y: sy });
+            sig.trail.push({x:cx+pr.x, y:cy+pr.y});
             if (sig.trail.length > sig.maxTrail) sig.trail.shift();
-
-            // Draw trail
             for (let j = 0; j < sig.trail.length; j++) {
-                const alpha = (j / sig.trail.length) * 0.5;
-                X.globalAlpha = alpha;
-                X.fillStyle = cs;
-                X.beginPath();
-                X.arc(sig.trail[j].x, sig.trail[j].y, 1 + (j / sig.trail.length) * 1.5, 0, Math.PI * 2);
-                X.fill();
+                X.globalAlpha = (j/sig.trail.length)*0.5; X.fillStyle = cs;
+                X.beginPath(); X.arc(sig.trail[j].x, sig.trail[j].y, 1+(j/sig.trail.length)*1.5, 0, Math.PI*2); X.fill();
             }
-
-            // Draw head
-            X.globalAlpha = 0.8;
-            X.fillStyle = cs;
-            X.beginPath();
-            X.arc(sx, sy, 2.5, 0, Math.PI * 2);
-            X.fill();
+            X.globalAlpha = 0.8; X.fillStyle = cs;
+            X.beginPath(); X.arc(cx+pr.x, cy+pr.y, 2.5, 0, Math.PI*2); X.fill();
         }
 
-        // === ICOSAHEDRON WIREFRAME ===
-        const pts = VERTS.map((v, i) => {
-            let p = [
-                v[0] * baseR + sDirs[i][0] * scatter * baseR * 2,
-                v[1] * baseR + sDirs[i][1] * scatter * baseR * 2,
-                v[2] * baseR + sDirs[i][2] * scatter * baseR * 2
-            ];
-            p = rZ(p, rz);
-            p = rY(p, ry);
-            p = rX(p, rx);
-            const pr = proj(p);
-            return { x: cx + pr.x, y: cy + pr.y, z: pr.z, f: pr.f };
-        });
+        // Platonic solid wireframe
+        if (geo.v && geo.e && scale > 0.3) {
+            const verts = geo.v, edges = geo.e;
+            const pts = verts.map(v => {
+                let p = [v[0]*baseR, v[1]*baseR, v[2]*baseR];
+                p = rZ(p,rz); p = rY(p,ry); p = rX(p,rx);
+                const pr = proj(p);
+                return {x:cx+pr.x, y:cy+pr.y, z:pr.z};
+            });
+            X.shadowColor = cs; X.shadowBlur = glow; X.lineCap = 'round';
+            edges.forEach(([a,b]) => {
+                const pa = pts[a], pb = pts[b];
+                const avgZ = (pa.z+pb.z)/2;
+                const depth = (avgZ - FOV*0.3)/(FOV*0.8);
+                const alpha = 0.08 + 0.65*Math.max(0, Math.min(1, 1-depth));
+                X.globalAlpha = alpha; X.strokeStyle = cs;
+                X.lineWidth = 0.6 + (1-depth)*0.8;
+                X.beginPath(); X.moveTo(pa.x, pa.y); X.lineTo(pb.x, pb.y); X.stroke();
+            });
+            X.shadowBlur = 8;
+            pts.forEach(p => {
+                const depth = (p.z - FOV*0.3)/(FOV*0.8);
+                X.globalAlpha = 0.15 + 0.75*Math.max(0, Math.min(1, 1-depth));
+                X.fillStyle = cs;
+                X.beginPath(); X.arc(p.x, p.y, 1.5+(1-depth)*1.5, 0, Math.PI*2); X.fill();
+            });
+        }
 
-        // Edges with glow and depth
-        X.shadowColor = cs;
-        X.shadowBlur = glow;
-        X.lineCap = 'round';
+        // Sacred geometry overlays (late panels)
+        if (prog >= 4.5) drawFlowerOfLife(cx, cy, baseR*1.2, clamp((prog-4.5)/0.5,0,1), cs, t);
+        if (prog >= 4.8) drawSriYantra(cx, cy, baseR*1.0, clamp((prog-4.8)/0.2,0,1), cs2, t);
 
-        EDGES.forEach(([a, b]) => {
-            const pa = pts[a], pb = pts[b];
-            const avgZ = (pa.z + pb.z) / 2;
-            const depth = (avgZ - FOV * 0.3) / (FOV * 0.8);
-            const alpha = 0.08 + 0.65 * Math.max(0, Math.min(1, 1 - depth));
+        // Metatron's Cube (final panel)
+        if (prog >= GEO.length - 0.7) {
+            const mf = clamp((prog - (GEO.length - 0.7)) / 0.7, 0, 1);
+            const mR = Math.min(W,H) * 0.22 * 1.8;
+            X.globalAlpha = mf * 0.6; X.shadowColor = cs; X.shadowBlur = 20;
+            X.strokeStyle = cs; X.lineWidth = 0.6;
+            const mRot = t * 0.05;
+            const mPts = META_V.map(v => {
+                let p = [v[0]*mR, v[1]*mR, v[2]*mR];
+                p[2] += Math.sin(t*0.3+v[0]*3)*15;
+                return {x:cx+p[0]*Math.cos(mRot)-p[1]*Math.sin(mRot), y:cy+p[0]*Math.sin(mRot)+p[1]*Math.cos(mRot)};
+            });
+            META_E.forEach(([a,b]) => { X.beginPath(); X.moveTo(mPts[a].x,mPts[a].y); X.lineTo(mPts[b].x,mPts[b].y); X.stroke(); });
+            X.globalAlpha = mf * 0.8;
+            mPts.forEach((p,i) => { X.fillStyle = i===0?cs2:cs; X.beginPath(); X.arc(p.x,p.y,i===0?3:1.8,0,Math.PI*2); X.fill(); });
+            drawFlowerOfLife(cx, cy, mR*1.1, mf, cs, t);
+            drawFlowerOfLife(cx, cy, mR*0.7, mf, cs2, t);
+        }
 
-            X.globalAlpha = alpha;
-            X.strokeStyle = cs;
-            X.lineWidth = 0.6 + (1 - depth) * 0.8;
-            X.beginPath();
-            X.moveTo(pa.x, pa.y);
-            X.lineTo(pb.x, pb.y);
-            X.stroke();
-        });
-
-        // Vertex dots
-        X.shadowBlur = 8;
-        pts.forEach(p => {
-            const depth = (p.z - FOV * 0.3) / (FOV * 0.8);
-            const alpha = 0.15 + 0.75 * Math.max(0, Math.min(1, 1 - depth));
-            X.globalAlpha = alpha;
-            X.fillStyle = cs;
-            X.beginPath();
-            X.arc(p.x, p.y, 1.5 + (1 - depth) * 1.5, 0, Math.PI * 2);
-            X.fill();
-        });
-
-        // === AMBIENT PARTICLES ===
-        X.shadowColor = cs2;
-        X.shadowBlur = 3;
-
-        PARTS.forEach(p => {
-            const a = p.a + t * p.spd * pSpd;
-            const r3d = p.r * baseR * 0.5;
-            let pt = [
-                Math.cos(a) * r3d,
-                p.y * baseR * 0.4 + Math.sin(t * 0.4 + p.off) * baseR * 0.15,
-                Math.sin(a) * r3d
-            ];
-            pt = rZ(pt, rz * 0.2);
-            pt = rY(pt, ry * 0.4);
-            pt = rX(pt, rx * 0.3);
+        // Ambient particles
+        X.shadowColor = cs2; X.shadowBlur = 3;
+        const ap = Math.round(PARTS.length * pSpd);
+        for (let i = 0; i < ap; i++) {
+            const p = PARTS[i];
+            const a = p.a + t*p.spd*pSpd;
+            const r3d = p.r*baseR*0.5;
+            let pt = [Math.cos(a)*r3d, p.y*baseR*0.4+Math.sin(t*0.4+p.off)*baseR*0.15, Math.sin(a)*r3d];
+            pt = rZ(pt,rz*0.2); pt = rY(pt,ry*0.4); pt = rX(pt,rx*0.3);
             const pr = proj(pt);
-            const depth = (pr.z - FOV * 0.3) / (FOV * 0.8);
-            const alpha = Math.max(0.03, 0.3 * (1 - depth));
+            const depth = (pr.z-FOV*0.3)/(FOV*0.8);
+            X.globalAlpha = Math.max(0.03,0.3*(1-depth)); X.fillStyle = cs2;
+            X.beginPath(); X.arc(cx+pr.x,cy+pr.y,p.sz,0,Math.PI*2); X.fill();
+        }
 
-            X.globalAlpha = alpha;
-            X.fillStyle = cs2;
-            X.beginPath();
-            X.arc(cx + pr.x, cy + pr.y, p.sz, 0, Math.PI * 2);
-            X.fill();
-        });
-
-        // === CONNECTION LINES between nearby ambient particles ===
-        X.shadowBlur = 0;
-        X.lineWidth = 0.3;
-        for (let i = 0; i < PARTS.length; i++) {
-            const ai = PARTS[i];
-            const aA = ai.a + t * ai.spd * pSpd;
-            const rA = ai.r * baseR * 0.5;
+        // Connection lines
+        X.shadowBlur = 0; X.lineWidth = 0.3;
+        for (let i = 0; i < ap; i++) {
+            const ai = PARTS[i]; const aA = ai.a+t*ai.spd*pSpd; const rA = ai.r*baseR*0.5;
             let pA = [Math.cos(aA)*rA, ai.y*baseR*0.4, Math.sin(aA)*rA];
-            pA = rY(pA, ry*0.4); pA = rX(pA, rx*0.3);
-            const prA = proj(pA);
-
-            for (let j = i + 1; j < Math.min(i + 5, PARTS.length); j++) {
-                const bj = PARTS[j];
-                const aB = bj.a + t * bj.spd * pSpd;
-                const rB = bj.r * baseR * 0.5;
+            pA = rY(pA,ry*0.4); pA = rX(pA,rx*0.3); const prA = proj(pA);
+            for (let j = i+1; j < Math.min(i+5,ap); j++) {
+                const bj = PARTS[j]; const aB = bj.a+t*bj.spd*pSpd; const rB = bj.r*baseR*0.5;
                 let pB = [Math.cos(aB)*rB, bj.y*baseR*0.4, Math.sin(aB)*rB];
-                pB = rY(pB, ry*0.4); pB = rX(pB, rx*0.3);
-                const prB = proj(pB);
-
-                const dx = (cx+prA.x)-(cx+prB.x), dy = (cy+prA.y)-(cy+prB.y);
-                const d = Math.sqrt(dx*dx+dy*dy);
-                if (d < 80) {
-                    X.globalAlpha = (1 - d/80) * 0.06;
-                    X.strokeStyle = cs2;
-                    X.beginPath();
-                    X.moveTo(cx+prA.x, cy+prA.y);
-                    X.lineTo(cx+prB.x, cy+prB.y);
-                    X.stroke();
-                }
+                pB = rY(pB,ry*0.4); pB = rX(pB,rx*0.3); const prB = proj(pB);
+                const dx=(cx+prA.x)-(cx+prB.x),dy=(cy+prA.y)-(cy+prB.y),d=Math.sqrt(dx*dx+dy*dy);
+                if (d<80) { X.globalAlpha=(1-d/80)*0.06; X.strokeStyle=cs2; X.beginPath(); X.moveTo(cx+prA.x,cy+prA.y); X.lineTo(cx+prB.x,cy+prB.y); X.stroke(); }
             }
         }
 
@@ -705,8 +730,8 @@ const FX = (() => {
         init() {
             resize();
             window.addEventListener('resize', resize);
-            window.addEventListener('mousemove', e => { mx = e.clientX / W; my = e.clientY / H; });
-            window.addEventListener('touchmove', e => { mx = e.touches[0].clientX / W; my = e.touches[0].clientY / H; }, { passive: true });
+            window.addEventListener('mousemove', e => { mx = e.clientX/W; my = e.clientY/H; });
+            window.addEventListener('touchmove', e => { mx = e.touches[0].clientX/W; my = e.touches[0].clientY/H; }, {passive:true});
             render();
         },
         setProgress(p) { prog = p; }
