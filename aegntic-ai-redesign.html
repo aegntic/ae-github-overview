@@ -19,1147 +19,886 @@
     <meta name="twitter:title" content="AEGNTIC — Agentic Empowerment. Verified. Layer zero.">
     <meta name="twitter:description" content="Infrastructure for sovereign persistent human–AI intelligence.">
     <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "Organization",
-      "name": "AEGNTIC",
-      "url": "https://aegntic.ai",
-      "description": "The coordination layer for persistent human–AI intelligence systems.",
-      "sameAs": [
-        "https://github.com/aegntic",
-        "https://x.com/AEGNTIC",
-        "https://tools.aegntic.ai"
-      ],
-      "knowsAbout": ["persistent intelligence coordination", "agent-to-agent systems", "sovereign AI", "experiential memory", "supervised autonomy"],
-      "makesOffer": {
-        "@type": "Offer",
-        "itemOffered": {
-          "@type": "SoftwareApplication",
-          "name": "Aegntic Coordination Layer",
-          "applicationCategory": "DeveloperApplication",
-          "operatingSystem": "Web"
-        }
-      }
-    }
+    {"@context":"https://schema.org","@type":"Organization","name":"AEGNTIC","url":"https://aegntic.ai","description":"The coordination layer for persistent human–AI intelligence systems.","sameAs":["https://github.com/aegntic","https://x.com/AEGNTIC","https://tools.aegntic.ai"]}
     </script>
     <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "SoftwareSourceCode",
-      "name": "Aegntic Coordination Layer",
-      "description": "The infrastructure layer for sovereign persistent human–AI intelligence systems. Open-source projects spanning orchestration, authenticity, continuity, sovereignty, and experiential memory primitives.",
-      "url": "https://aegntic.ai",
-      "codeRepository": "https://github.com/aegntic",
-      "programmingLanguage": "JavaScript",
-      "license": "https://opensource.org/licenses/MIT"
-    }
+    {"@context":"https://schema.org","@type":"SoftwareSourceCode","name":"Aegntic Coordination Layer","description":"The infrastructure layer for sovereign persistent human–AI intelligence systems.","url":"https://aegntic.ai","codeRepository":"https://github.com/aegntic","programmingLanguage":"JavaScript"}
     </script>
     <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "ItemList",
-      "name": "Coordination Primitives",
-      "numberOfItems": 5,
-      "itemListElement": [
-        { "@type": "ListItem", "position": 1, "name": "Orchestration", "description": "Multi-agent coordination and signal routing" },
-        { "@type": "ListItem", "position": 2, "name": "Authenticity", "description": "Human-passing intelligence at scale" },
-        { "@type": "ListItem", "position": 3, "name": "Continuity", "description": "Persistent state and experiential memory" },
-        { "@type": "ListItem", "position": 4, "name": "Sovereignty", "description": "Human oversight that never fully relinquishes control" },
-        { "@type": "ListItem", "position": 5, "name": "Experiential Memory", "description": "Intelligence that remembers and compounds" }
-      ]
-    }
+    {"@context":"https://schema.org","@type":"ItemList","name":"Coordination Primitives","numberOfItems":5,"itemListElement":[{"@type":"ListItem","position":1,"name":"Orchestration"},{"@type":"ListItem","position":2,"name":"Authenticity"},{"@type":"ListItem","position":3,"name":"Continuity"},{"@type":"ListItem","position":4,"name":"Sovereignty"},{"@type":"ListItem","position":5,"name":"Experiential Memory"}]}
     </script>
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&amp;family=Space+Grotesk:wght@500;600&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Space+Grotesk:wght@500;600&family=JetBrains+Mono:wght@400;500&display=swap">
     <style>
-        :root {
-            --void: #050505;
-            --deep: #0a0a0f;
-            --text: #f1f1f1;
-            --muted: #8a8a8f;
-            --teal: #00d4b8;
-            --bronze: #b38b5e;
-            --edge: #1a1a20;
+        :root{--void:#050505;--deep:#0a0a0f;--text:#f1f1f1;--muted:#8a8a8f;--teal:#00d4b8;--bronze:#b38b5e;--edge:#1a1a20}
+        *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+        body{font-family:'Inter',system-ui,sans-serif;background:var(--void);color:var(--text);overflow:hidden;-webkit-font-smoothing:antialiased}
+        .fd{font-family:'Space Grotesk',sans-serif}.fm{font-family:'JetBrains Mono',monospace}
+
+        /* FX CANVAS */
+        #fx-canvas{position:fixed;inset:0;width:100vw;height:100dvh;z-index:0;pointer-events:none}
+        #vignette{position:fixed;inset:0;z-index:1;pointer-events:none;background:radial-gradient(ellipse at center,transparent 25%,rgba(5,5,5,0.65) 80%,rgba(5,5,5,0.9) 100%)}
+
+        /* VIEWPORT */
+        #viewport{position:fixed;inset:0;overflow:hidden;width:100vw;height:100dvh;z-index:10}
+        #world{position:absolute;top:0;left:0;will-change:transform}
+        .panel{position:absolute;width:100vw;height:100dvh;display:flex;align-items:center;justify-content:center;overflow:hidden}
+
+        /* NAV */
+        #nav{position:fixed;top:0;left:0;right:0;z-index:200;background:rgba(5,5,5,0.88);border-bottom:1px solid rgba(255,255,255,0.06);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);height:54px}
+        #nav-inner{max-width:80rem;margin:0 auto;padding:0 1.5rem;height:100%;display:flex;align-items:center;justify-content:space-between}
+        #nav-logo-link{display:flex;align-items:center;gap:0.6rem;text-decoration:none;color:inherit}
+        #nav-logo{height:22px;width:auto}
+        .nav-brand{font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:0.75rem;letter-spacing:-0.02em}
+
+        /* DROPDOWN */
+        #menu-btn{display:flex;align-items:center;gap:0.45rem;background:none;border:1px solid rgba(255,255,255,0.08);border-radius:8px;color:var(--muted);font-size:0.7rem;font-family:'JetBrains Mono',monospace;letter-spacing:0.08em;text-transform:uppercase;padding:0.35rem 0.75rem;cursor:pointer;transition:border-color 200ms,color 200ms}
+        #menu-btn:hover{border-color:rgba(255,255,255,0.18);color:var(--text)}
+        #menu-btn svg{transition:transform 300ms cubic-bezier(0.23,1,0.32,1)}
+        #menu-btn.open svg{transform:rotate(180deg)}
+        #menu-dropdown{position:absolute;top:calc(100% + 6px);right:0;background:rgba(10,10,15,0.97);border:1px solid rgba(255,255,255,0.07);border-radius:12px;backdrop-filter:blur(28px);-webkit-backdrop-filter:blur(28px);min-width:210px;padding:0.4rem;opacity:0;visibility:hidden;transform:translateY(-8px) scale(0.96);transition:opacity 250ms cubic-bezier(0.23,1,0.32,1),transform 250ms cubic-bezier(0.23,1,0.32,1),visibility 250ms}
+        #menu-dropdown.open{opacity:1;visibility:visible;transform:translateY(0) scale(1)}
+        .menu-item{display:flex;align-items:center;gap:0.65rem;padding:0.55rem 0.75rem;border-radius:8px;cursor:pointer;transition:background 150ms;text-decoration:none;color:inherit}
+        .menu-item:hover{background:rgba(255,255,255,0.04)}
+        .menu-item.active .menu-label{color:var(--teal)}
+        .menu-num{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--muted);width:18px}
+        .menu-label{font-size:0.78rem;color:var(--text);transition:color 150ms}
+        .menu-sep{height:1px;background:var(--edge);margin:0.3rem 0.75rem}
+        .menu-ext{font-size:0.72rem;color:var(--muted)}
+        .menu-ext:hover .menu-label{color:var(--text)}
+
+        /* PROGRESS */
+        #progress{position:fixed;bottom:1.25rem;left:50%;transform:translateX(-50%);z-index:101;display:flex;align-items:center;gap:5px}
+        .prog-dot{width:22px;height:2px;border-radius:1px;background:var(--edge);transition:background 300ms,width 300ms}
+        .prog-dot.active{background:var(--teal);width:34px}
+        .prog-dot.passed{background:rgba(0,212,184,0.25)}
+
+        /* SECTION LABEL */
+        .slabel{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.2em;text-transform:uppercase;color:var(--teal)}
+
+        /* GLASS */
+        .glass{background:rgba(255,255,255,0.015);border:1px solid rgba(255,255,255,0.06);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)}
+
+        /* ACCORDION */
+        .prim-item{border-bottom:1px solid var(--edge);cursor:pointer;transition:background 200ms}
+        .prim-item:last-child{border-bottom:none}
+        .prim-item:hover{background:rgba(255,255,255,0.02)}
+        .prim-head{display:flex;align-items:center;justify-content:space-between;padding:0.8rem 1rem}
+        .prim-name{font-family:'Space Grotesk',sans-serif;font-size:0.95rem;font-weight:600;letter-spacing:-0.02em}
+        .prim-tag{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:0.1em;text-transform:uppercase;padding:2px 6px;border-radius:4px}
+        .prim-body{max-height:0;overflow:hidden;transition:max-height 400ms cubic-bezier(0.23,1,0.32,1),padding 300ms;padding:0 1rem}
+        .prim-item.open .prim-body{max-height:200px;padding:0 1rem 0.75rem}
+        .prim-chev{transition:transform 300ms ease-out;color:var(--muted)}
+        .prim-item.open .prim-chev{transform:rotate(180deg)}
+
+        /* PROJECT CARDS */
+        .pcard{background:rgba(255,255,255,0.015);border:1px solid rgba(255,255,255,0.06);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-radius:12px;padding:0.9rem;transition:border-color 200ms,background 200ms;text-decoration:none;color:inherit;display:block}
+        .pcard:hover{border-color:rgba(0,212,184,0.25);background:rgba(255,255,255,0.025)}
+
+        /* ANIMATIONS */
+        @keyframes pulse{0%,100%{opacity:0.3}50%{opacity:1}}
+        .scroll-hint{animation:pulse 2s ease-in-out infinite}
+        .reveal{opacity:0;transform:translateY(16px);transition:opacity 500ms cubic-bezier(0.23,1,0.32,1),transform 500ms cubic-bezier(0.23,1,0.32,1)}
+        .panel.visible .reveal{opacity:1;transform:translateY(0)}
+        .panel.visible .reveal:nth-child(2){transition-delay:70ms}
+        .panel.visible .reveal:nth-child(3){transition-delay:140ms}
+        .panel.visible .reveal:nth-child(4){transition-delay:210ms}
+        .panel.visible .reveal:nth-child(5){transition-delay:280ms}
+
+        @media(prefers-reduced-motion:reduce){
+            .scroll-hint{animation:none;opacity:0.5}
+            .reveal{opacity:1;transform:none;transition:none}
+            .prim-body{transition:none}
         }
-
-        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-        body {
-            font-family: 'Inter', system-ui, sans-serif;
-            background: var(--void);
-            color: var(--text);
-            overflow: hidden;
-            -webkit-font-smoothing: antialiased;
-        }
-
-        /* === SCROLL ENGINE === */
-        /* The viewport is fixed. A large "world" div is transformed by the camera. */
-        #scroll-viewport {
-            position: fixed;
-            inset: 0;
-            overflow: hidden;
-            width: 100vw;
-            height: 100dvh;
-        }
-
-        #scroll-world {
-            position: absolute;
-            top: 0;
-            left: 0;
-            will-change: transform;
-            transition: none;
-        }
-
-        /* Section panels positioned in the 2D world layout */
-        .scroll-panel {
-            position: absolute;
-            width: 100vw;
-            height: 100dvh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            overflow: hidden;
-        }
-
-        /* === NAV (fixed overlay, not part of scroll world) === */
-        #main-nav {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            z-index: 100;
-            background: rgba(5,5,5,0.95);
-            border-bottom: 1px solid rgba(255,255,255,0.1);
-            backdrop-filter: blur(24px);
-            -webkit-backdrop-filter: blur(24px);
-        }
-
-        /* === PROGRESS INDICATOR === */
-        #scroll-progress {
-            position: fixed;
-            bottom: 1.5rem;
-            right: 1.5rem;
-            z-index: 101;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 10px;
-            letter-spacing: 0.15em;
-            color: var(--muted);
-            text-transform: uppercase;
-        }
-
-        #progress-bar-track {
-            width: 48px;
-            height: 2px;
-            background: var(--edge);
-            border-radius: 1px;
-            overflow: hidden;
-        }
-
-        #progress-bar-fill {
-            height: 100%;
-            background: var(--teal);
-            border-radius: 1px;
-            width: 0%;
-            transition: width 80ms ease-out;
-        }
-
-        /* === SECTION DOTS === */
-        #section-dots {
-            position: fixed;
-            right: 1.5rem;
-            top: 50%;
-            transform: translateY(-50%);
-            z-index: 101;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-
-        .section-dot {
-            width: 6px;
-            height: 6px;
-            border-radius: 50%;
-            background: var(--edge);
-            cursor: pointer;
-            transition: all 200ms ease-out;
-        }
-
-        .section-dot.active {
-            background: var(--teal);
-            box-shadow: 0 0 8px rgba(0,212,184,0.4);
-        }
-
-        .section-dot:hover {
-            background: var(--muted);
-        }
-
-        /* === TYPOGRAPHY === */
-        .font-display { font-family: 'Space Grotesk', sans-serif; }
-        .font-mono { font-family: 'JetBrains Mono', monospace; }
-
-        .section-label {
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 10px;
-            letter-spacing: 0.2em;
-            text-transform: uppercase;
-            color: var(--teal);
-        }
-
-        /* === GLASS CARDS === */
-        .glass {
-            background: rgba(255,255,255,0.015);
-            border: 1px solid rgba(255,255,255,0.06);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-        }
-
-        /* === PRIMITIVE ACCORDION === */
-        .primitive-item {
-            border-bottom: 1px solid var(--edge);
-            cursor: pointer;
-            transition: all 200ms ease-out;
-        }
-
-        .primitive-item:last-child { border-bottom: none; }
-
-        .primitive-item:hover {
-            background: rgba(255,255,255,0.02);
-        }
-
-        .primitive-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 1rem 1.25rem;
-        }
-
-        .primitive-name {
-            font-family: 'Space Grotesk', sans-serif;
-            font-size: 1.125rem;
-            font-weight: 600;
-            letter-spacing: -0.02em;
-        }
-
-        .primitive-tag {
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 9px;
-            letter-spacing: 0.12em;
-            text-transform: uppercase;
-            padding: 2px 8px;
-            border-radius: 4px;
-        }
-
-        .primitive-body {
-            max-height: 0;
-            overflow: hidden;
-            transition: max-height 400ms cubic-bezier(0.23, 1, 0.32, 1), padding 300ms ease-out;
-            padding: 0 1.25rem;
-        }
-
-        .primitive-item.open .primitive-body {
-            max-height: 200px;
-            padding: 0 1.25rem 1rem;
-        }
-
-        .primitive-chevron {
-            transition: transform 300ms ease-out;
-            color: var(--muted);
-        }
-
-        .primitive-item.open .primitive-chevron {
-            transform: rotate(180deg);
-        }
-
-        /* === GAP SECTION === */
-        .gap-card {
-            background: rgba(255,255,255,0.015);
-            border: 1px solid rgba(255,255,255,0.04);
-            border-radius: 12px;
-            padding: 1rem 1.25rem;
-            transition: all 250ms ease-out;
-        }
-
-        .gap-card:hover {
-            border-color: rgba(255,255,255,0.08);
-            background: rgba(255,255,255,0.025);
-        }
-
-        .gap-card .strike-label {
-            text-decoration: line-through;
-            text-decoration-color: rgba(255,255,255,0.2);
-        }
-
-        /* === PROJECT CARDS === */
-        .project-card {
-            background: rgba(255,255,255,0.015);
-            border: 1px solid rgba(255,255,255,0.06);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            border-radius: 16px;
-            padding: 1.25rem;
-            transition: all 200ms ease-out;
-            text-decoration: none;
-            color: inherit;
-            display: block;
-        }
-
-        .project-card:hover {
-            border-color: rgba(0,212,184,0.3);
-            background: rgba(255,255,255,0.025);
-        }
-
-        /* === SCROLL HINT === */
-        @keyframes scrollHint {
-            0%, 100% { opacity: 0.4; transform: translateY(0); }
-            50% { opacity: 1; transform: translateY(6px); }
-        }
-
-        .scroll-hint {
-            animation: scrollHint 2s ease-in-out infinite;
-        }
-
-        /* === REDUCED MOTION === */
-        @media (prefers-reduced-motion: reduce) {
-            .scroll-hint { animation: none; opacity: 0.6; }
-            #scroll-world { transition: transform 200ms ease-out !important; }
-            .primitive-body { transition: none; }
-        }
-
-        /* === RESPONSIVE === */
-        @media (max-width: 768px) {
-            .scroll-panel { padding: 0 1.5rem; }
-            .section-inner { max-width: 100% !important; }
+        @media(max-width:768px){
+            .panel{padding:0 1rem}
+            .inner{max-width:100%!important}
         }
     </style>
 </head>
 <body>
-    <!-- Fixed Nav Overlay -->
-    <nav id="main-nav">
-        <div style="max-width:80rem;margin:0 auto;padding:0 2rem;height:3.5rem;display:flex;align-items:center;justify-content:space-between;">
-            <a href="#" style="display:flex;align-items:center;gap:0.75rem;text-decoration:none;color:inherit;">
-                <img id="nav-logo" src="" alt="ae" style="height:26px;width:auto;">
-                <span class="font-display" style="font-weight:600;font-size:0.875rem;letter-spacing:-0.02em;">AEGNTIC</span>
-            </a>
-            <div style="display:flex;align-items:center;gap:1.5rem;font-size:0.8rem;">
-                <a href="https://github.com/aegntic" target="_blank" style="color:var(--muted);text-decoration:none;transition:color 150ms;" onmouseover="this.style.color='#f1f1f1'" onmouseout="this.style.color='var(--muted)'">GitHub</a>
-                <a href="https://tools.aegntic.ai" target="_blank" style="color:var(--muted);text-decoration:none;transition:color 150ms;" onmouseover="this.style.color='#f1f1f1'" onmouseout="this.style.color='var(--muted)'">Tools</a>
-                <a href="https://x.com/AEGNTIC" target="_blank" style="color:var(--muted);text-decoration:none;transition:color 150ms;" onmouseover="this.style.color='#f1f1f1'" onmouseout="this.style.color='var(--muted)'">X</a>
+
+<!-- FX CANVAS — full viewport generative 3D graphics -->
+<canvas id="fx-canvas"></canvas>
+<div id="vignette"></div>
+
+<!-- NAV -->
+<nav id="nav">
+    <div id="nav-inner">
+        <a href="#" id="nav-logo-link">
+            <img id="nav-logo" src="" alt="ae">
+            <span class="nav-brand">AEGNTIC</span>
+        </a>
+        <div style="position:relative">
+            <button id="menu-btn" aria-label="Navigation menu" aria-expanded="false">
+                <span id="menu-current">HERO</span>
+                <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M4 6L8 10L12 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+            </button>
+            <div id="menu-dropdown" role="menu">
+                <a class="menu-item active" data-section="0" role="menuitem"><span class="menu-num">01</span><span class="menu-label">Hero</span></a>
+                <a class="menu-item" data-section="1" role="menuitem"><span class="menu-num">02</span><span class="menu-label">The Problem</span></a>
+                <a class="menu-item" data-section="2" role="menuitem"><span class="menu-num">03</span><span class="menu-label">The Layer</span></a>
+                <a class="menu-item" data-section="3" role="menuitem"><span class="menu-num">04</span><span class="menu-label">Proof</span></a>
+                <a class="menu-item" data-section="4" role="menuitem"><span class="menu-num">05</span><span class="menu-label">About</span></a>
+                <a class="menu-item" data-section="5" role="menuitem"><span class="menu-num">06</span><span class="menu-label">Enter</span></a>
+                <div class="menu-sep"></div>
+                <a class="menu-item menu-ext" href="https://github.com/aegntic" target="_blank"><span class="menu-num">&rarr;</span><span class="menu-label">GitHub</span></a>
+                <a class="menu-item menu-ext" href="https://tools.aegntic.ai" target="_blank"><span class="menu-num">&rarr;</span><span class="menu-label">Tools</span></a>
+                <a class="menu-item menu-ext" href="https://x.com/AEGNTIC" target="_blank"><span class="menu-num">&rarr;</span><span class="menu-label">X</span></a>
             </div>
         </div>
-    </nav>
+    </div>
+</nav>
 
-    <!-- Section navigation dots -->
-    <div id="section-dots">
-        <div class="section-dot active" data-section="0" title="Hero"></div>
-        <div class="section-dot" data-section="1" title="The Gap"></div>
-        <div class="section-dot" data-section="2" title="The Layer"></div>
-        <div class="section-dot" data-section="3" title="Proof"></div>
-        <div class="section-dot" data-section="4" title="CTA"></div>
+<!-- PROGRESS -->
+<div id="progress">
+    <div class="prog-dot active" data-i="0"></div>
+    <div class="prog-dot" data-i="1"></div>
+    <div class="prog-dot" data-i="2"></div>
+    <div class="prog-dot" data-i="3"></div>
+    <div class="prog-dot" data-i="4"></div>
+    <div class="prog-dot" data-i="5"></div>
+</div>
+
+<!-- VIEWPORT -->
+<div id="viewport">
+<div id="world">
+
+    <!-- 0: HERO -->
+    <div class="panel visible" id="p0" style="left:0vw;top:0vh">
+        <div class="inner" style="position:relative;z-index:10;text-align:center;max-width:46rem;padding:0 2rem">
+            <div class="slabel reveal" style="margin-bottom:1.1rem">LAYER ZERO</div>
+            <h1 class="fd reveal" style="font-size:clamp(2.2rem,5.5vw,3.8rem);font-weight:600;line-height:0.95;letter-spacing:-0.035em">
+                What if intelligence<br>
+                <span style="background:linear-gradient(135deg,var(--teal),var(--bronze));-webkit-background-clip:text;background-clip:text;color:transparent">could persist?</span>
+            </h1>
+            <p class="reveal" style="margin-top:1.1rem;font-size:0.95rem;line-height:1.6;color:var(--muted);max-width:26rem;margin-left:auto;margin-right:auto">
+                Not stateless prompts. Not sessions that forget.<br>
+                Coordinated, sovereign, memory-bearing systems.
+            </p>
+            <div class="reveal" style="margin-top:1.5rem;display:flex;align-items:center;justify-content:center;gap:1rem;flex-wrap:wrap">
+                <div class="fm" style="font-size:0.7rem"><span id="stat-repos" style="color:var(--teal);font-weight:500">42</span> <span style="color:var(--muted)">REPOS</span></div>
+                <div style="color:var(--edge)">&middot;</div>
+                <div class="fm" style="font-size:0.7rem"><span id="stat-stars" style="color:var(--teal);font-weight:500">72</span> <span style="color:var(--muted)">STARS</span></div>
+                <div style="color:var(--edge)">&middot;</div>
+                <div class="fm" style="font-size:0.7rem"><span id="stat-followers" style="color:var(--teal);font-weight:500">16</span> <span style="color:var(--muted)">BUILDERS</span></div>
+            </div>
+            <div class="reveal" style="margin-top:2.5rem">
+                <span class="fm scroll-hint" style="font-size:9px;letter-spacing:0.15em;color:var(--muted)">SCROLL TO CONTINUE &rarr;</span>
+            </div>
+        </div>
     </div>
 
-    <!-- Scroll progress -->
-    <div id="scroll-progress">
-        <div id="progress-bar-track"><div id="progress-bar-fill"></div></div>
-        <span id="progress-label">HERO</span>
+    <!-- 1: THE PROBLEM -->
+    <div class="panel" id="p1" style="left:100vw;top:0vh">
+        <div class="inner" style="max-width:38rem;padding:0 2rem">
+            <div class="slabel reveal" style="margin-bottom:1.25rem">THE PROBLEM</div>
+            <h2 class="fd reveal" style="font-size:clamp(1.5rem,3.5vw,2.3rem);font-weight:600;line-height:1.08;letter-spacing:-0.025em;margin-bottom:1rem">
+                Every AI breakthrough<br>works in isolation.
+            </h2>
+            <p class="reveal" style="font-size:0.9rem;line-height:1.65;color:var(--muted);margin-bottom:1.75rem">
+                The tools get better every week. But connecting them into something that persists, coordinates, and remains under human control? That infrastructure does not exist. So we are building it.
+            </p>
+            <div class="reveal" style="display:flex;flex-direction:column;gap:0.5rem">
+                <div style="display:flex;align-items:flex-start;gap:0.65rem;padding:0.65rem 0.85rem;background:rgba(255,255,255,0.015);border:1px solid rgba(255,255,255,0.04);border-radius:10px">
+                    <span class="fm" style="color:var(--edge);font-size:0.7rem;min-width:105px;text-decoration:line-through;text-decoration-color:rgba(255,255,255,0.12)">PROMPTS</span>
+                    <span style="font-size:0.78rem;color:var(--muted);line-height:1.45">Context resets every session. No memory. No continuity of thought.</span>
+                </div>
+                <div style="display:flex;align-items:flex-start;gap:0.65rem;padding:0.65rem 0.85rem;background:rgba(255,255,255,0.015);border:1px solid rgba(255,255,255,0.04);border-radius:10px">
+                    <span class="fm" style="color:var(--edge);font-size:0.7rem;min-width:105px;text-decoration:line-through;text-decoration-color:rgba(255,255,255,0.12)">FINE-TUNING</span>
+                    <span style="font-size:0.78rem;color:var(--muted);line-height:1.45">Brittle, expensive. Cannot adapt in real-time to new contexts.</span>
+                </div>
+                <div style="display:flex;align-items:flex-start;gap:0.65rem;padding:0.65rem 0.85rem;background:rgba(255,255,255,0.015);border:1px solid rgba(255,255,255,0.04);border-radius:10px">
+                    <span class="fm" style="color:var(--edge);font-size:0.7rem;min-width:105px;text-decoration:line-through;text-decoration-color:rgba(255,255,255,0.12)">RAG</span>
+                    <span style="font-size:0.78rem;color:var(--muted);line-height:1.45">Retrieval, not understanding. Stitches text without comprehension.</span>
+                </div>
+                <div style="display:flex;align-items:flex-start;gap:0.65rem;padding:0.65rem 0.85rem;background:rgba(255,255,255,0.015);border:1px solid rgba(255,255,255,0.04);border-radius:10px">
+                    <span class="fm" style="color:var(--edge);font-size:0.7rem;min-width:105px;text-decoration:line-through;text-decoration-color:rgba(255,255,255,0.12)">MANUAL ORCH</span>
+                    <span style="font-size:0.78rem;color:var(--muted);line-height:1.45">Human bottleneck. Breaks at multi-agent scale.</span>
+                </div>
+            </div>
+            <div class="reveal" style="margin-top:1.5rem">
+                <p style="font-size:0.9rem;line-height:1.5;color:var(--text);opacity:0.85">The missing piece is not another model. It is a <span style="color:var(--teal)">coordination layer</span>.</p>
+            </div>
+        </div>
     </div>
 
-    <!-- Scroll Viewport -->
-    <div id="scroll-viewport">
-        <div id="scroll-world">
-
-            <!-- ====== SECTION 0: HERO ====== -->
-            <div class="scroll-panel" id="panel-hero" data-section="0" style="left:0vw;top:0vh;">
-                <canvas id="hero-field" style="position:absolute;inset:0;width:100%;height:100%;opacity:0.3;pointer-events:none;"></canvas>
-                <div style="position:relative;z-index:10;text-align:center;max-width:52rem;padding:0 2rem;">
-                    <div class="section-label" style="margin-bottom:1.5rem;">LAYER ZERO</div>
-                    <h1 class="font-display" style="font-size:clamp(2.5rem,6vw,4.25rem);font-weight:600;line-height:0.95;letter-spacing:-0.03em;">
-                        Agentic Empowerment.<br>
-                        <span style="background:linear-gradient(135deg,var(--teal),var(--bronze));-webkit-background-clip:text;background-clip:text;color:transparent;">Verified.</span>
-                    </h1>
-                    <p style="margin-top:1.5rem;font-size:1.0625rem;line-height:1.6;color:var(--muted);max-width:32rem;margin-left:auto;margin-right:auto;">
-                        The coordination layer for persistent human&ndash;AI intelligence. Five primitives. One infrastructural thesis. Open source.
-                    </p>
-                    <div id="hero-stats" style="margin-top:1.5rem;display:flex;align-items:center;justify-content:center;gap:1.25rem;font-family:'JetBrains Mono',monospace;font-size:0.8125rem;">
-                        <span><span id="stat-repos" style="color:var(--teal);">42</span> REPOS</span>
-                        <span style="color:var(--edge);">|</span>
-                        <span><span id="stat-stars" style="color:var(--teal);">72</span> STARS</span>
-                        <span style="color:var(--edge);">|</span>
-                        <span><span id="stat-followers" style="color:var(--teal);">16</span> FOLLOWERS</span>
-                    </div>
-                    <div style="margin-top:2rem;display:flex;align-items:center;justify-content:center;gap:0.75rem;flex-wrap:wrap;">
-                        <a href="https://github.com/aegntic" target="_blank" style="display:inline-flex;align-items:center;height:2.75rem;padding:0 2rem;border-radius:1rem;border:1px solid rgba(255,255,255,0.15);font-size:0.875rem;text-decoration:none;color:var(--text);transition:background 150ms;" onmouseover="this.style.background='rgba(255,255,255,0.05)'" onmouseout="this.style.background='transparent'">BROWSE THE SOURCE</a>
-                        <a href="https://tools.aegntic.ai" target="_blank" style="display:inline-flex;align-items:center;height:2.75rem;padding:0 2rem;border-radius:1rem;border:1px solid rgba(179,139,94,0.4);font-size:0.875rem;text-decoration:none;color:var(--bronze);transition:background 150ms;" onmouseover="this.style.background='rgba(179,139,94,0.1)'" onmouseout="this.style.background='transparent'">SEE THE LAYER IN PRODUCTS</a>
-                    </div>
-                    <div class="scroll-hint" style="margin-top:3rem;font-size:10px;letter-spacing:0.15em;color:var(--muted);font-family:'JetBrains Mono',monospace;">
-                        SCROLL TO CONTINUE &darr;
-                    </div>
+    <!-- 2: THE LAYER -->
+    <div class="panel" id="p2" style="left:200vw;top:0vh">
+        <div class="inner" style="max-width:40rem;padding:0 2rem">
+            <div class="slabel reveal" style="margin-bottom:1.25rem">THE LAYER</div>
+            <h2 class="fd reveal" style="font-size:clamp(1.5rem,3.5vw,2.3rem);font-weight:600;line-height:1.08;letter-spacing:-0.025em;margin-bottom:0.5rem">
+                Five primitives. One infrastructural thesis.
+            </h2>
+            <p class="reveal" style="font-size:0.9rem;line-height:1.5;color:var(--muted);margin-bottom:1.25rem">
+                Not a product. A commitment. Five interdependent primitives that make persistent intelligence possible.
+            </p>
+            <div class="reveal glass" style="border-radius:14px;overflow:hidden" id="accordion">
+                <div class="prim-item" data-p="orch">
+                    <div class="prim-head"><div style="display:flex;align-items:center;gap:0.5rem"><span style="color:var(--teal)">&#x2726;</span><span class="prim-name">Orchestration</span></div><div style="display:flex;align-items:center;gap:0.5rem"><span class="prim-tag" style="color:var(--teal);background:rgba(0,212,184,0.08)">COORDINATION</span><svg class="prim-chev" width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M4 6L8 10L12 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></div></div>
+                    <div class="prim-body"><p style="font-size:0.78rem;line-height:1.6;color:var(--muted)">Multi-agent signal routing and distributed task coordination. The layer connects specialized agents, routes signals, and manages execution without a single point of failure.</p></div>
+                </div>
+                <div class="prim-item" data-p="auth">
+                    <div class="prim-head"><div style="display:flex;align-items:center;gap:0.5rem"><span style="color:var(--bronze)">&#x2726;</span><span class="prim-name">Authenticity</span></div><div style="display:flex;align-items:center;gap:0.5rem"><span class="prim-tag" style="color:var(--bronze);background:rgba(179,139,94,0.08)">HUMAN-LIKE</span><svg class="prim-chev" width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M4 6L8 10L12 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></div></div>
+                    <div class="prim-body"><p style="font-size:0.78rem;line-height:1.6;color:var(--muted)">27 behavioral patterns. 98%+ detector resistance. Intelligence that feels and reads as human in real production environments, not just benchmarks.</p></div>
+                </div>
+                <div class="prim-item" data-p="cont">
+                    <div class="prim-head"><div style="display:flex;align-items:center;gap:0.5rem"><span style="color:var(--teal)">&#x2726;</span><span class="prim-name">Continuity</span></div><div style="display:flex;align-items:center;gap:0.5rem"><span class="prim-tag" style="color:var(--teal);background:rgba(0,212,184,0.08)">PERSISTENCE</span><svg class="prim-chev" width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M4 6L8 10L12 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></div></div>
+                    <div class="prim-body"><p style="font-size:0.78rem;line-height:1.6;color:var(--muted)">State that survives sessions and compounds over time. Agents remember, learn, and build on prior interactions instead of starting from zero each time.</p></div>
+                </div>
+                <div class="prim-item" data-p="sov">
+                    <div class="prim-head"><div style="display:flex;align-items:center;gap:0.5rem"><span style="color:var(--bronze)">&#x2726;</span><span class="prim-name">Sovereignty</span></div><div style="display:flex;align-items:center;gap:0.5rem"><span class="prim-tag" style="color:var(--bronze);background:rgba(179,139,94,0.08)">OVERSIGHT</span><svg class="prim-chev" width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M4 6L8 10L12 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></div></div>
+                    <div class="prim-body"><p style="font-size:0.78rem;line-height:1.6;color:var(--muted)">Human oversight that never fully relinquishes control. Autonomous systems remain supervised, steerable, and accountable at every layer.</p></div>
+                </div>
+                <div class="prim-item" data-p="mem">
+                    <div class="prim-head"><div style="display:flex;align-items:center;gap:0.5rem"><span style="color:var(--teal)">&#x2726;</span><span class="prim-name">Experiential Memory</span></div><div style="display:flex;align-items:center;gap:0.5rem"><span class="prim-tag" style="color:var(--teal);background:rgba(0,212,184,0.08)">COMPOUNDING</span><svg class="prim-chev" width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M4 6L8 10L12 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></div></div>
+                    <div class="prim-body"><p style="font-size:0.78rem;line-height:1.6;color:var(--muted)">Intelligence that remembers and compounds. Not data storage, but experiential understanding that grows richer with each interaction and decision cycle.</p></div>
                 </div>
             </div>
+        </div>
+    </div>
 
-            <!-- ====== SECTION 1: THE GAP ====== -->
-            <div class="scroll-panel" id="panel-gap" data-section="1" style="left:100vw;top:0vh;">
-                <div class="section-inner" style="max-width:42rem;padding:0 2rem;">
-                    <div class="section-label" style="margin-bottom:2rem;">THE GAP</div>
-                    <h2 class="font-display" style="font-size:clamp(1.75rem,4vw,2.75rem);font-weight:600;line-height:1.1;letter-spacing:-0.025em;margin-bottom:1.5rem;">
-                        Intelligence tools are evolving.<br>The gap between them is not.
-                    </h2>
-                    <p style="font-size:1rem;line-height:1.625;color:var(--muted);margin-bottom:2rem;">
-                        Each breakthrough in AI works in isolation. Connecting them into persistent, sovereign systems requires something that does not exist yet: a coordination layer.
-                    </p>
-                    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:0.75rem;">
-                        <div class="gap-card">
-                            <div class="font-mono strike-label" style="font-size:11px;color:var(--muted);margin-bottom:0.375rem;">Prompt Engineering</div>
-                            <div style="font-size:0.8125rem;color:var(--muted);">Stateless. Context resets. No memory across sessions.</div>
-                        </div>
-                        <div class="gap-card">
-                            <div class="font-mono strike-label" style="font-size:11px;color:var(--muted);margin-bottom:0.375rem;">Fine-tuning</div>
-                            <div style="font-size:0.8125rem;color:var(--muted);">Brittle. Expensive. Cannot adapt in real-time.</div>
-                        </div>
-                        <div class="gap-card">
-                            <div class="font-mono strike-label" style="font-size:11px;color:var(--muted);margin-bottom:0.375rem;">RAG Pipelines</div>
-                            <div style="font-size:0.8125rem;color:var(--muted);">Retrieval, not understanding. No continuity of thought.</div>
-                        </div>
-                        <div class="gap-card">
-                            <div class="font-mono strike-label" style="font-size:11px;color:var(--muted);margin-bottom:0.375rem;">Manual Orchestration</div>
-                            <div style="font-size:0.8125rem;color:var(--muted);">Human bottleneck. Cannot scale to multi-agent systems.</div>
-                        </div>
-                    </div>
-                    <div style="margin-top:2rem;padding-top:1.5rem;border-top:1px solid var(--edge);">
-                        <p style="font-size:1rem;line-height:1.5;color:var(--text);opacity:0.8;">
-                            None of these address <span style="color:var(--teal);">persistence</span>, <span style="color:var(--teal);">sovereignty</span>, or <span style="color:var(--teal);">coordination</span> as a unified layer. That is what we are building.
-                        </p>
-                    </div>
+    <!-- 3: PROOF -->
+    <div class="panel" id="p3" style="left:300vw;top:0vh">
+        <div class="inner" style="max-width:52rem;padding:0 2rem">
+            <div class="slabel reveal" style="margin-bottom:1.25rem">PROOF IT SHIPS</div>
+            <h2 class="fd reveal" style="font-size:clamp(1.3rem,3vw,1.9rem);font-weight:600;line-height:1.1;letter-spacing:-0.02em;margin-bottom:1.25rem">
+                Not a pitch deck. Live systems you can inspect right now.
+            </h2>
+            <div class="reveal" style="margin-bottom:1rem">
+                <div class="glass" style="border-radius:14px;overflow:hidden;position:relative;height:10rem;background:var(--void)">
+                    <canvas id="continuity-canvas" style="position:absolute;inset:0;width:100%;height:100%"></canvas>
+                    <div id="continuity-state" role="status" aria-live="polite" class="fm" style="position:absolute;bottom:0.6rem;right:0.6rem;font-size:9px;letter-spacing:0.15em;color:var(--teal);background:rgba(0,0,0,0.4);padding:2px 6px;border-radius:4px">PERSISTING</div>
+                    <div class="fm" style="position:absolute;bottom:0.6rem;left:0.6rem;font-size:8px;letter-spacing:0.1em;color:var(--muted)">DRAG TO RE-ORCHESTRATE</div>
                 </div>
             </div>
+            <div id="project-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(185px,1fr));gap:0.5rem"></div>
+        </div>
+    </div>
 
-            <!-- ====== SECTION 2: THE LAYER ====== -->
-            <div class="scroll-panel" id="panel-layer" data-section="2" style="left:200vw;top:0vh;">
-                <div class="section-inner" style="max-width:44rem;padding:0 2rem;">
-                    <div class="section-label" style="margin-bottom:2rem;">THE LAYER</div>
-                    <h2 class="font-display" style="font-size:clamp(1.75rem,4vw,2.75rem);font-weight:600;line-height:1.1;letter-spacing:-0.025em;margin-bottom:0.75rem;">
-                        Five primitives. One thesis.
-                    </h2>
-                    <p style="font-size:1rem;line-height:1.5;color:var(--muted);margin-bottom:2rem;">
-                        The coordination layer is not a product. It is an infrastructural commitment expressed through five interdependent primitives.
-                    </p>
-                    <div class="glass" style="border-radius:16px;overflow:hidden;" id="primitives-accordion">
-                        <!-- Orchestration -->
-                        <div class="primitive-item" data-primitive="orchestration">
-                            <div class="primitive-header">
-                                <div style="display:flex;align-items:center;gap:0.75rem;">
-                                    <span style="color:var(--teal);font-size:1.25rem;">&#x2726;</span>
-                                    <span class="primitive-name">Orchestration</span>
-                                </div>
-                                <div style="display:flex;align-items:center;gap:0.75rem;">
-                                    <span class="primitive-tag" style="color:var(--teal);background:rgba(0,212,184,0.1);">COORDINATION</span>
-                                    <svg class="primitive-chevron" width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M4 6L8 10L12 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
-                                </div>
-                            </div>
-                            <div class="primitive-body">
-                                <p style="font-size:0.875rem;line-height:1.6;color:var(--muted);">Multi-agent signal routing and task coordination. Agents do not operate in isolation -- the layer connects them, routes signals, and manages distributed execution across specialized systems.</p>
-                            </div>
-                        </div>
-                        <!-- Authenticity -->
-                        <div class="primitive-item" data-primitive="authenticity">
-                            <div class="primitive-header">
-                                <div style="display:flex;align-items:center;gap:0.75rem;">
-                                    <span style="color:var(--bronze);font-size:1.25rem;">&#x2726;</span>
-                                    <span class="primitive-name">Authenticity</span>
-                                </div>
-                                <div style="display:flex;align-items:center;gap:0.75rem;">
-                                    <span class="primitive-tag" style="color:var(--bronze);background:rgba(179,139,94,0.1);">HUMAN-LIKE</span>
-                                    <svg class="primitive-chevron" width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M4 6L8 10L12 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
-                                </div>
-                            </div>
-                            <div class="primitive-body">
-                                <p style="font-size:0.875rem;line-height:1.6;color:var(--muted);">Human-passing intelligence at scale. 27 behavioral patterns achieving 98%+ detector resistance. Intelligence that feels and reads as human in real production environments.</p>
-                            </div>
-                        </div>
-                        <!-- Continuity -->
-                        <div class="primitive-item" data-primitive="continuity">
-                            <div class="primitive-header">
-                                <div style="display:flex;align-items:center;gap:0.75rem;">
-                                    <span style="color:var(--teal);font-size:1.25rem;">&#x2726;</span>
-                                    <span class="primitive-name">Continuity</span>
-                                </div>
-                                <div style="display:flex;align-items:center;gap:0.75rem;">
-                                    <span class="primitive-tag" style="color:var(--teal);background:rgba(0,212,184,0.1);">PERSISTENCE</span>
-                                    <svg class="primitive-chevron" width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M4 6L8 10L12 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
-                                </div>
-                            </div>
-                            <div class="primitive-body">
-                                <p style="font-size:0.875rem;line-height:1.6;color:var(--muted);">State that survives sessions and compounds over time. Agents remember, learn, and build on prior interactions rather than starting from zero each time.</p>
-                            </div>
-                        </div>
-                        <!-- Sovereignty -->
-                        <div class="primitive-item" data-primitive="sovereignty">
-                            <div class="primitive-header">
-                                <div style="display:flex;align-items:center;gap:0.75rem;">
-                                    <span style="color:var(--bronze);font-size:1.25rem;">&#x2726;</span>
-                                    <span class="primitive-name">Sovereignty</span>
-                                </div>
-                                <div style="display:flex;align-items:center;gap:0.75rem;">
-                                    <span class="primitive-tag" style="color:var(--bronze);background:rgba(179,139,94,0.1);">OVERSIGHT</span>
-                                    <svg class="primitive-chevron" width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M4 6L8 10L12 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
-                                </div>
-                            </div>
-                            <div class="primitive-body">
-                                <p style="font-size:0.875rem;line-height:1.6;color:var(--muted);">Human oversight that never fully relinquishes control. The layer ensures that autonomous systems remain supervised, steerable, and accountable to their operators.</p>
-                            </div>
-                        </div>
-                        <!-- Experiential Memory -->
-                        <div class="primitive-item" data-primitive="memory">
-                            <div class="primitive-header">
-                                <div style="display:flex;align-items:center;gap:0.75rem;">
-                                    <span style="color:var(--teal);font-size:1.25rem;">&#x2726;</span>
-                                    <span class="primitive-name">Experiential Memory</span>
-                                </div>
-                                <div style="display:flex;align-items:center;gap:0.75rem;">
-                                    <span class="primitive-tag" style="color:var(--teal);background:rgba(0,212,184,0.1);">COMPOUNDING</span>
-                                    <svg class="primitive-chevron" width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M4 6L8 10L12 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
-                                </div>
-                            </div>
-                            <div class="primitive-body">
-                                <p style="font-size:0.875rem;line-height:1.6;color:var(--muted);">Intelligence that remembers and compounds. Not just data storage, but experiential understanding that grows richer with each interaction and decision cycle.</p>
-                            </div>
-                        </div>
-                    </div>
+    <!-- 4: ABOUT -->
+    <div class="panel" id="p4" style="left:400vw;top:0vh">
+        <div class="inner" style="max-width:36rem;padding:0 2rem">
+            <div class="slabel reveal" style="margin-bottom:1.25rem">ABOUT</div>
+            <h2 class="fd reveal" style="font-size:clamp(1.4rem,3.2vw,2.1rem);font-weight:600;line-height:1.08;letter-spacing:-0.025em;margin-bottom:1rem">
+                Solo-built. Open source.<br>Thesis-driven infrastructure.
+            </h2>
+            <p class="reveal" style="font-size:0.9rem;line-height:1.65;color:var(--muted);margin-bottom:1.25rem">
+                Aegntic is one developer building the coordination layer for persistent human&ndash;AI intelligence. 198 public repositories. Every project expresses one or more of the five primitives. No venture funding. No team of fifty. One thesis, pursued relentlessly.
+            </p>
+            <div class="reveal" style="display:grid;grid-template-columns:1fr 1fr;gap:0.6rem;margin-bottom:1.25rem">
+                <div style="padding:0.85rem;background:rgba(255,255,255,0.015);border:1px solid rgba(255,255,255,0.04);border-radius:10px">
+                    <div class="fm" style="font-size:9px;letter-spacing:0.12em;color:var(--muted);margin-bottom:0.3rem">REPOS</div>
+                    <div class="fd" style="font-size:1.6rem;font-weight:600;color:var(--teal)" id="about-repos">198</div>
+                </div>
+                <div style="padding:0.85rem;background:rgba(255,255,255,0.015);border:1px solid rgba(255,255,255,0.04);border-radius:10px">
+                    <div class="fm" style="font-size:9px;letter-spacing:0.12em;color:var(--muted);margin-bottom:0.3rem">STARS</div>
+                    <div class="fd" style="font-size:1.6rem;font-weight:600;color:var(--teal)" id="about-stars">46</div>
                 </div>
             </div>
+            <div class="reveal" style="display:flex;align-items:center;gap:0.6rem;flex-wrap:wrap">
+                <span class="fm" style="font-size:10px;padding:3px 7px;border-radius:4px;background:rgba(49,120,198,0.12);color:#3178c6">TypeScript</span>
+                <span class="fm" style="font-size:10px;padding:3px 7px;border-radius:4px;background:rgba(53,114,165,0.12);color:#3572A5">Python</span>
+                <span class="fm" style="font-size:10px;padding:3px 7px;border-radius:4px;background:rgba(222,165,132,0.12);color:#dea584">Rust</span>
+                <span class="fm" style="font-size:10px;padding:3px 7px;border-radius:4px;background:rgba(241,224,90,0.12);color:#f1e05a">JavaScript</span>
+                <span class="fm" style="font-size:10px;padding:3px 7px;border-radius:4px;background:rgba(0,173,216,0.12);color:#00ADD8">Go</span>
+            </div>
+            <p class="reveal" style="margin-top:1rem;font-size:0.78rem;line-height:1.5;color:var(--muted)">
+                Building in public since 2025. Follow the build on <a href="https://x.com/AEGNTIC" target="_blank" style="color:var(--teal);text-decoration:none">X</a> or browse the <a href="https://github.com/aegntic" target="_blank" style="color:var(--teal);text-decoration:none">source</a>.
+            </p>
+        </div>
+    </div>
 
-            <!-- ====== SECTION 3: PROOF ====== -->
-            <div class="scroll-panel" id="panel-proof" data-section="3" style="left:200vw;top:100vh;">
-                <div class="section-inner" style="max-width:56rem;padding:0 2rem;">
-                    <div class="section-label" style="margin-bottom:2rem;">PROOF IT SHIPS</div>
-                    <h2 class="font-display" style="font-size:clamp(1.5rem,3.5vw,2.25rem);font-weight:600;line-height:1.1;letter-spacing:-0.02em;margin-bottom:2rem;">
-                        Live systems. Real repositories. Open source.
-                    </h2>
-                    <!-- Continuity demo -->
-                    <div style="margin-bottom:2rem;">
-                        <div class="glass" style="border-radius:16px;overflow:hidden;position:relative;height:14rem;background:var(--void);">
-                            <canvas id="continuity-canvas" style="position:absolute;inset:0;width:100%;height:100%;"></canvas>
-                            <div id="continuity-state" role="status" aria-live="polite" aria-atomic="true" style="position:absolute;bottom:1rem;right:1rem;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:0.15em;color:var(--teal);background:rgba(0,0,0,0.4);padding:2px 8px;border-radius:4px;">PERSISTING</div>
-                            <div style="position:absolute;bottom:1rem;left:1rem;font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:0.1em;color:var(--muted);">DRAG NODES TO RE-ORCHESTRATE</div>
-                        </div>
-                    </div>
-                    <!-- Dynamic project grid -->
-                    <div id="project-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:0.75rem;">
-                        <!-- Populated by GithubData JS -->
-                    </div>
+    <!-- 5: ENTER / CTA -->
+    <div class="panel" id="p5" style="left:500vw;top:0vh">
+        <div class="inner" style="position:relative;z-index:10;max-width:32rem;padding:0 2rem;text-align:center">
+            <div class="slabel reveal" style="margin-bottom:1.25rem">ENTER THE LAYER</div>
+            <h2 class="fd reveal" style="font-size:clamp(1.5rem,3.5vw,2.3rem);font-weight:600;line-height:1.08;letter-spacing:-0.025em;margin-bottom:0.85rem">
+                Agentic Empowerment.<br>
+                <span style="background:linear-gradient(135deg,var(--teal),var(--bronze));-webkit-background-clip:text;background-clip:text;color:transparent">Verified. Layer zero.</span>
+            </h2>
+            <p class="reveal" style="font-size:0.9rem;line-height:1.6;color:var(--muted);margin-bottom:1.75rem">
+                The coordination layer is open, sovereign, and compounding. Browse the source. Build on the primitives. See it in production.
+            </p>
+            <div class="reveal" style="display:flex;align-items:center;justify-content:center;gap:0.65rem;flex-wrap:wrap">
+                <a href="https://github.com/aegntic" target="_blank" style="display:inline-flex;align-items:center;height:2.5rem;padding:0 1.75rem;border-radius:0.875rem;background:var(--teal);color:var(--void);font-size:0.8rem;font-weight:500;text-decoration:none;transition:background 150ms" onmouseover="this.style.background='#00c5aa'" onmouseout="this.style.background='var(--teal)'">BROWSE THE SOURCE</a>
+                <a href="https://tools.aegntic.ai" target="_blank" style="display:inline-flex;align-items:center;height:2.5rem;padding:0 1.75rem;border-radius:0.875rem;border:1px solid rgba(179,139,94,0.4);font-size:0.8rem;text-decoration:none;color:var(--bronze);transition:background 150ms" onmouseover="this.style.background='rgba(179,139,94,0.1)'" onmouseout="this.style.background='transparent'">SEE THE LAYER IN PRODUCTS</a>
+            </div>
+            <div class="reveal" style="margin-top:2rem;padding-top:1rem;border-top:1px solid var(--edge);font-size:0.65rem;color:var(--muted);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:0.4rem">
+                <span>&copy; aegntic &mdash; Solo-built infrastructure for persistent intelligence.</span>
+                <div style="display:flex;gap:0.75rem">
+                    <a href="https://tools.aegntic.ai" style="color:var(--muted);text-decoration:none" onmouseover="this.style.color='#f1f1f1'" onmouseout="this.style.color='var(--muted)'">Tools</a>
+                    <a href="https://x.com/AEGNTIC" style="color:var(--muted);text-decoration:none" onmouseover="this.style.color='#f1f1f1'" onmouseout="this.style.color='var(--muted)'">X</a>
+                    <a href="https://github.com/aegntic" style="color:var(--muted);text-decoration:none" onmouseover="this.style.color='#f1f1f1'" onmouseout="this.style.color='var(--muted)'">GitHub</a>
                 </div>
             </div>
+        </div>
+    </div>
 
-            <!-- ====== SECTION 4: CTA ====== -->
-            <div class="scroll-panel" id="panel-cta" data-section="4" style="left:100vw;top:100vh;">
-                <div class="section-inner" style="max-width:36rem;padding:0 2rem;text-align:center;">
-                    <div class="section-label" style="margin-bottom:2rem;">THE LAYER IS THE INTERFACE</div>
-                    <h2 class="font-display" style="font-size:clamp(1.75rem,4vw,2.75rem);font-weight:600;line-height:1.1;letter-spacing:-0.025em;margin-bottom:1rem;">
-                        Adaptive Ecosystems,<br>Growing Naturally Through<br>Intelligent Co-creation.
-                    </h2>
-                    <p style="font-size:1rem;line-height:1.6;color:var(--muted);margin-bottom:2rem;">
-                        The coordination layer is open, sovereign, and compounding. Browse the source, build on the primitives, or see it in production.
-                    </p>
-                    <div style="display:flex;align-items:center;justify-content:center;gap:0.75rem;flex-wrap:wrap;">
-                        <a href="https://github.com/aegntic" target="_blank" style="display:inline-flex;align-items:center;height:2.75rem;padding:0 2rem;border-radius:1rem;background:var(--teal);color:var(--void);font-size:0.875rem;font-weight:500;text-decoration:none;transition:background 150ms;" onmouseover="this.style.background='#00c5aa'" onmouseout="this.style.background='var(--teal)'">BROWSE THE SOURCE</a>
-                        <a href="https://tools.aegntic.ai" target="_blank" style="display:inline-flex;align-items:center;height:2.75rem;padding:0 2rem;border-radius:1rem;border:1px solid rgba(179,139,94,0.4);font-size:0.875rem;text-decoration:none;color:var(--bronze);transition:background 150ms;" onmouseover="this.style.background='rgba(179,139,94,0.1)'" onmouseout="this.style.background='transparent'">SEE THE LAYER IN PRODUCTS</a>
-                    </div>
-                    <!-- Footer inline -->
-                    <div style="margin-top:3rem;padding-top:1.5rem;border-top:1px solid var(--edge);font-size:0.75rem;color:var(--muted);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:0.5rem;">
-                        <span>&copy; aegntic &mdash; Solo-built infrastructure for persistent intelligence.</span>
-                        <div style="display:flex;gap:1.25rem;">
-                            <a href="https://tools.aegntic.ai" style="color:var(--muted);text-decoration:none;" onmouseover="this.style.color='#f1f1f1'" onmouseout="this.style.color='var(--muted)'">Tools</a>
-                            <a href="https://x.com/AEGNTIC" style="color:var(--muted);text-decoration:none;" onmouseover="this.style.color='#f1f1f1'" onmouseout="this.style.color='var(--muted)'">X</a>
-                            <a href="https://github.com/aegntic" style="color:var(--muted);text-decoration:none;" onmouseover="this.style.color='#f1f1f1'" onmouseout="this.style.color='var(--muted)'">GitHub</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
+</div>
+</div>
 
-        </div><!-- /scroll-world -->
-    </div><!-- /scroll-viewport -->
+<script>
+// ============================================================
+// FX ENGINE — Full-viewport 3D wireframe + particles + rings
+// Scroll-reactive scene morphing across 6 panels
+// ============================================================
+const FX = (() => {
+    const C = document.getElementById('fx-canvas');
+    const X = C.getContext('2d');
+    let W, H, dpr;
+    let mx = 0.5, my = 0.5;
+    let prog = 0;
+    let t = 0;
+    const PRM_FX = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-    <script>
-        // ============================================================
-        // SCROLL ENGINE
-        // ============================================================
-        // The camera follows a fixed 2D path through panels arranged in world-space.
-        // Path: Hero(0,0) -> Gap(1,0) -> Layer(2,0) -> Proof(2,1) -> CTA(1,1)
-        // This forms a clockwise rectangle: right, right, down, left.
-        // Scroll input advances a progress value [0..1] along this path.
-        // The camera interpolates smoothly with momentum.
+    // Icosahedron geometry (normalized to radius ~1)
+    const PHI = (1 + Math.sqrt(5)) / 2;
+    const NORM = Math.sqrt(1 + PHI * PHI);
+    const RAW = [[-1,PHI,0],[1,PHI,0],[-1,-PHI,0],[1,-PHI,0],[0,-1,PHI],[0,1,PHI],[0,-1,-PHI],[0,1,-PHI],[PHI,0,-1],[PHI,0,1],[-PHI,0,-1],[-PHI,0,1]];
+    const VERTS = RAW.map(v => [v[0]/NORM, v[1]/NORM, v[2]/NORM]);
+    const EDGES = [[0,1],[0,5],[0,7],[0,10],[0,11],[1,5],[1,7],[1,8],[1,9],[2,3],[2,4],[2,6],[2,10],[2,11],[3,4],[3,6],[3,8],[3,9],[4,5],[4,9],[4,11],[5,9],[5,11],[6,7],[6,8],[6,10],[7,8],[7,10],[8,9],[10,11]];
 
-        const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    // Scatter directions (random unit vectors per vertex)
+    const sDirs = VERTS.map(() => {
+        const th = Math.random() * Math.PI * 2;
+        const ph = Math.acos(Math.random() * 2 - 1);
+        return [Math.sin(ph)*Math.cos(th), Math.sin(ph)*Math.sin(th), Math.cos(ph)];
+    });
 
-        // Panel positions in viewport units (col, row)
-        const PATH = [
-            { x: 0, y: 0, label: 'HERO' },       // 0
-            { x: 1, y: 0, label: 'THE GAP' },     // 1
-            { x: 2, y: 0, label: 'THE LAYER' },   // 2
-            { x: 2, y: 1, label: 'PROOF' },        // 3
-            { x: 1, y: 1, label: 'CTA' },          // 4
-        ];
-        const TOTAL_SECTIONS = PATH.length;
+    // Scene keyframes per panel
+    const SC = [
+        { sc: 1.35, scatter: 0,    rings: 3, rSpeed: 0.35, pSpd: 0.3, glow: 14, hue: 0   },
+        { sc: 1.6,  scatter: 0.6,  rings: 1, rSpeed: 0.12, pSpd: 0.7, glow: 5,  hue: 0.6 },
+        { sc: 1.05, scatter: 0.03, rings: 5, rSpeed: 0.28, pSpd: 0.4, glow: 10, hue: 0.1 },
+        { sc: 1.15, scatter: 0,    rings: 5, rSpeed: 0.45, pSpd: 0.65,glow: 18, hue: 0   },
+        { sc: 0.85, scatter: 0,    rings: 3, rSpeed: 0.18, pSpd: 0.2, glow: 7,  hue: 0.7 },
+        { sc: 1.55, scatter: 0,    rings: 4, rSpeed: 0.32, pSpd: 0.5, glow: 22, hue: 0.1 }
+    ];
 
-        // Scroll state
-        let scrollProgress = 0;       // 0 to TOTAL_SECTIONS-1, fractional
-        let targetProgress = 0;
-        let velocity = 0;
-        let isAnimating = false;
+    // Particles
+    const PARTS = [];
+    for (let i = 0; i < 90; i++) {
+        PARTS.push({
+            a: Math.random() * Math.PI * 2,
+            r: 1.8 + Math.random() * 2.2,
+            y: (Math.random() - 0.5) * 2.5,
+            spd: 0.15 + Math.random() * 0.45,
+            sz: 0.4 + Math.random() * 1.2,
+            tilt: Math.random() * Math.PI,
+            off: Math.random() * Math.PI * 2
+        });
+    }
 
-        const world = document.getElementById('scroll-world');
-        const progressFill = document.getElementById('progress-bar-fill');
-        const progressLabel = document.getElementById('progress-label');
-        const dots = document.querySelectorAll('.section-dot');
+    // Signal trails (particles that travel along rings)
+    const SIGNALS = [];
+    for (let i = 0; i < 24; i++) {
+        SIGNALS.push({
+            ringIdx: Math.floor(Math.random() * 5),
+            angle: Math.random() * Math.PI * 2,
+            speed: 0.3 + Math.random() * 0.8,
+            trail: [],
+            maxTrail: 6 + Math.floor(Math.random() * 8)
+        });
+    }
 
-        // Interpolate position along path segments
-        function getPositionAtProgress(p) {
-            p = Math.max(0, Math.min(TOTAL_SECTIONS - 1, p));
-            const idx = Math.floor(p);
-            const frac = p - idx;
-            const from = PATH[idx];
-            const to = PATH[Math.min(idx + 1, TOTAL_SECTIONS - 1)];
-            return {
-                x: from.x + (to.x - from.x) * frac,
-                y: from.y + (to.y - from.y) * frac,
-            };
+    function resize() {
+        dpr = window.devicePixelRatio || 1;
+        W = window.innerWidth; H = window.innerHeight;
+        C.width = W * dpr; C.height = H * dpr;
+    }
+
+    // 3D rotation
+    function rX(p, a) { const c=Math.cos(a),s=Math.sin(a); return [p[0], p[1]*c-p[2]*s, p[1]*s+p[2]*c]; }
+    function rY(p, a) { const c=Math.cos(a),s=Math.sin(a); return [p[0]*c+p[2]*s, p[1], -p[0]*s+p[2]*c]; }
+    function rZ(p, a) { const c=Math.cos(a),s=Math.sin(a); return [p[0]*c-p[1]*s, p[0]*s+p[1]*c, p[2]]; }
+
+    function lerp(a, b, f) { return a + (b - a) * f; }
+
+    function sceneParam(key) {
+        const idx = Math.min(Math.floor(prog), SC.length - 2);
+        const frac = prog - Math.floor(prog);
+        const smooth = frac * frac * (3 - 2 * frac); // smoothstep
+        return lerp(SC[idx][key], SC[Math.min(idx + 1, SC.length - 1)][key], smooth);
+    }
+
+    function colorFromHue(h) {
+        // 0 = teal, 0.5+ = bronze
+        if (h < 0.25) return { r: 0, g: 212, b: 184 };
+        if (h > 0.75) return { r: 179, g: 139, b: 94 };
+        const f = h;
+        return {
+            r: Math.round(lerp(0, 179, f)),
+            g: Math.round(lerp(212, 139, f)),
+            b: Math.round(lerp(184, 94, f))
+        };
+    }
+
+    function render() {
+        X.save();
+        X.scale(dpr, dpr);
+        X.clearRect(0, 0, W, H);
+
+        const cx = W / 2, cy = H / 2;
+        const scale = sceneParam('sc');
+        const scatter = sceneParam('scatter');
+        const ringCount = Math.round(sceneParam('rings'));
+        const rotSpd = sceneParam('rSpeed');
+        const pSpd = sceneParam('pSpd');
+        const glow = sceneParam('glow');
+        const hue = sceneParam('hue');
+
+        const col = colorFromHue(hue);
+        const col2 = colorFromHue(1 - hue); // secondary (complementary)
+        const cs = `rgb(${col.r},${col.g},${col.b})`;
+        const cs2 = `rgb(${col2.r},${col2.g},${col2.b})`;
+        const csA = (a) => `rgba(${col.r},${col.g},${col.b},${a})`;
+        const cs2A = (a) => `rgba(${col2.r},${col2.g},${col2.b},${a})`;
+
+        // Mouse parallax
+        const px = (mx - 0.5) * 0.2;
+        const py = (my - 0.5) * 0.12;
+
+        // Rotation
+        const ry = t * rotSpd + prog * 0.6 + px;
+        const rx = t * rotSpd * 0.25 + py + 0.3;
+        const rz = t * rotSpd * 0.12;
+
+        const baseR = Math.min(W, H) * 0.22 * scale;
+        const FOV = 1500;
+
+        // Project a 3D point
+        function proj(p) {
+            const z = p[2] + FOV * 0.5;
+            const f = FOV / Math.max(z, 50);
+            return { x: p[0] * f, y: p[1] * f, z: z, f: f };
         }
 
-        function getLabelAtProgress(p) {
-            const idx = Math.round(p);
-            return PATH[Math.min(idx, TOTAL_SECTIONS - 1)].label;
+        // === CENTER GLOW ===
+        const grd = X.createRadialGradient(cx, cy, 0, cx, cy, baseR * 2);
+        grd.addColorStop(0, csA(0.04));
+        grd.addColorStop(0.5, csA(0.015));
+        grd.addColorStop(1, 'rgba(0,0,0,0)');
+        X.fillStyle = grd;
+        X.fillRect(0, 0, W, H);
+
+        // === GRID FLOOR ===
+        X.globalAlpha = 0.03;
+        X.strokeStyle = cs;
+        X.lineWidth = 0.5;
+        const gridY = cy + baseR * 1.2;
+        const gridLines = 12;
+        const gridSpread = baseR * 3;
+        for (let i = -gridLines; i <= gridLines; i++) {
+            const frac = i / gridLines;
+            const x1 = cx + frac * gridSpread;
+            const x2 = cx + frac * gridSpread * 0.3;
+            X.beginPath();
+            X.moveTo(cx - gridSpread, gridY + (frac * gridSpread * 0.15));
+            X.lineTo(cx + gridSpread, gridY + (frac * gridSpread * 0.15));
+            X.stroke();
+            X.beginPath();
+            X.moveTo(cx + frac * gridSpread, gridY - gridSpread * 0.1);
+            X.lineTo(cx + frac * gridSpread * 0.3, gridY + gridSpread * 0.2);
+            X.stroke();
         }
 
-        function applyCamera() {
-            const pos = getPositionAtProgress(scrollProgress);
-            const vw = window.innerWidth;
-            const vh = window.innerHeight;
-            const tx = -pos.x * vw;
-            const ty = -pos.y * vh;
-            world.style.transform = `translate3d(${tx}px, ${ty}px, 0)`;
+        // === ORBITAL RINGS ===
+        for (let r = 0; r < ringCount; r++) {
+            const tiltX = (r / Math.max(ringCount, 1)) * Math.PI * 0.8 - Math.PI * 0.3;
+            const tiltZ = r * 0.4;
+            const ringR = baseR * (1.6 + r * 0.35);
+            const ringSpd = rotSpd * (0.6 + r * 0.18);
 
-            // Update progress indicator
-            const pct = (scrollProgress / (TOTAL_SECTIONS - 1)) * 100;
-            progressFill.style.width = pct + '%';
-            progressLabel.textContent = getLabelAtProgress(scrollProgress);
-
-            // Update dots
-            const activeIdx = Math.round(scrollProgress);
-            dots.forEach((d, i) => {
-                d.classList.toggle('active', i === activeIdx);
-            });
-        }
-
-        function animateCamera() {
-            const diff = targetProgress - scrollProgress;
-            if (Math.abs(diff) < 0.001 && Math.abs(velocity) < 0.001) {
-                scrollProgress = targetProgress;
-                velocity = 0;
-                isAnimating = false;
-                applyCamera();
-                return;
+            // Draw ring
+            X.globalAlpha = 0.06 + (1 / (r + 1)) * 0.04;
+            X.strokeStyle = cs;
+            X.lineWidth = 0.6;
+            X.beginPath();
+            const segs = 80;
+            for (let s = 0; s <= segs; s++) {
+                const a = (s / segs) * Math.PI * 2 + t * ringSpd;
+                let p = [Math.cos(a) * ringR, 0, Math.sin(a) * ringR];
+                p = rX(p, tiltX);
+                p = rZ(p, tiltZ);
+                p = rY(p, ry);
+                p = rX(p, rx);
+                const pr = proj(p);
+                const sx = cx + pr.x, sy = cy + pr.y;
+                if (s === 0) X.moveTo(sx, sy); else X.lineTo(sx, sy);
             }
+            X.stroke();
 
-            // Spring-like interpolation with damping
-            const stiffness = 0.08;
-            const damping = 0.82;
-            velocity += diff * stiffness;
-            velocity *= damping;
-            scrollProgress += velocity;
-
-            // Clamp
-            scrollProgress = Math.max(0, Math.min(TOTAL_SECTIONS - 1, scrollProgress));
-            if (scrollProgress <= 0 && velocity < 0) velocity = 0;
-            if (scrollProgress >= TOTAL_SECTIONS - 1 && velocity > 0) velocity = 0;
-
-            applyCamera();
-            requestAnimationFrame(animateCamera);
-        }
-
-        function snapToSection(idx) {
-            targetProgress = Math.max(0, Math.min(TOTAL_SECTIONS - 1, idx));
-            if (!isAnimating) {
-                isAnimating = true;
-                requestAnimationFrame(animateCamera);
+            // Ring nodes
+            const nodeCount = 3 + r;
+            for (let n = 0; n < nodeCount; n++) {
+                const a = (n / nodeCount) * Math.PI * 2 + t * ringSpd;
+                let p = [Math.cos(a) * ringR, 0, Math.sin(a) * ringR];
+                p = rX(p, tiltX);
+                p = rZ(p, tiltZ);
+                p = rY(p, ry);
+                p = rX(p, rx);
+                const pr = proj(p);
+                X.globalAlpha = 0.35;
+                X.fillStyle = cs2;
+                X.beginPath();
+                X.arc(cx + pr.x, cy + pr.y, 1.5, 0, Math.PI * 2);
+                X.fill();
             }
         }
 
-        // Wheel handler with momentum accumulation
-        let wheelAccumulator = 0;
-        const WHEEL_THRESHOLD = 80;  // pixels to trigger section advance
-        let wheelTimeout = null;
+        // === SIGNAL PARTICLES (travel along rings) ===
+        for (let i = 0; i < SIGNALS.length; i++) {
+            const sig = SIGNALS[i];
+            if (sig.ringIdx >= ringCount) continue;
+            sig.angle += sig.speed * 0.02 * pSpd;
 
-        window.addEventListener('wheel', (e) => {
-            e.preventDefault();
-            wheelAccumulator += e.deltaY;
+            const r = sig.ringIdx;
+            const tiltX = (r / Math.max(ringCount, 1)) * Math.PI * 0.8 - Math.PI * 0.3;
+            const tiltZ = r * 0.4;
+            const ringR = baseR * (1.6 + r * 0.35);
+            const ringSpd = rotSpd * (0.6 + r * 0.18);
 
-            if (Math.abs(wheelAccumulator) >= WHEEL_THRESHOLD) {
-                const dir = wheelAccumulator > 0 ? 1 : -1;
-                const currentSection = Math.round(targetProgress);
-                snapToSection(currentSection + dir);
-                wheelAccumulator = 0;
+            let p = [Math.cos(sig.angle) * ringR, 0, Math.sin(sig.angle) * ringR];
+            p = rX(p, tiltX);
+            p = rZ(p, tiltZ);
+            p = rY(p, ry);
+            p = rX(p, rx);
+            const pr = proj(p);
+            const sx = cx + pr.x, sy = cy + pr.y;
+
+            sig.trail.push({ x: sx, y: sy });
+            if (sig.trail.length > sig.maxTrail) sig.trail.shift();
+
+            // Draw trail
+            for (let j = 0; j < sig.trail.length; j++) {
+                const alpha = (j / sig.trail.length) * 0.5;
+                X.globalAlpha = alpha;
+                X.fillStyle = cs;
+                X.beginPath();
+                X.arc(sig.trail[j].x, sig.trail[j].y, 1 + (j / sig.trail.length) * 1.5, 0, Math.PI * 2);
+                X.fill();
             }
 
-            // Reset accumulator on pause
-            clearTimeout(wheelTimeout);
-            wheelTimeout = setTimeout(() => { wheelAccumulator = 0; }, 200);
-        }, { passive: false });
+            // Draw head
+            X.globalAlpha = 0.8;
+            X.fillStyle = cs;
+            X.beginPath();
+            X.arc(sx, sy, 2.5, 0, Math.PI * 2);
+            X.fill();
+        }
 
-        // Touch handler for swipe
-        let touchStartY = 0;
-        let touchStartX = 0;
-
-        window.addEventListener('touchstart', (e) => {
-            touchStartY = e.touches[0].clientY;
-            touchStartX = e.touches[0].clientX;
-        }, { passive: true });
-
-        window.addEventListener('touchend', (e) => {
-            const dy = e.changedTouches[0].clientY - touchStartY;
-            const dx = e.changedTouches[0].clientX - touchStartX;
-            const absDy = Math.abs(dy);
-            const absDx = Math.abs(dx);
-
-            // Determine swipe direction based on current section's position in path
-            const currentSection = Math.round(targetProgress);
-            const current = PATH[currentSection];
-            let next = currentSection;
-
-            if (absDy > absDx && absDy > 50) {
-                // Vertical swipe
-                if (dy < 0 && current.y < 1) {
-                    // Swipe up -> advance if path goes down
-                    next = currentSection + (current.x === 2 ? 1 : 0);
-                    // Or: check if next section in path is below
-                    if (currentSection < TOTAL_SECTIONS - 1 && PATH[currentSection + 1].y > current.y) {
-                        next = currentSection + 1;
-                    }
-                } else if (dy > 0 && current.y > 0) {
-                    // Swipe down -> go back if path goes up
-                    if (currentSection > 0 && PATH[currentSection - 1].y < current.y) {
-                        next = currentSection - 1;
-                    }
-                }
-            } else if (absDx > absDy && absDx > 50) {
-                // Horizontal swipe
-                if (dx < 0 && currentSection < TOTAL_SECTIONS - 1 && PATH[currentSection + 1].x >= current.x) {
-                    next = currentSection + 1;
-                } else if (dx > 0 && currentSection > 0 && PATH[currentSection - 1].x <= current.x) {
-                    next = currentSection - 1;
-                }
-            }
-
-            // Simple fallback: if no direction-specific match, just advance/retreat
-            if (next === currentSection) {
-                if (absDy > 50) {
-                    next = currentSection + (dy < 0 ? 1 : -1);
-                } else if (absDx > 50) {
-                    next = currentSection + (dx < 0 ? 1 : -1);
-                }
-            }
-
-            snapToSection(next);
-        }, { passive: true });
-
-        // Keyboard navigation
-        window.addEventListener('keydown', (e) => {
-            const current = Math.round(targetProgress);
-            if (e.key === 'ArrowDown' || e.key === 'ArrowRight' || e.key === ' ') {
-                e.preventDefault();
-                snapToSection(current + 1);
-            } else if (e.key === 'ArrowUp' || e.key === 'ArrowLeft') {
-                e.preventDefault();
-                snapToSection(current - 1);
-            } else if (e.key === 'Home') {
-                snapToSection(0);
-            } else if (e.key === 'End') {
-                snapToSection(TOTAL_SECTIONS - 1);
-            }
+        // === ICOSAHEDRON WIREFRAME ===
+        const pts = VERTS.map((v, i) => {
+            let p = [
+                v[0] * baseR + sDirs[i][0] * scatter * baseR * 2,
+                v[1] * baseR + sDirs[i][1] * scatter * baseR * 2,
+                v[2] * baseR + sDirs[i][2] * scatter * baseR * 2
+            ];
+            p = rZ(p, rz);
+            p = rY(p, ry);
+            p = rX(p, rx);
+            const pr = proj(p);
+            return { x: cx + pr.x, y: cy + pr.y, z: pr.z, f: pr.f };
         });
 
-        // Dot click navigation
-        dots.forEach(dot => {
-            dot.addEventListener('click', () => {
-                snapToSection(parseInt(dot.dataset.section));
-            });
+        // Edges with glow and depth
+        X.shadowColor = cs;
+        X.shadowBlur = glow;
+        X.lineCap = 'round';
+
+        EDGES.forEach(([a, b]) => {
+            const pa = pts[a], pb = pts[b];
+            const avgZ = (pa.z + pb.z) / 2;
+            const depth = (avgZ - FOV * 0.3) / (FOV * 0.8);
+            const alpha = 0.08 + 0.65 * Math.max(0, Math.min(1, 1 - depth));
+
+            X.globalAlpha = alpha;
+            X.strokeStyle = cs;
+            X.lineWidth = 0.6 + (1 - depth) * 0.8;
+            X.beginPath();
+            X.moveTo(pa.x, pa.y);
+            X.lineTo(pb.x, pb.y);
+            X.stroke();
         });
 
-        // Initial camera position
-        applyCamera();
-
-        // ============================================================
-        // ACCORDION
-        // ============================================================
-        document.querySelectorAll('.primitive-item').forEach(item => {
-            item.addEventListener('click', () => {
-                const wasOpen = item.classList.contains('open');
-                // Close all
-                document.querySelectorAll('.primitive-item').forEach(i => i.classList.remove('open'));
-                // Toggle clicked
-                if (!wasOpen) item.classList.add('open');
-            });
+        // Vertex dots
+        X.shadowBlur = 8;
+        pts.forEach(p => {
+            const depth = (p.z - FOV * 0.3) / (FOV * 0.8);
+            const alpha = 0.15 + 0.75 * Math.max(0, Math.min(1, 1 - depth));
+            X.globalAlpha = alpha;
+            X.fillStyle = cs;
+            X.beginPath();
+            X.arc(p.x, p.y, 1.5 + (1 - depth) * 1.5, 0, Math.PI * 2);
+            X.fill();
         });
 
-        // ============================================================
-        // GithubData: live stats + project grid
-        // ============================================================
-        const GithubData = (() => {
-            const CACHE_KEY = 'aegntic:github-data';
-            const CACHE_MS = 6 * 60 * 60 * 1000;
-            const FALLBACK = {
-                totalPublicRepos: 42, totalStars: 72, followers: 16,
-                topRepos: [
-                    { name: 'cldcde', language: 'TypeScript', stargazers_count: 12, description: 'Community hub and production MCP servers for Claude Code.' },
-                    { name: 'aegntic-MCP', language: 'TypeScript', stargazers_count: 10, description: 'Production MCP server collection.' },
-                    { name: 'google-labs-extension', language: 'TypeScript', stargazers_count: 8, description: 'Google Labs browser extension.' },
-                    { name: 'aegnt-27', language: 'Python', stargazers_count: 7, description: '27 behavioral authenticity patterns achieving 98%+ detector resistance.' },
-                    { name: 'ae-co-system', language: 'TypeScript', stargazers_count: 6, description: 'Living ecosystem map and coordination surface.' },
-                    { name: 'DAILYDOCO', language: 'Rust', stargazers_count: 5, description: 'Automated broadcast-quality documentation at 95%+ human authenticity.' }
-                ]
-            };
+        // === AMBIENT PARTICLES ===
+        X.shadowColor = cs2;
+        X.shadowBlur = 3;
 
-            function loadCache() {
-                try {
-                    const raw = localStorage.getItem(CACHE_KEY);
-                    if (!raw) return null;
-                    const data = JSON.parse(raw);
-                    if (Date.now() - data.fetchedAt < CACHE_MS) return data;
-                } catch(e) {}
-                return null;
-            }
+        PARTS.forEach(p => {
+            const a = p.a + t * p.spd * pSpd;
+            const r3d = p.r * baseR * 0.5;
+            let pt = [
+                Math.cos(a) * r3d,
+                p.y * baseR * 0.4 + Math.sin(t * 0.4 + p.off) * baseR * 0.15,
+                Math.sin(a) * r3d
+            ];
+            pt = rZ(pt, rz * 0.2);
+            pt = rY(pt, ry * 0.4);
+            pt = rX(pt, rx * 0.3);
+            const pr = proj(pt);
+            const depth = (pr.z - FOV * 0.3) / (FOV * 0.8);
+            const alpha = Math.max(0.03, 0.3 * (1 - depth));
 
-            function saveCache(data) {
-                try { localStorage.setItem(CACHE_KEY, JSON.stringify(data)); } catch(e) {}
-            }
+            X.globalAlpha = alpha;
+            X.fillStyle = cs2;
+            X.beginPath();
+            X.arc(cx + pr.x, cy + pr.y, p.sz, 0, Math.PI * 2);
+            X.fill();
+        });
 
-            async function fetchData() {
-                try {
-                    const [profileRes, reposRes] = await Promise.all([
-                        window.fetch('https://api.github.com/users/aegntic'),
-                        window.fetch('https://api.github.com/users/aegntic/repos?per_page=100&sort=stars&type=public')
-                    ]);
-                    const profile = await profileRes.json();
-                    const repos = await reposRes.json();
-                    const topRepos = repos
-                        .sort((a, b) => b.stargazers_count - a.stargazers_count)
-                        .slice(0, 6)
-                        .map(r => ({ name: r.name, language: r.language, stargazers_count: r.stargazers_count, description: r.description }));
-                    const data = {
-                        totalPublicRepos: profile.public_repos || FALLBACK.totalPublicRepos,
-                        totalStars: repos.reduce((s, r) => s + r.stargazers_count, 0) || FALLBACK.totalStars,
-                        followers: profile.followers || FALLBACK.followers,
-                        topRepos,
-                        fetchedAt: Date.now()
-                    };
-                    saveCache(data);
-                    return data;
-                } catch(e) {
-                    return FALLBACK;
+        // === CONNECTION LINES between nearby ambient particles ===
+        X.shadowBlur = 0;
+        X.lineWidth = 0.3;
+        for (let i = 0; i < PARTS.length; i++) {
+            const ai = PARTS[i];
+            const aA = ai.a + t * ai.spd * pSpd;
+            const rA = ai.r * baseR * 0.5;
+            let pA = [Math.cos(aA)*rA, ai.y*baseR*0.4, Math.sin(aA)*rA];
+            pA = rY(pA, ry*0.4); pA = rX(pA, rx*0.3);
+            const prA = proj(pA);
+
+            for (let j = i + 1; j < Math.min(i + 5, PARTS.length); j++) {
+                const bj = PARTS[j];
+                const aB = bj.a + t * bj.spd * pSpd;
+                const rB = bj.r * baseR * 0.5;
+                let pB = [Math.cos(aB)*rB, bj.y*baseR*0.4, Math.sin(aB)*rB];
+                pB = rY(pB, ry*0.4); pB = rX(pB, rx*0.3);
+                const prB = proj(pB);
+
+                const dx = (cx+prA.x)-(cx+prB.x), dy = (cy+prA.y)-(cy+prB.y);
+                const d = Math.sqrt(dx*dx+dy*dy);
+                if (d < 80) {
+                    X.globalAlpha = (1 - d/80) * 0.06;
+                    X.strokeStyle = cs2;
+                    X.beginPath();
+                    X.moveTo(cx+prA.x, cy+prA.y);
+                    X.lineTo(cx+prB.x, cy+prB.y);
+                    X.stroke();
                 }
             }
-
-            return { loadCache, fetch: fetchData, FALLBACK };
-        })();
-
-        function countUp(el, target, duration = 800) {
-            const start = parseInt(el.textContent) || 0;
-            if (start === target) return;
-            const startTime = performance.now();
-            function tick(now) {
-                const progress = Math.min((now - startTime) / duration, 1);
-                const eased = 1 - Math.pow(1 - progress, 3);
-                el.textContent = Math.round(start + (target - start) * eased);
-                if (progress < 1) requestAnimationFrame(tick);
-            }
-            requestAnimationFrame(tick);
         }
 
-        function renderProjectGrid(topRepos) {
-            const grid = document.getElementById('project-grid');
-            if (!grid || !topRepos || !topRepos.length) return;
-            const langColors = { TypeScript: '#3178c6', Python: '#3572A5', Rust: '#dea584', JavaScript: '#f1e05a', Go: '#00ADD8', Shell: '#89e051' };
-            grid.innerHTML = topRepos.map(r => `
-                <a href="https://github.com/aegntic/${r.name}" target="_blank" class="project-card">
-                    <div style="display:flex;align-items:center;justify-content:space-between;">
-                        <div class="font-display" style="font-weight:600;font-size:0.875rem;">${r.name}</div>
-                        ${r.language ? `<span style="font-family:'JetBrains Mono',monospace;font-size:10px;padding:2px 6px;border-radius:4px;background:${langColors[r.language] || '#8a8a8f'}22;color:${langColors[r.language] || '#8a8a8f'}">${r.language}</span>` : ''}
-                    </div>
-                    <div style="margin-top:0.5rem;font-size:0.75rem;color:var(--muted);line-height:1.4;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;">${r.description || ''}</div>
-                    <div style="margin-top:0.75rem;display:flex;align-items:center;gap:0.5rem;font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--muted);">
-                        <span>&#9733; ${r.stargazers_count}</span>
-                        <span>&rarr; github.com/aegntic/${r.name}</span>
-                    </div>
-                </a>
-            `).join('');
-        }
+        X.restore();
+        t += 0.016;
+        if (!PRM_FX) requestAnimationFrame(render);
+    }
 
-        async function bootGithubData() {
-            const cached = GithubData.loadCache();
-            const data = cached || await GithubData.fetch();
-
-            const statRepos = document.getElementById('stat-repos');
-            const statStars = document.getElementById('stat-stars');
-            const statFollowers = document.getElementById('stat-followers');
-            if (statRepos) countUp(statRepos, data.totalPublicRepos);
-            if (statStars) countUp(statStars, data.totalStars);
-            if (statFollowers) countUp(statFollowers, data.followers);
-
-            renderProjectGrid(data.topRepos);
-
-            if (!cached) return;
-            GithubData.fetch().then(fresh => {
-                if (statRepos) countUp(statRepos, fresh.totalPublicRepos);
-                if (statStars) countUp(statStars, fresh.totalStars);
-                if (statFollowers) countUp(statFollowers, fresh.followers);
-                renderProjectGrid(fresh.topRepos);
-            });
-        }
-        bootGithubData();
-
-        // ============================================================
-        // HERO FIELD CANVAS (subtle persistent network)
-        // ============================================================
-        let fieldCanvas, fieldCtx, nodes = [], mouse = {x: 0, y: 0};
-
-        function initFieldCanvas() {
-            fieldCanvas = document.getElementById('hero-field');
-            if (!fieldCanvas) return;
-            fieldCtx = fieldCanvas.getContext('2d', { alpha: true });
-
-            function resize() {
-                const dpr = window.devicePixelRatio || 1;
-                fieldCanvas.width = fieldCanvas.offsetWidth * dpr;
-                fieldCanvas.height = fieldCanvas.offsetHeight * dpr;
-                fieldCtx.scale(dpr, dpr);
-            }
+    return {
+        init() {
             resize();
             window.addEventListener('resize', resize);
+            window.addEventListener('mousemove', e => { mx = e.clientX / W; my = e.clientY / H; });
+            window.addEventListener('touchmove', e => { mx = e.touches[0].clientX / W; my = e.touches[0].clientY / H; }, { passive: true });
+            render();
+        },
+        setProgress(p) { prog = p; }
+    };
+})();
 
-            const nodeCount = window.innerWidth < 768 ? 20 : 42;
-            for (let i = 0; i < nodeCount; i++) {
-                nodes.push({
-                    x: Math.random() * fieldCanvas.offsetWidth,
-                    y: Math.random() * fieldCanvas.offsetHeight,
-                    vx: (Math.random() - 0.5) * 0.3,
-                    vy: (Math.random() - 0.5) * 0.3,
-                    r: Math.random() * 1.6 + 0.8
-                });
-            }
 
-            const heroPanel = document.getElementById('panel-hero');
-            heroPanel.addEventListener('mousemove', e => {
-                const rect = fieldCanvas.getBoundingClientRect();
-                mouse.x = e.clientX - rect.left;
-                mouse.y = e.clientY - rect.top;
-            });
-            heroPanel.addEventListener('touchmove', e => {
-                const t = e.touches[0];
-                const rect = fieldCanvas.getBoundingClientRect();
-                mouse.x = t.clientX - rect.left;
-                mouse.y = t.clientY - rect.top;
-            }, { passive: true });
+// ============================================================
+// SCROLL ENGINE — spring physics, horizontal only
+// ============================================================
+const PRM = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+const SECTIONS = 6;
+const LABELS = ['HERO','THE PROBLEM','THE LAYER','PROOF','ABOUT','ENTER'];
 
-            animateField();
-        }
+let prog = 0, target = 0, vel = 0, animating = false;
+const world = document.getElementById('world');
+const pDots = document.querySelectorAll('.prog-dot');
+const menuBtn = document.getElementById('menu-btn');
+const menuDrop = document.getElementById('menu-dropdown');
+const menuCurrent = document.getElementById('menu-current');
+const menuItems = menuDrop.querySelectorAll('.menu-item[data-section]');
 
-        function animateField() {
-            if (!fieldCtx || !fieldCanvas) return;
-            fieldCtx.clearRect(0, 0, fieldCanvas.offsetWidth, fieldCanvas.offsetHeight);
-            const w = fieldCanvas.offsetWidth;
-            const h = fieldCanvas.offsetHeight;
+function cam() {
+    const vw = window.innerWidth;
+    world.style.transform = `translate3d(${-prog * vw}px, 0, 0)`;
+    const idx = Math.round(prog);
+    pDots.forEach((d, i) => { d.classList.toggle('active', i === idx); d.classList.toggle('passed', i < idx); });
+    menuCurrent.textContent = LABELS[idx] || LABELS[0];
+    menuItems.forEach(m => m.classList.toggle('active', parseInt(m.dataset.section) === idx));
+    for (let i = 0; i < SECTIONS; i++) {
+        const panel = document.getElementById('p' + i);
+        if (i === idx) panel.classList.add('visible');
+        else panel.classList.remove('visible');
+    }
+    FX.setProgress(prog);
+}
 
-            for (let i = 0; i < nodes.length; i++) {
-                const n = nodes[i];
-                n.x += n.vx;
-                n.y += n.vy;
-                if (n.x < 0 || n.x > w) n.vx *= -1;
-                if (n.y < 0 || n.y > h) n.vy *= -1;
+function tick() {
+    const diff = target - prog;
+    if (Math.abs(diff) < 0.0008 && Math.abs(vel) < 0.0008) { prog = target; vel = 0; animating = false; cam(); return; }
+    vel += diff * 0.07;
+    vel *= 0.83;
+    prog += vel;
+    prog = Math.max(0, Math.min(SECTIONS - 1, prog));
+    if (prog <= 0 && vel < 0) vel = 0;
+    if (prog >= SECTIONS - 1 && vel > 0) vel = 0;
+    cam();
+    requestAnimationFrame(tick);
+}
 
-                const dx = mouse.x - n.x;
-                const dy = mouse.y - n.y;
-                const dist = Math.sqrt(dx*dx + dy*dy) || 1;
-                if (dist < 180) {
-                    n.vx += (dx / dist) * 0.018;
-                    n.vy += (dy / dist) * 0.018;
-                }
+function snap(i) {
+    target = Math.max(0, Math.min(SECTIONS - 1, i));
+    if (!animating) { animating = true; requestAnimationFrame(tick); }
+    closeMenu();
+}
 
-                fieldCtx.fillStyle = 'rgba(0, 212, 184, 0.55)';
-                fieldCtx.beginPath();
-                fieldCtx.arc(n.x, n.y, n.r, 0, Math.PI * 2);
-                fieldCtx.fill();
+let wAcc = 0, wTO = null;
+window.addEventListener('wheel', e => { e.preventDefault(); wAcc += e.deltaY; if (Math.abs(wAcc) >= 70) { snap(Math.round(target) + (wAcc > 0 ? 1 : -1)); wAcc = 0; } clearTimeout(wTO); wTO = setTimeout(() => wAcc = 0, 180); }, { passive: false });
+let tx0 = 0;
+window.addEventListener('touchstart', e => { tx0 = e.touches[0].clientX; }, { passive: true });
+window.addEventListener('touchend', e => { const dx = e.changedTouches[0].clientX - tx0; if (Math.abs(dx) > 50) snap(Math.round(target) + (dx < 0 ? 1 : -1)); }, { passive: true });
+window.addEventListener('keydown', e => {
+    if (e.key === 'ArrowRight' || e.key === 'ArrowDown' || e.key === ' ') { e.preventDefault(); snap(Math.round(target) + 1); }
+    else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') { e.preventDefault(); snap(Math.round(target) - 1); }
+    else if (e.key === 'Home') snap(0);
+    else if (e.key === 'End') snap(SECTIONS - 1);
+});
 
-                for (let j = i + 1; j < nodes.length; j++) {
-                    const m = nodes[j];
-                    const dx2 = m.x - n.x;
-                    const dy2 = m.y - n.y;
-                    const d = Math.sqrt(dx2*dx2 + dy2*dy2);
-                    if (d < 92) {
-                        const alpha = (1 - d / 92) * 0.22;
-                        fieldCtx.strokeStyle = `rgba(179, 139, 94, ${alpha})`;
-                        fieldCtx.lineWidth = 0.6;
-                        fieldCtx.beginPath();
-                        fieldCtx.moveTo(n.x, n.y);
-                        fieldCtx.lineTo(m.x, m.y);
-                        fieldCtx.stroke();
-                    }
-                }
-            }
-            if (!prefersReducedMotion) requestAnimationFrame(animateField);
-        }
+// Dropdown menu
+function toggleMenu() { const o = menuBtn.classList.toggle('open'); menuDrop.classList.toggle('open', o); menuBtn.setAttribute('aria-expanded', o); }
+function closeMenu() { menuBtn.classList.remove('open'); menuDrop.classList.remove('open'); menuBtn.setAttribute('aria-expanded', 'false'); }
+menuBtn.addEventListener('click', e => { e.stopPropagation(); toggleMenu(); });
+menuItems.forEach(m => m.addEventListener('click', () => snap(parseInt(m.dataset.section))));
+document.addEventListener('click', e => { if (!menuDrop.contains(e.target) && !menuBtn.contains(e.target)) closeMenu(); });
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeMenu(); });
 
-        // ============================================================
-        // CONTINUITY DEMO CANVAS (drag nodes + memory trails)
-        // ============================================================
-        let continuityCanvas, cCtx, cNodes = [], cMemory = [];
+cam();
 
-        function initContinuityDemo() {
-            continuityCanvas = document.getElementById('continuity-canvas');
-            if (!continuityCanvas) return;
-            cCtx = continuityCanvas.getContext('2d');
 
-            function resize() {
-                const dpr = window.devicePixelRatio || 1;
-                continuityCanvas.width = continuityCanvas.offsetWidth * dpr;
-                continuityCanvas.height = continuityCanvas.offsetHeight * dpr;
-                cCtx.scale(dpr, dpr);
-            }
-            resize();
-            window.addEventListener('resize', resize);
+// ============================================================
+// ACCORDION
+// ============================================================
+document.querySelectorAll('.prim-item').forEach(item => {
+    item.addEventListener('click', () => {
+        const was = item.classList.contains('open');
+        document.querySelectorAll('.prim-item').forEach(i => i.classList.remove('open'));
+        if (!was) item.classList.add('open');
+    });
+});
 
-            for (let i = 0; i < 7; i++) {
-                cNodes.push({
-                    x: 60 + (i % 4) * 78,
-                    y: 48 + Math.floor(i / 4) * 92,
-                    baseX: 60 + (i % 4) * 78,
-                    baseY: 48 + Math.floor(i / 4) * 92,
-                    phase: i * 0.9,
-                    size: 5.5
-                });
-            }
 
-            let dragging = null;
-            continuityCanvas.addEventListener('mousedown', e => {
-                const rect = continuityCanvas.getBoundingClientRect();
-                const dpr = window.devicePixelRatio || 1;
-                const mx = (e.clientX - rect.left) * dpr;
-                const my = (e.clientY - rect.top) * dpr;
-                dragging = cNodes.find(n => Math.hypot(n.x - mx, n.y - my) < 18);
-            });
-            window.addEventListener('mouseup', () => dragging = null);
-            continuityCanvas.addEventListener('mousemove', e => {
-                if (!dragging) return;
-                const rect = continuityCanvas.getBoundingClientRect();
-                const dpr = window.devicePixelRatio || 1;
-                dragging.x = (e.clientX - rect.left) * dpr;
-                dragging.y = (e.clientY - rect.top) * dpr;
-            });
+// ============================================================
+// GITHUB DATA
+// ============================================================
+const GithubData = (() => {
+    const CK = 'aegntic:github-data', CM = 6*60*60*1000;
+    const FB = {
+        totalPublicRepos: 42, totalStars: 72, followers: 16,
+        topRepos: [
+            { name: 'cldcde', language: 'TypeScript', stargazers_count: 12, description: 'Community hub and production MCP servers for Claude Code.' },
+            { name: 'aegntic-MCP', language: 'TypeScript', stargazers_count: 10, description: 'Production MCP server collection.' },
+            { name: 'google-labs-extension', language: 'TypeScript', stargazers_count: 8, description: 'Google Labs browser extension.' },
+            { name: 'aegnt-27', language: 'Python', stargazers_count: 7, description: '27 behavioral authenticity patterns achieving 98%+ detector resistance.' },
+            { name: 'ae-co-system', language: 'TypeScript', stargazers_count: 6, description: 'Living ecosystem map and coordination surface.' },
+            { name: 'DAILYDOCO', language: 'Rust', stargazers_count: 5, description: 'Automated broadcast-quality documentation at 95%+ human authenticity.' }
+        ]
+    };
+    function load() { try { const r = localStorage.getItem(CK); if (!r) return null; const d = JSON.parse(r); if (Date.now()-d.fetchedAt < CM) return d; } catch(e){} return null; }
+    function save(d) { try { localStorage.setItem(CK, JSON.stringify(d)); } catch(e){} }
+    async function fetchGH() {
+        try {
+            const [p, r] = await Promise.all([window.fetch('https://api.github.com/users/aegntic'), window.fetch('https://api.github.com/users/aegntic/repos?per_page=100&sort=stars&type=public')]);
+            const pj = await p.json(), rj = await r.json();
+            const t = rj.sort((a,b)=>b.stargazers_count-a.stargazers_count).slice(0,6).map(x=>({name:x.name,language:x.language,stargazers_count:x.stargazers_count,description:x.description}));
+            const d = { totalPublicRepos: pj.public_repos||FB.totalPublicRepos, totalStars: rj.reduce((s,x)=>s+x.stargazers_count,0)||FB.totalStars, followers: pj.followers||FB.followers, topRepos: t, fetchedAt: Date.now() };
+            save(d); return d;
+        } catch(e) { return FB; }
+    }
+    return { load, fetch: fetchGH, FB };
+})();
 
-            continuityCanvas.addEventListener('touchstart', e => {
-                e.preventDefault();
-                const t = e.touches[0];
-                const rect = continuityCanvas.getBoundingClientRect();
-                const dpr = window.devicePixelRatio || 1;
-                const mx = (t.clientX - rect.left) * dpr;
-                const my = (t.clientY - rect.top) * dpr;
-                dragging = cNodes.find(n => Math.hypot(n.x - mx, n.y - my) < 24);
-            }, { passive: false });
-            window.addEventListener('touchend', () => dragging = null);
-            continuityCanvas.addEventListener('touchmove', e => {
-                if (!dragging) return;
-                e.preventDefault();
-                const t = e.touches[0];
-                const rect = continuityCanvas.getBoundingClientRect();
-                const dpr = window.devicePixelRatio || 1;
-                dragging.x = (t.clientX - rect.left) * dpr;
-                dragging.y = (t.clientY - rect.top) * dpr;
-            }, { passive: false });
+function countUp(el, t, d=800) {
+    const s = parseInt(el.textContent)||0; if(s===t)return;
+    const st = performance.now();
+    function k(n) { const p = Math.min((n-st)/d,1); el.textContent = Math.round(s+(t-s)*(1-Math.pow(1-p,3))); if(p<1) requestAnimationFrame(k); }
+    requestAnimationFrame(k);
+}
 
-            animateContinuity();
+function renderGrid(tr) {
+    const g = document.getElementById('project-grid'); if(!g||!tr||!tr.length) return;
+    const lc = {TypeScript:'#3178c6',Python:'#3572A5',Rust:'#dea584',JavaScript:'#f1e05a',Go:'#00ADD8',Shell:'#89e051'};
+    g.innerHTML = tr.map(r=>`<a href="https://github.com/aegntic/${r.name}" target="_blank" class="pcard"><div style="display:flex;align-items:center;justify-content:space-between"><span class="fd" style="font-weight:600;font-size:0.78rem">${r.name}</span>${r.language?`<span class="fm" style="font-size:9px;padding:1px 5px;border-radius:3px;background:${lc[r.language]||'#8a8a8f'}22;color:${lc[r.language]||'#8a8a8f'}">${r.language}</span>`:''}</div><div style="margin-top:0.3rem;font-size:0.68rem;color:var(--muted);line-height:1.4;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden">${r.description||''}</div><div style="margin-top:0.4rem" class="fm"><span style="font-size:9px;color:var(--muted)">&#9733; ${r.stargazers_count}</span></div></a>`).join('');
+}
 
-            setInterval(() => {
-                cMemory.push(Date.now());
-                if (cMemory.length > 9) cMemory.shift();
-                const stateEl = document.getElementById('continuity-state');
-                if (stateEl) stateEl.textContent = `PERSISTING \u2022 ${cMemory.length} EVENTS`;
-            }, 1650);
-        }
+async function bootGH() {
+    const c = GithubData.load(); const d = c || await GithubData.fetch();
+    const sr = document.getElementById('stat-repos'), ss = document.getElementById('stat-stars'), sf = document.getElementById('stat-followers');
+    if(sr) countUp(sr, d.totalPublicRepos); if(ss) countUp(ss, d.totalStars); if(sf) countUp(sf, d.followers);
+    const ar = document.getElementById('about-repos'), as = document.getElementById('about-stars');
+    if(ar) ar.textContent = d.totalPublicRepos; if(as) as.textContent = d.totalStars;
+    renderGrid(d.topRepos);
+    if(!c) return;
+    GithubData.fetch().then(f => {
+        if(sr) countUp(sr, f.totalPublicRepos); if(ss) countUp(ss, f.totalStars); if(sf) countUp(sf, f.followers);
+        if(ar) ar.textContent = f.totalPublicRepos; if(as) as.textContent = f.totalStars;
+        renderGrid(f.topRepos);
+    });
+}
 
-        function animateContinuity() {
-            if (!cCtx || !continuityCanvas) return;
-            const w = continuityCanvas.offsetWidth;
-            const h = continuityCanvas.offsetHeight;
-            const dpr = window.devicePixelRatio || 1;
-            cCtx.clearRect(0, 0, w * dpr, h * dpr);
 
-            const time = Date.now() / 900;
+// ============================================================
+// CONTINUITY DEMO (interactive canvas in Proof panel)
+// ============================================================
+let cC, cX, cN=[], cME=[];
+function initCont() {
+    cC = document.getElementById('continuity-canvas'); if(!cC)return;
+    cX = cC.getContext('2d');
+    function rs(){const d=window.devicePixelRatio||1;cC.width=cC.offsetWidth*d;cC.height=cC.offsetHeight*d;cX.scale(d,d);}
+    rs(); window.addEventListener('resize',rs);
+    for(let i=0;i<6;i++) cN.push({x:55+(i%3)*75,y:35+Math.floor(i/2)*70,bx:55+(i%3)*75,by:35+Math.floor(i/2)*70,ph:i*0.9,sz:4});
+    let drag=null;
+    cC.addEventListener('mousedown',e=>{const r=cC.getBoundingClientRect();const d=window.devicePixelRatio||1;const mx=(e.clientX-r.left)*d,my=(e.clientY-r.top)*d;drag=cN.find(n=>Math.hypot(n.x-mx,n.y-my)<18);});
+    window.addEventListener('mouseup',()=>drag=null);
+    cC.addEventListener('mousemove',e=>{if(!drag)return;const r=cC.getBoundingClientRect();const d=window.devicePixelRatio||1;drag.x=(e.clientX-r.left)*d;drag.y=(e.clientY-r.top)*d;});
+    cC.addEventListener('touchstart',e=>{e.preventDefault();const t=e.touches[0];const r=cC.getBoundingClientRect();const d=window.devicePixelRatio||1;drag=cN.find(n=>Math.hypot(n.x-(t.clientX-r.left)*d,n.y-(t.clientY-r.top)*d)<22);},{passive:false});
+    window.addEventListener('touchend',()=>drag=null);
+    cC.addEventListener('touchmove',e=>{if(!drag)return;e.preventDefault();const t=e.touches[0];const r=cC.getBoundingClientRect();const d=window.devicePixelRatio||1;drag.x=(t.clientX-r.left)*d;drag.y=(t.clientY-r.top)*d;},{passive:false});
+    aCont();
+    setInterval(()=>{cME.push(Date.now());if(cME.length>9)cME.shift();const s=document.getElementById('continuity-state');if(s)s.textContent=`PERSISTING \u2022 ${cME.length} EVENTS`;},1650);
+}
+function aCont() {
+    if(!cX||!cC)return;
+    const d=window.devicePixelRatio||1; cX.clearRect(0,0,cC.offsetWidth*d,cC.offsetHeight*d);
+    const t=Date.now()/900;
+    cX.strokeStyle='rgba(179,139,94,0.3)';cX.lineWidth=1;
+    for(let i=0;i<cN.length;i++)for(let j=i+1;j<cN.length;j++){const a=cN[i],b=cN[j];if(Math.hypot(a.x-b.x,a.y-b.y)<140){cX.beginPath();cX.moveTo(a.x,a.y);cX.lineTo(b.x,b.y);cX.stroke();}}
+    cN.forEach((n,i)=>{const p=Math.sin(t+n.ph)*0.7+1;cX.fillStyle='rgba(0,212,184,0.1)';for(let k=0;k<3;k++){cX.beginPath();cX.arc(n.bx+(n.x-n.bx)*0.3*k,n.by+(n.y-n.by)*0.3*k,n.sz*p*(0.5-k*0.15),0,Math.PI*2);cX.fill();}
+    cX.fillStyle=i%2===0?'#00d4b8':'#b38b5e';cX.beginPath();cX.arc(n.x,n.y,n.sz*p*0.85,0,Math.PI*2);cX.fill();
+    cX.strokeStyle='rgba(255,255,255,0.1)';cX.lineWidth=0.8;cX.beginPath();cX.arc(n.x,n.y,n.sz*p*1.3,0,Math.PI*2);cX.stroke();});
+    if(!PRM) requestAnimationFrame(aCont);
+}
 
-            cCtx.strokeStyle = 'rgba(179, 139, 94, 0.35)';
-            cCtx.lineWidth = 1.2;
-            for (let i = 0; i < cNodes.length; i++) {
-                for (let j = i + 1; j < cNodes.length; j++) {
-                    const a = cNodes[i], b = cNodes[j];
-                    const dist = Math.hypot(a.x - b.x, a.y - b.y);
-                    if (dist < 165) {
-                        cCtx.beginPath();
-                        cCtx.moveTo(a.x, a.y);
-                        cCtx.lineTo(b.x, b.y);
-                        cCtx.stroke();
-                    }
-                }
-            }
 
-            cNodes.forEach((n, i) => {
-                const pulse = Math.sin(time + n.phase) * 0.8 + 1.1;
-                const x = n.x;
-                const y = n.y;
-
-                cCtx.fillStyle = 'rgba(0, 212, 184, 0.15)';
-                for (let k = 0; k < 3; k++) {
-                    const tx = n.baseX + (x - n.baseX) * (0.3 * k);
-                    const ty = n.baseY + (y - n.baseY) * (0.3 * k);
-                    cCtx.beginPath();
-                    cCtx.arc(tx, ty, (n.size * pulse) * (0.6 - k * 0.18), 0, Math.PI * 2);
-                    cCtx.fill();
-                }
-
-                cCtx.fillStyle = i % 2 === 0 ? '#00d4b8' : '#b38b5e';
-                cCtx.beginPath();
-                cCtx.arc(x, y, n.size * pulse * 0.9, 0, Math.PI * 2);
-                cCtx.fill();
-
-                cCtx.strokeStyle = 'rgba(255,255,255,0.15)';
-                cCtx.lineWidth = 1;
-                cCtx.beginPath();
-                cCtx.arc(x, y, n.size * pulse * 1.45, 0, Math.PI * 2);
-                cCtx.stroke();
-            });
-
-            if (!prefersReducedMotion) requestAnimationFrame(animateContinuity);
-        }
-
-        // ============================================================
-        // BOOT
-        // ============================================================
-        function boot() {
-            // Inject logo
-            const logoImg = document.getElementById('nav-logo');
-            if (logoImg) {
-                logoImg.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjgiIGhlaWdodD0iMjgiIHZpZXdCb3g9IjAgMCAyOCAyOCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMjgiIGhlaWdodD0iMjgiIHJ4PSIxNCIgZmlsbD0idXJsKCNncmFkKSIvPjxkZWZzPjxsaW5lYXJHcmFkaWVudCBpZD0iZ3JhZCIgeDE9IjAiIHkxPSIwIiB4Mj0iMjgiIHkyPSIyOCIgZ3JhZGllbnRVbml0cz0idXNlclNwYWNlT25Vc2UiPjxzdG9wIG9mZnNldD0iMCIgc3RvcC1jb2xvcj0iIzAwZDRiOCIvPjxzdG9wIG9mZnNldD0iMSIgc3RvcC1jb2xvcj0iI2IzOGI1ZSIvPjwvbGluZWFyR3JhZGllbnQ+PC9kZWZzPjwvc3ZnPg==';
-                logoImg.style.height = '26px';
-            }
-
-            initFieldCanvas();
-            initContinuityDemo();
-
-            // Glass noise texture
-            document.querySelectorAll('.glass').forEach(el => {
-                el.style.backgroundImage = 'linear-gradient(rgba(255,255,255,0.012) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.012) 1px, transparent 1px)';
-                el.style.backgroundSize = '3px 3px';
-            });
-        }
-
-        window.onload = boot;
-    </script>
+// ============================================================
+// BOOT
+// ============================================================
+window.onload = () => {
+    const logo = document.getElementById('nav-logo');
+    if(logo) { logo.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjgiIGhlaWdodD0iMjgiIHZpZXdCb3g9IjAgMCAyOCAyOCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMjgiIGhlaWdodD0iMjgiIHJ4PSIxNCIgZmlsbD0idXJsKCNncmFkKSIvPjxkZWZzPjxsaW5lYXJHcmFkaWVudCBpZD0iZ3JhZCIgeDE9IjAiIHkxPSIwIiB4Mj0iMjgiIHkyPSIyOCIgZ3JhZGllbnRVbml0cz0idXNlclNwYWNlT25Vc2UiPjxzdG9wIG9mZnNldD0iMCIgc3RvcC1jb2xvcj0iIzAwZDRiOCIvPjxzdG9wIG9mZnNldD0iMSIgc3RvcC1jb2xvcj0iI2IzOGI1ZSIvPjwvbGluZWFyR3JhZGllbnQ+PC9kZWZzPjwvc3ZnPg=='; logo.style.height='22px'; }
+    FX.init();
+    bootGH();
+    initCont();
+    document.querySelectorAll('.glass').forEach(el => {
+        el.style.backgroundImage = 'linear-gradient(rgba(255,255,255,0.008) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,0.008) 1px,transparent 1px)';
+        el.style.backgroundSize = '3px 3px';
+    });
+};
+</script>
 </body>
 </html>
