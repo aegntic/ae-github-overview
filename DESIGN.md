@@ -147,7 +147,7 @@
 - **Keyword & entity strategy:** Primary: "persistent intelligence coordination", "coordination layer for persistent human–AI intelligence", "aegntic coordination layer", "sovereign persistent agents", "A2A infrastructure". Secondary: specific primitives + flagships ("aegnt-27 authenticity", "clawreform agent os", "cldcde mcp"). Use exact phrases in hero, properties table, district descriptions, and new content.
 - **E-E-A-T (Experience, Expertise, Authoritativeness, Trust):** The site already has strong signals (open 127-repo surface, real shipped systems with tests/metrics, demos that work). Amplify by:
   - Linking every claim to GitHub evidence or the ASSESSMENT.
-  - Author/organization schema with links to founder activity (X @aegntic_ai, etc.).
+  - Author/organization schema with links to founder activity (X @AEGNTIC, etc.).
   - "Proof in production" numbers (lines of code, authenticity scores, integrations).
   - Regular public updates (the Execution Updates in the brainstorm doc should be mirrored or excerpted here).
 - **Cross-surface SEO:** tools.aegntic.ai should link back to aegntic.ai with "part of the coordination layer" language and the thesis sentence. This builds topical authority. Conversely, aegntic.ai funnels to tools as "see the layer in products."

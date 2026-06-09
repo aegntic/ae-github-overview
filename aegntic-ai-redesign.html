@@ -313,7 +313,7 @@
 
         <!-- Subtle motion background grid -->
         <div class="absolute inset-0 infrastructure-grid pointer-events-none"></div>
-        <canvas id="hero-field" role="img" aria-label="Interactive persistent coordination field — nodes connect and react to mouse movement" class="absolute inset-0 pointer-events-none motion-canvas" style="opacity: 0.35;"></canvas>
+        <canvas id="hero-field" role="img" aria-label="Interactive persistent coordination field — nodes connect and react to cursor and touch movement" class="absolute inset-0 pointer-events-none motion-canvas" style="opacity: 0.35;"></canvas>
     </header>
 
     <!-- THE LAYER -->
@@ -567,7 +567,7 @@
             <div>© aegntic — Solo-built infrastructure for persistent intelligence.</div>
             <div class="flex gap-x-5">
                 <a href="https://tools.aegntic.ai" class="hover:text-white" aria-label="Aegntic Tools">Tools</a>
-                <a href="https://x.com/aegntic" class="hover:text-white" aria-label="Aegntic on X">X</a>
+                <a href="https://x.com/AEGNTIC" class="hover:text-white" aria-label="AEGNTIC on X">X</a>
                 <a href="https://github.com/aegntic" class="hover:text-white" aria-label="Aegntic on GitHub">GitHub</a>
             </div>
         </div>
@@ -733,11 +733,19 @@
                 });
             }
 
-            fieldCanvas.addEventListener('mousemove', e => {
+            const heroEl = fieldCanvas.closest('header');
+            (heroEl || fieldCanvas).addEventListener('mousemove', e => {
                 const rect = fieldCanvas.getBoundingClientRect();
                 mouse.x = e.clientX - rect.left;
                 mouse.y = e.clientY - rect.top;
             });
+
+            (heroEl || fieldCanvas).addEventListener('touchmove', e => {
+                const t = e.touches[0];
+                const rect = fieldCanvas.getBoundingClientRect();
+                mouse.x = t.clientX - rect.left;
+                mouse.y = t.clientY - rect.top;
+            }, { passive: true });
 
             animateField();
         }
@@ -933,6 +941,27 @@
                 dragging.y = (e.clientY - rect.top) * 2;
             });
 
+            // touch drag support
+            continuityCanvas.addEventListener('touchstart', e => {
+                e.preventDefault();
+                const t = e.touches[0];
+                const rect = continuityCanvas.getBoundingClientRect();
+                const mx = (t.clientX - rect.left) * 2;
+                const my = (t.clientY - rect.top) * 2;
+                dragging = cNodes.find(n => Math.hypot(n.x - mx, n.y - my) < 24);
+            }, { passive: false });
+
+            window.addEventListener('touchend', () => dragging = null);
+
+            continuityCanvas.addEventListener('touchmove', e => {
+                if (!dragging) return;
+                e.preventDefault();
+                const t = e.touches[0];
+                const rect = continuityCanvas.getBoundingClientRect();
+                dragging.x = (t.clientX - rect.left) * 2;
+                dragging.y = (t.clientY - rect.top) * 2;
+            }, { passive: false });
+
             animateContinuity();
             
             // persist a little "memory" state
@@ -1040,9 +1069,6 @@
             initSkeleton();
             initContinuityDemo();
             enhanceSkeletonInteractivity();
-
-            // small accessibility / delight
-            console.log('%c[AEGNTIC] Redesign with real logo + motion graphics loaded. Less slop, more craft.', 'color:#555');
         }
 
         window.onload = bootRedesign;
