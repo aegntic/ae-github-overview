@@ -29,7 +29,7 @@
     </script>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;450;500;600&family=JetBrains+Mono:wght@400;500&display=swap">
     <style>
-        :root{--black:#000;--deep-black:#030303;--border-dark:#27272a;--cool-slate:#767d88;--mid-slate:#7d848e;--white:#ffffff;--teal:#00d4b8;--bronze:#b38b5e}
+        :root{--black:#0a0a0a;--deep-black:#0e0e0e;--border-dark:#2a2a2d;--cool-slate:#767d88;--mid-slate:#7d848e;--white:#e8e8e8;--teal:#00d4b8;--bronze:#b38b5e}
         *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
         body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;background:var(--black);color:var(--mid-slate);overflow:hidden;-webkit-font-smoothing:antialiased;line-height:1.5;font-size:16px}
         h1,h2,h3{font-weight:500;color:var(--white);line-height:1.0;letter-spacing:-0.9px}
@@ -45,7 +45,7 @@
         .panel{position:absolute;width:100vw;height:100dvh;display:flex;align-items:center;justify-content:center;overflow:hidden}
 
         /* NAV */
-        #nav{position:fixed;top:0;left:0;right:0;z-index:200;background:rgba(0,0,0,0.8);border-bottom:1px solid var(--border-dark);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);height:54px}
+        #nav{position:fixed;top:0;left:0;right:0;z-index:200;background:rgba(10,10,10,0.85);border-bottom:1px solid var(--border-dark);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);height:54px}
         #nav-inner{max-width:80rem;margin:0 auto;padding:0 1.5rem;height:100%;display:flex;align-items:center;justify-content:space-between}
         #nav-logo-link{display:flex;align-items:center;gap:0.6rem;text-decoration:none;color:inherit}
         #nav-logo{height:22px;width:auto}
@@ -93,7 +93,7 @@
 
         /* PROJECT CARDS */
         .pcard{background:var(--deep-black);border:1px solid var(--border-dark);border-radius:8px;padding:0.9rem;transition:border-color 150ms,background 150ms;text-decoration:none;color:inherit;display:block}
-        .pcard:hover{border-color:var(--mid-slate);background:#0a0a0a}
+        .pcard:hover{border-color:var(--mid-slate);background:#121212}
 
         /* ANIMATIONS */
         @keyframes pulse{0%,100%{opacity:0.3}50%{opacity:1}}
@@ -201,19 +201,19 @@
             </p>
             <div class="reveal" style="display:flex;flex-direction:column;gap:1px;background:var(--border-dark);border:1px solid var(--border-dark);border-radius:8px;overflow:hidden">
                 <div style="display:flex;align-items:flex-start;gap:0.65rem;padding:0.85rem 1rem;background:var(--deep-black)">
-                    <span class="fm" style="color:var(--cool-slate);font-size:0.7rem;min-width:105px;text-decoration:line-through;text-decoration-color:rgba(255,255,255,0.15)">PROMPTS</span>
+                    <span class="fm" style="color:var(--cool-slate);font-size:0.7rem;min-width:105px;text-decoration:line-through;text-decoration-color:rgba(232,232,232,0.12)">PROMPTS</span>
                     <span style="font-size:0.78rem;color:var(--mid-slate);line-height:1.45">Context resets every session. No memory. No continuity of thought.</span>
                 </div>
                 <div style="display:flex;align-items:flex-start;gap:0.65rem;padding:0.85rem 1rem;background:var(--deep-black)">
-                    <span class="fm" style="color:var(--cool-slate);font-size:0.7rem;min-width:105px;text-decoration:line-through;text-decoration-color:rgba(255,255,255,0.15)">FINE-TUNING</span>
+                    <span class="fm" style="color:var(--cool-slate);font-size:0.7rem;min-width:105px;text-decoration:line-through;text-decoration-color:rgba(232,232,232,0.12)">FINE-TUNING</span>
                     <span style="font-size:0.78rem;color:var(--mid-slate);line-height:1.45">Brittle, expensive. Cannot adapt in real-time to new contexts.</span>
                 </div>
                 <div style="display:flex;align-items:flex-start;gap:0.65rem;padding:0.85rem 1rem;background:var(--deep-black)">
-                    <span class="fm" style="color:var(--cool-slate);font-size:0.7rem;min-width:105px;text-decoration:line-through;text-decoration-color:rgba(255,255,255,0.15)">RAG</span>
+                    <span class="fm" style="color:var(--cool-slate);font-size:0.7rem;min-width:105px;text-decoration:line-through;text-decoration-color:rgba(232,232,232,0.12)">RAG</span>
                     <span style="font-size:0.78rem;color:var(--mid-slate);line-height:1.45">Retrieval, not understanding. Stitches text without comprehension.</span>
                 </div>
                 <div style="display:flex;align-items:flex-start;gap:0.65rem;padding:0.85rem 1rem;background:var(--deep-black)">
-                    <span class="fm" style="color:var(--cool-slate);font-size:0.7rem;min-width:105px;text-decoration:line-through;text-decoration-color:rgba(255,255,255,0.15)">MANUAL ORCH</span>
+                    <span class="fm" style="color:var(--cool-slate);font-size:0.7rem;min-width:105px;text-decoration:line-through;text-decoration-color:rgba(232,232,232,0.12)">MANUAL ORCH</span>
                     <span style="font-size:0.78rem;color:var(--mid-slate);line-height:1.45">Human bottleneck. Breaks at multi-agent scale.</span>
                 </div>
             </div>
@@ -268,7 +268,7 @@
             <div class="reveal" style="margin-bottom:1rem">
                 <div class="glass" style="overflow:hidden;position:relative;height:10rem;background:var(--black)">
                     <canvas id="continuity-canvas" style="position:absolute;inset:0;width:100%;height:100%"></canvas>
-                    <div id="continuity-state" role="status" aria-live="polite" class="fm" style="position:absolute;bottom:0.6rem;right:0.6rem;font-size:9px;letter-spacing:0.15em;color:var(--white);background:rgba(0,0,0,0.6);padding:2px 6px;border-radius:4px">PERSISTING</div>
+                    <div id="continuity-state" role="status" aria-live="polite" class="fm" style="position:absolute;bottom:0.6rem;right:0.6rem;font-size:9px;letter-spacing:0.15em;color:var(--white);background:rgba(10,10,10,0.7);padding:2px 6px;border-radius:4px">PERSISTING</div>
                     <div class="fm" style="position:absolute;bottom:0.6rem;left:0.6rem;font-size:8px;letter-spacing:0.1em;color:var(--cool-slate)">DRAG TO RE-ORCHESTRATE</div>
                 </div>
             </div>
@@ -297,11 +297,11 @@
                 </div>
             </div>
             <div class="reveal" style="display:flex;align-items:center;gap:0.6rem;flex-wrap:wrap">
-                <span class="fm" style="font-size:11px;font-weight:450;letter-spacing:0.35px;text-transform:uppercase;color:var(--cool-slate);padding:8px 12px;background:#0a0a0a;border-radius:4px">TypeScript</span>
-                <span class="fm" style="font-size:11px;font-weight:450;letter-spacing:0.35px;text-transform:uppercase;color:var(--cool-slate);padding:8px 12px;background:#0a0a0a;border-radius:4px">Python</span>
-                <span class="fm" style="font-size:11px;font-weight:450;letter-spacing:0.35px;text-transform:uppercase;color:var(--cool-slate);padding:8px 12px;background:#0a0a0a;border-radius:4px">Rust</span>
-                <span class="fm" style="font-size:11px;font-weight:450;letter-spacing:0.35px;text-transform:uppercase;color:var(--cool-slate);padding:8px 12px;background:#0a0a0a;border-radius:4px">JavaScript</span>
-                <span class="fm" style="font-size:11px;font-weight:450;letter-spacing:0.35px;text-transform:uppercase;color:var(--cool-slate);padding:8px 12px;background:#0a0a0a;border-radius:4px">Go</span>
+                <span class="fm" style="font-size:11px;font-weight:450;letter-spacing:0.35px;text-transform:uppercase;color:var(--cool-slate);padding:8px 12px;background:#111;border-radius:4px">TypeScript</span>
+                <span class="fm" style="font-size:11px;font-weight:450;letter-spacing:0.35px;text-transform:uppercase;color:var(--cool-slate);padding:8px 12px;background:#111;border-radius:4px">Python</span>
+                <span class="fm" style="font-size:11px;font-weight:450;letter-spacing:0.35px;text-transform:uppercase;color:var(--cool-slate);padding:8px 12px;background:#111;border-radius:4px">Rust</span>
+                <span class="fm" style="font-size:11px;font-weight:450;letter-spacing:0.35px;text-transform:uppercase;color:var(--cool-slate);padding:8px 12px;background:#111;border-radius:4px">JavaScript</span>
+                <span class="fm" style="font-size:11px;font-weight:450;letter-spacing:0.35px;text-transform:uppercase;color:var(--cool-slate);padding:8px 12px;background:#111;border-radius:4px">Go</span>
             </div>
             <p class="reveal" style="margin-top:1rem;font-size:0.78rem;line-height:1.5;color:var(--mid-slate)">
                 Building in public since 2025. Follow the build on <a href="https://x.com/AEGNTIC" target="_blank" style="color:var(--white);text-decoration:none">X</a> or browse the <a href="https://github.com/aegntic" target="_blank" style="color:var(--white);text-decoration:none">source</a>.
