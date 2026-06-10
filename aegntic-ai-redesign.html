@@ -28,6 +28,7 @@
     {"@context":"https://schema.org","@type":"ItemList","name":"Coordination Primitives","numberOfItems":5,"itemListElement":[{"@type":"ListItem","position":1,"name":"Orchestration"},{"@type":"ListItem","position":2,"name":"Authenticity"},{"@type":"ListItem","position":3,"name":"Continuity"},{"@type":"ListItem","position":4,"name":"Sovereignty"},{"@type":"ListItem","position":5,"name":"Experiential Memory"}]}
     </script>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;450;500;600&family=JetBrains+Mono:wght@400;500&display=swap">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
     <style>
         :root{--black:#0a0a0a;--deep-black:#0e0e0e;--border-dark:#2a2a2d;--cool-slate:#767d88;--mid-slate:#7d848e;--white:#e8e8e8;--teal:#00d4b8;--bronze:#b38b5e}
         *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
@@ -94,6 +95,30 @@
         /* PROJECT CARDS */
         .pcard{background:var(--deep-black);border:1px solid var(--border-dark);border-radius:8px;padding:0.9rem;transition:border-color 150ms,background 150ms;text-decoration:none;color:inherit;display:block}
         .pcard:hover{border-color:var(--mid-slate);background:#121212}
+
+        /* SUB-SLIDES (THE PROBLEM multi-step) */
+        #p1{overflow:hidden}
+        .slide-stage{position:relative;width:100%;height:100dvh}
+        .subslide{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none}
+        .subslide.active{opacity:1;pointer-events:auto}
+        .subslide-inner{max-width:40rem;padding:0 2rem}
+        .subslide-nav{position:absolute;bottom:2.5rem;left:50%;transform:translateX(-50%);display:flex;align-items:center;gap:0.5rem;z-index:20}
+        .subslide-dot{width:24px;height:2px;border-radius:1px;background:var(--border-dark);cursor:pointer;transition:background 300ms,width 300ms}
+        .subslide-dot.active{background:var(--teal);width:36px}
+        .subslide-counter{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:0.15em;color:var(--cool-slate);margin-left:0.75rem}
+        /* GSAP word/char split targets */
+        .word,.char{display:inline-block}
+        .typewriter-cursor{display:inline-block;width:2px;height:1em;background:var(--teal);margin-left:2px;vertical-align:text-bottom;animation:blink 0.7s step-end infinite}
+        @keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
+        /* fail row stagger */
+        .fail-row{opacity:0;transform:translateX(-20px)}
+        .fail-label{position:relative;overflow:hidden}
+        .fail-label::after{content:'';position:absolute;left:0;top:55%;width:100%;height:1px;background:rgba(232,232,232,0.12);transform:scaleX(0);transform-origin:left}
+        .fail-row.struck .fail-label::after{transform:scaleX(1);transition:transform 0.5s cubic-bezier(0.23,1,0.32,1)}
+        /* pillars */
+        .pillar{opacity:0;transform:translateY(30px) scale(0.95)}
+        /* coord-layer headline */
+        .coord-headline{opacity:0;transform:scale(0.8);filter:blur(8px)}
 
         /* ANIMATIONS */
         @keyframes pulse{0%,100%{opacity:0.3}50%{opacity:1}}
@@ -189,36 +214,110 @@
         </div>
     </div>
 
-    <!-- 1: THE PROBLEM -->
+    <!-- 1: THE PROBLEM (4 sub-slides) -->
     <div class="panel" id="p1" style="left:100vw;top:0vh">
-        <div class="inner" style="max-width:38rem;padding:0 2rem">
-            <div class="slabel reveal" style="margin-bottom:1.25rem;color:var(--teal)">THE PROBLEM</div>
-            <h2 class="fd reveal" style="font-size:clamp(32px,5vw,48px);font-weight:500;line-height:1.0;letter-spacing:-1px;margin-bottom:1rem">
-                Every AI breakthrough<br>works in isolation.
-            </h2>
-            <p class="reveal" style="font-size:0.9rem;line-height:1.65;color:var(--mid-slate);margin-bottom:1.75rem">
-                The tools get better every week. But connecting them into something that persists, coordinates, and remains under human control? That infrastructure does not exist. So we are building it.
-            </p>
-            <div class="reveal" style="display:flex;flex-direction:column;gap:1px;background:var(--border-dark);border:1px solid var(--border-dark);border-radius:8px;overflow:hidden">
-                <div style="display:flex;align-items:flex-start;gap:0.65rem;padding:0.85rem 1rem;background:var(--deep-black)">
-                    <span class="fm" style="color:var(--cool-slate);font-size:0.7rem;min-width:105px;text-decoration:line-through;text-decoration-color:rgba(232,232,232,0.12)">PROMPTS</span>
-                    <span style="font-size:0.78rem;color:var(--mid-slate);line-height:1.45">Context resets every session. No memory. No continuity of thought.</span>
-                </div>
-                <div style="display:flex;align-items:flex-start;gap:0.65rem;padding:0.85rem 1rem;background:var(--deep-black)">
-                    <span class="fm" style="color:var(--cool-slate);font-size:0.7rem;min-width:105px;text-decoration:line-through;text-decoration-color:rgba(232,232,232,0.12)">FINE-TUNING</span>
-                    <span style="font-size:0.78rem;color:var(--mid-slate);line-height:1.45">Brittle, expensive. Cannot adapt in real-time to new contexts.</span>
-                </div>
-                <div style="display:flex;align-items:flex-start;gap:0.65rem;padding:0.85rem 1rem;background:var(--deep-black)">
-                    <span class="fm" style="color:var(--cool-slate);font-size:0.7rem;min-width:105px;text-decoration:line-through;text-decoration-color:rgba(232,232,232,0.12)">RAG</span>
-                    <span style="font-size:0.78rem;color:var(--mid-slate);line-height:1.45">Retrieval, not understanding. Stitches text without comprehension.</span>
-                </div>
-                <div style="display:flex;align-items:flex-start;gap:0.65rem;padding:0.85rem 1rem;background:var(--deep-black)">
-                    <span class="fm" style="color:var(--cool-slate);font-size:0.7rem;min-width:105px;text-decoration:line-through;text-decoration-color:rgba(232,232,232,0.12)">MANUAL ORCH</span>
-                    <span style="font-size:0.78rem;color:var(--mid-slate);line-height:1.45">Human bottleneck. Breaks at multi-agent scale.</span>
+        <div class="slide-stage">
+            <!-- SLIDE 1: THE PROBLEM — title hook -->
+            <div class="subslide active" id="ps1">
+                <div class="subslide-inner" style="text-align:center">
+                    <div class="slabel" id="ps1-label" style="margin-bottom:1.5rem;color:var(--teal);opacity:0">THE PROBLEM</div>
+                    <h2 class="fd" id="ps1-h" style="font-size:clamp(36px,6vw,56px);font-weight:500;line-height:1.05;letter-spacing:-1.5px;color:var(--white);opacity:0">
+                        Every AI breakthrough<br>works in isolation.
+                    </h2>
+                    <div style="margin-top:1.75rem">
+                        <div id="ps1-line" style="width:0;height:1px;background:var(--teal);margin:0 auto;opacity:0.4"></div>
+                    </div>
+                    <p id="ps1-sub" style="margin-top:1.25rem;font-size:0.82rem;color:var(--cool-slate);opacity:0">
+                        scroll to see why
+                    </p>
                 </div>
             </div>
-            <div class="reveal" style="margin-top:1.5rem">
-                <p style="font-size:0.9rem;line-height:1.5;color:var(--white);opacity:0.85">The missing piece is not another model. It is a <strong style="color:var(--teal)">coordination layer</strong>.</p>
+
+            <!-- SLIDE 2: THE GROWING GAP -->
+            <div class="subslide" id="ps2">
+                <div class="subslide-inner">
+                    <div class="slabel" id="ps2-label" style="margin-bottom:1.25rem;color:var(--teal);opacity:0">THE GROWING GAP</div>
+                    <h2 class="fd" id="ps2-h" style="font-size:clamp(32px,5vw,48px);font-weight:500;line-height:1.0;letter-spacing:-1px;margin-bottom:1.25rem;color:var(--white);opacity:0">
+                        The tools get better every week.
+                    </h2>
+                    <p id="ps2-p1" style="font-size:0.95rem;line-height:1.7;color:var(--mid-slate);margin-bottom:1rem;opacity:0">
+                        But connecting them into something that <strong class="em-word" style="color:var(--white)">persists</strong>, <strong class="em-word" style="color:var(--white)">coordinates</strong>, and remains <strong class="em-word" style="color:var(--white)">under human control</strong>?
+                    </p>
+                    <div id="ps2-gap" style="height:1rem"></div>
+                    <div id="ps2-answer" style="opacity:0;transform:translateY(12px)">
+                        <p style="font-size:1.1rem;line-height:1.5;color:var(--white);font-weight:500">That infrastructure does not exist.</p>
+                        <p style="font-size:0.95rem;line-height:1.5;color:var(--teal);margin-top:0.5rem;font-family:'JetBrains Mono',monospace;font-size:0.8rem;letter-spacing:0.05em">SO WE ARE BUILDING IT.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SLIDE 3: CURRENT APPROACHES FAIL -->
+            <div class="subslide" id="ps3">
+                <div class="subslide-inner">
+                    <div class="slabel" id="ps3-label" style="margin-bottom:1.25rem;color:var(--teal);opacity:0">INFRASTRUCTURE STATUS</div>
+                    <h2 class="fd" id="ps3-h" style="font-size:clamp(28px,4.5vw,42px);font-weight:500;line-height:1.0;letter-spacing:-1px;margin-bottom:1.5rem;color:var(--white);opacity:0">
+                        Current approaches fail.
+                    </h2>
+                    <div style="display:flex;flex-direction:column;gap:1px;background:var(--border-dark);border:1px solid var(--border-dark);border-radius:8px;overflow:hidden">
+                        <div class="fail-row" style="display:flex;align-items:flex-start;gap:0.65rem;padding:0.85rem 1rem;background:var(--deep-black)">
+                            <span class="fm fail-label" style="color:var(--cool-slate);font-size:0.7rem;min-width:105px">PROMPTS</span>
+                            <span style="font-size:0.78rem;color:var(--mid-slate);line-height:1.45">Context resets every session. No memory. No continuity of thought.</span>
+                        </div>
+                        <div class="fail-row" style="display:flex;align-items:flex-start;gap:0.65rem;padding:0.85rem 1rem;background:var(--deep-black)">
+                            <span class="fm fail-label" style="color:var(--cool-slate);font-size:0.7rem;min-width:105px">FINE-TUNING</span>
+                            <span style="font-size:0.78rem;color:var(--mid-slate);line-height:1.45">Brittle, expensive. Cannot adapt in real-time to new contexts.</span>
+                        </div>
+                        <div class="fail-row" style="display:flex;align-items:flex-start;gap:0.65rem;padding:0.85rem 1rem;background:var(--deep-black)">
+                            <span class="fm fail-label" style="color:var(--cool-slate);font-size:0.7rem;min-width:105px">RAG</span>
+                            <span style="font-size:0.78rem;color:var(--mid-slate);line-height:1.45">Retrieval, not understanding. Stitches text without comprehension.</span>
+                        </div>
+                        <div class="fail-row" style="display:flex;align-items:flex-start;gap:0.65rem;padding:0.85rem 1rem;background:var(--deep-black)">
+                            <span class="fm fail-label" style="color:var(--cool-slate);font-size:0.7rem;min-width:105px">MANUAL ORCH</span>
+                            <span style="font-size:0.78rem;color:var(--mid-slate);line-height:1.45">Human bottleneck. Breaks at multi-agent scale.</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SLIDE 4: THE MISSING PIECE → COORDINATION LAYER -->
+            <div class="subslide" id="ps4">
+                <div class="subslide-inner" style="text-align:center">
+                    <div id="ps4-pre" style="font-family:'JetBrains Mono',monospace;font-size:0.7rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--cool-slate);opacity:0;margin-bottom:2rem">
+                        aegntic.labs
+                    </div>
+                    <div class="coord-headline fd" id="ps4-cl" style="font-size:clamp(40px,7vw,72px);font-weight:600;line-height:0.95;letter-spacing:-2px;color:var(--teal);margin-bottom:1.5rem">
+                        layer zero
+                    </div>
+                    <p id="ps4-desc" style="font-size:0.9rem;line-height:1.6;color:var(--mid-slate);max-width:28rem;margin:0 auto 2rem;opacity:0">
+                        The coordination layer for persistent human-AI intelligence. Infrastructure that connects, remembers, and remains sovereign.
+                    </p>
+                    <div style="display:flex;justify-content:center;gap:2rem;flex-wrap:wrap" id="ps4-pillars">
+                        <div class="pillar" style="text-align:center;min-width:100px">
+                            <div style="font-size:1.5rem;color:var(--teal);margin-bottom:0.4rem">&#x2B22;</div>
+                            <div class="fm" style="font-size:0.7rem;color:var(--white);letter-spacing:0.1em">CONNECT</div>
+                            <div style="font-size:0.7rem;color:var(--mid-slate);margin-top:0.25rem">Route signals</div>
+                        </div>
+                        <div class="pillar" style="text-align:center;min-width:100px">
+                            <div style="font-size:1.5rem;color:var(--bronze);margin-bottom:0.4rem">&#x2B22;</div>
+                            <div class="fm" style="font-size:0.7rem;color:var(--white);letter-spacing:0.1em">PERSIST</div>
+                            <div style="font-size:0.7rem;color:var(--mid-slate);margin-top:0.25rem">Memory that compounds</div>
+                        </div>
+                        <div class="pillar" style="text-align:center;min-width:100px">
+                            <div style="font-size:1.5rem;color:var(--teal);margin-bottom:0.4rem">&#x2B22;</div>
+                            <div class="fm" style="font-size:0.7rem;color:var(--white);letter-spacing:0.1em">CONTROL</div>
+                            <div style="font-size:0.7rem;color:var(--mid-slate);margin-top:0.25rem">Sovereign oversight</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sub-slide nav -->
+            <div class="subslide-nav">
+                <div class="subslide-dot active" data-slide="0"></div>
+                <div class="subslide-dot" data-slide="1"></div>
+                <div class="subslide-dot" data-slide="2"></div>
+                <div class="subslide-dot" data-slide="3"></div>
+                <span class="subslide-counter" id="slide-counter">1/4</span>
             </div>
         </div>
     </div>
@@ -763,11 +862,19 @@ function snap(i) {
 }
 
 let wAcc = 0, wTO = null;
-window.addEventListener('wheel', e => { e.preventDefault(); wAcc += e.deltaY; if (Math.abs(wAcc) >= 70) { snap(Math.round(target) + (wAcc > 0 ? 1 : -1)); wAcc = 0; } clearTimeout(wTO); wTO = setTimeout(() => wAcc = 0, 180); }, { passive: false });
+window.addEventListener('wheel', e => {
+    // Sub-slide engine fully owns scroll when p1 is visible
+    if (Math.round(target) === 1 && document.getElementById('p1').classList.contains('visible')) return;
+    e.preventDefault(); wAcc += e.deltaY; if (Math.abs(wAcc) >= 70) { snap(Math.round(target) + (wAcc > 0 ? 1 : -1)); wAcc = 0; } clearTimeout(wTO); wTO = setTimeout(() => wAcc = 0, 180);
+}, { passive: false });
 let tx0 = 0;
 window.addEventListener('touchstart', e => { tx0 = e.touches[0].clientX; }, { passive: true });
-window.addEventListener('touchend', e => { const dx = e.changedTouches[0].clientX - tx0; if (Math.abs(dx) > 50) snap(Math.round(target) + (dx < 0 ? 1 : -1)); }, { passive: true });
+window.addEventListener('touchend', e => {
+    if (Math.round(target) === 1 && document.getElementById('p1').classList.contains('visible')) return;
+    const dx = e.changedTouches[0].clientX - tx0; if (Math.abs(dx) > 50) snap(Math.round(target) + (dx < 0 ? 1 : -1));
+}, { passive: true });
 window.addEventListener('keydown', e => {
+    if (Math.round(target) === 1 && document.getElementById('p1').classList.contains('visible') && (e.key === 'ArrowRight' || e.key === 'ArrowDown' || e.key === 'ArrowLeft' || e.key === 'ArrowUp' || e.key === ' ')) return;
     if (e.key === 'ArrowRight' || e.key === 'ArrowDown' || e.key === ' ') { e.preventDefault(); snap(Math.round(target) + 1); }
     else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') { e.preventDefault(); snap(Math.round(target) - 1); }
     else if (e.key === 'Home') snap(0);
@@ -784,6 +891,253 @@ document.addEventListener('keydown', e => { if (e.key === 'Escape') closeMenu();
 
 cam();
 
+
+// ============================================================
+// SUB-SLIDE ENGINE — GSAP kinetic typography for THE PROBLEM
+// ============================================================
+(() => {
+    const slides = [document.getElementById('ps1'), document.getElementById('ps2'), document.getElementById('ps3'), document.getElementById('ps4')];
+    const dots = document.querySelectorAll('.subslide-dot');
+    const counter = document.getElementById('slide-counter');
+    let current = 0;
+    let locked = false;
+    let panelVisible = false;
+
+    function splitWords(el) {
+        if (!el || el.dataset.split === '1') return;
+        el.dataset.split = '1';
+        const html = el.innerHTML;
+        // Split on spaces and <br>
+        const parts = html.split(/(<br\s*\/?>)/gi);
+        let result = '';
+        parts.forEach(part => {
+            if (part.match(/<br\s*\/?>/gi)) { result += part; return; }
+            const words = part.trim().split(/\s+/);
+            words.forEach(w => {
+                if (w.startsWith('<') || w.endsWith('>')) { result += w + ' '; return; }
+                result += `<span class="word" style="opacity:0;transform:translateY(20px) rotateX(-15deg);display:inline-block">${w}</span> `;
+            });
+        });
+        el.innerHTML = result;
+    }
+
+    function animateSlide(idx) {
+        if (locked) return;
+        locked = true;
+        const tl = gsap.timeline({ onComplete: () => { locked = false; } });
+
+        // Kill any running animations on slides
+        gsap.killTweensOf(slides);
+
+        // Transition: fade out current, fade in next
+        tl.to(slides[current], { opacity: 0, duration: 0.35, ease: 'power2.in' });
+        slides[current].classList.remove('active');
+        current = idx;
+        slides[current].classList.add('active');
+        tl.set(slides[current], { opacity: 1 });
+
+        // Update nav
+        dots.forEach((d, i) => d.classList.toggle('active', i === idx));
+        counter.textContent = `${idx + 1}/4`;
+
+        // Choreographed animations per slide
+        if (idx === 0) animSlide1(tl);
+        else if (idx === 1) animSlide2(tl);
+        else if (idx === 2) animSlide3(tl);
+        else if (idx === 3) animSlide4(tl);
+    }
+
+    function animSlide1(tl) {
+        // Label slides in from left
+        tl.fromTo('#ps1-label', { opacity: 0, x: -30 }, { opacity: 1, x: 0, duration: 0.5, ease: 'power3.out' }, 0.1);
+        // Heading: split into words, stagger reveal
+        const h = document.getElementById('ps1-h');
+        splitWords(h);
+        const words = h.querySelectorAll('.word');
+        tl.set(h, { opacity: 1 });
+        tl.to(words, { opacity: 1, y: 0, rotateX: 0, duration: 0.6, stagger: 0.08, ease: 'back.out(1.4)' }, 0.3);
+        // Teal line expands
+        tl.to('#ps1-line', { width: '60px', opacity: 0.4, duration: 0.6, ease: 'power2.out' }, 0.9);
+        // Sub text fades in
+        tl.to('#ps1-sub', { opacity: 0.5, duration: 0.4 }, 1.2);
+    }
+
+    function animSlide2(tl) {
+        // Label
+        tl.fromTo('#ps2-label', { opacity: 0, y: -10 }, { opacity: 1, y: 0, duration: 0.4, ease: 'power2.out' }, 0.1);
+        // Heading word stagger
+        const h = document.getElementById('ps2-h');
+        splitWords(h);
+        const words = h.querySelectorAll('.word');
+        tl.set(h, { opacity: 1 });
+        tl.to(words, { opacity: 1, y: 0, rotateX: 0, duration: 0.5, stagger: 0.06, ease: 'power3.out' }, 0.2);
+        // Paragraph: emphasis words glow
+        tl.to('#ps2-p1', { opacity: 1, duration: 0.5 }, 0.7);
+        // Emphasis words scale punch
+        const ems = document.querySelectorAll('#ps2-p1 .em-word');
+        tl.fromTo(ems, { scale: 0.9, color: 'var(--mid-slate)' }, { scale: 1, color: 'var(--white)', duration: 0.4, stagger: 0.15, ease: 'back.out(2)' }, 0.9);
+        // Answer section slides up
+        tl.to('#ps2-answer', { opacity: 1, y: 0, duration: 0.6, ease: 'power3.out' }, 1.5);
+    }
+
+    function animSlide3(tl) {
+        // Label
+        tl.fromTo('#ps3-label', { opacity: 0, y: -10 }, { opacity: 1, y: 0, duration: 0.4, ease: 'power2.out' }, 0.1);
+        // Heading: each word scales in from nothing
+        const h = document.getElementById('ps3-h');
+        splitWords(h);
+        const words = h.querySelectorAll('.word');
+        tl.set(h, { opacity: 1 });
+        tl.fromTo(words, { opacity: 0, scale: 0.5, y: 15 }, { opacity: 1, scale: 1, y: 0, duration: 0.5, stagger: 0.1, ease: 'back.out(1.7)' }, 0.15);
+        // Fail rows: slide in one by one with strikethrough
+        const rows = document.querySelectorAll('.fail-row');
+        tl.to(rows, { opacity: 1, x: 0, duration: 0.45, stagger: 0.15, ease: 'power3.out',
+            onComplete: function() {
+                // Trigger strikethrough after each row appears
+                rows.forEach((r, i) => {
+                    gsap.delayedCall(i * 0.15 + 0.3, () => r.classList.add('struck'));
+                });
+            }
+        }, 0.6);
+    }
+
+    function animSlide4(tl) {
+        // Pre-text typewriter feel
+        const pre = document.getElementById('ps4-pre');
+        tl.to(pre, { opacity: 1, duration: 0.6 }, 0.1);
+        // COORDINATION LAYER: massive scale punch with blur removal
+        const cl = document.getElementById('ps4-cl');
+        tl.to(cl, { opacity: 1, scale: 1, filter: 'blur(0px)', duration: 0.8, ease: 'power3.out' }, 0.5);
+        // Description
+        tl.to('#ps4-desc', { opacity: 1, duration: 0.5 }, 1.1);
+        // Pillars stagger up
+        const pillars = document.querySelectorAll('#ps4-pillars .pillar');
+        tl.to(pillars, { opacity: 1, y: 0, scale: 1, duration: 0.5, stagger: 0.15, ease: 'back.out(1.5)' }, 1.3);
+    }
+
+    // Wheel within p1 to cycle sub-slides
+    let p1WheelAcc = 0, p1WheelTO = null;
+    function onP1Wheel(e) {
+        if (!panelVisible) return;
+        e.preventDefault();
+        e.stopPropagation();
+        p1WheelAcc += e.deltaY;
+        if (Math.abs(p1WheelAcc) >= 60 && !locked) {
+            const dir = p1WheelAcc > 0 ? 1 : -1;
+            const next = current + dir;
+            // At edges: let main engine take over to adjacent panel
+            if (next < 0 || next > 3) {
+                p1WheelAcc = 0;
+                const mainDir = next < 0 ? -1 : 1;
+                snap(Math.round(target) + mainDir);
+                return;
+            }
+            animateSlide(next);
+            p1WheelAcc = 0;
+        }
+        clearTimeout(p1WheelTO);
+        p1WheelTO = setTimeout(() => p1WheelAcc = 0, 200);
+    }
+
+    // Touch support within p1
+    let p1tx0 = 0;
+    function onP1TouchStart(e) { p1tx0 = e.touches[0].clientX; }
+    function onP1TouchEnd(e) {
+        if (!panelVisible) return;
+        const dx = e.changedTouches[0].clientX - p1tx0;
+        if (Math.abs(dx) > 40 && !locked) {
+            const dir = dx < 0 ? 1 : -1;
+            const next = current + dir;
+            if (next < 0 || next > 3) {
+                snap(Math.round(target) + (next < 0 ? -1 : 1));
+            } else {
+                animateSlide(next);
+            }
+        }
+    }
+
+    // Keyboard override when on p1
+    let keyReady = false;
+    function onP1Key(e) {
+        if (!keyReady || !panelVisible || locked) return;
+        if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
+            e.preventDefault(); e.stopPropagation();
+            if (current < 3) animateSlide(current + 1);
+            else snap(Math.round(target) + 1);
+        } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
+            e.preventDefault(); e.stopPropagation();
+            if (current > 0) animateSlide(current - 1);
+            else snap(Math.round(target) - 1);
+        } else if (e.key === ' ') {
+            e.preventDefault(); e.stopPropagation();
+            if (current < 3) animateSlide(current + 1);
+            else snap(Math.round(target) + 1);
+        }
+    }
+
+    // Attach events to p1 panel — use capture phase to intercept before main engine
+    const p1 = document.getElementById('p1');
+    p1.addEventListener('wheel', onP1Wheel, { passive: false, capture: true });
+    p1.addEventListener('touchstart', onP1TouchStart, { passive: true, capture: true });
+    p1.addEventListener('touchend', onP1TouchEnd, { passive: true, capture: true });
+    document.addEventListener('keydown', onP1Key, true); // capture phase
+
+    // Dot clicks
+    dots.forEach(d => d.addEventListener('click', () => {
+        const idx = parseInt(d.dataset.slide);
+        if (idx !== current && !locked) animateSlide(idx);
+    }));
+
+    // Override main scroll engine when p1 is visible and sub-slide is not at edge
+    // We intercept by watching the panel's visible state
+    const observer = new MutationObserver(() => {
+        const wasVisible = panelVisible;
+        panelVisible = p1.classList.contains('visible');
+        if (panelVisible && !wasVisible) {
+            // Panel just became visible — play entrance animation for current sub-slide
+            keyReady = false; // Block keyboard until entrance animation settles
+            animateSlide(current);
+            setTimeout(() => { keyReady = true; }, 800); // Unblock after entrance
+        }
+        if (!panelVisible && wasVisible) {
+            // Reset all sub-slide elements for re-entry
+            resetAllSlides();
+        }
+    });
+    observer.observe(p1, { attributes: true, attributeFilter: ['class'] });
+
+    function resetAllSlides() {
+        // Reset to slide 0
+        slides.forEach(s => s.classList.remove('active'));
+        slides[0].classList.add('active');
+        slides.forEach(s => gsap.set(s, { opacity: 0 }));
+        gsap.set(slides[0], { opacity: 1 });
+        current = 0;
+        dots.forEach((d, i) => d.classList.toggle('active', i === 0));
+        counter.textContent = '1/4';
+        // Reset internal elements
+        gsap.set('#ps1-label', { opacity: 0, x: -30 });
+        gsap.set('#ps1-h', { opacity: 0 });
+        gsap.set('#ps1-line', { width: 0, opacity: 0 });
+        gsap.set('#ps1-sub', { opacity: 0 });
+        gsap.set('#ps2-label', { opacity: 0 });
+        gsap.set('#ps2-h', { opacity: 0 });
+        gsap.set('#ps2-p1', { opacity: 0 });
+        gsap.set('#ps2-answer', { opacity: 0, y: 12 });
+        gsap.set('#ps3-label', { opacity: 0 });
+        gsap.set('#ps3-h', { opacity: 0 });
+        document.querySelectorAll('.fail-row').forEach(r => { r.style.opacity = '0'; r.style.transform = 'translateX(-20px)'; r.classList.remove('struck'); });
+        gsap.set('#ps4-pre', { opacity: 0 });
+        gsap.set('#ps4-cl', { opacity: 0, scale: 0.8, filter: 'blur(8px)' });
+        gsap.set('#ps4-desc', { opacity: 0 });
+        document.querySelectorAll('#ps4-pillars .pillar').forEach(p => { p.style.opacity = '0'; p.style.transform = 'translateY(30px) scale(0.95)'; });
+        // Re-split headings for next visit
+        ['ps1-h','ps2-h','ps3-h'].forEach(id => { const el = document.getElementById(id); if (el) el.dataset.split = '0'; });
+    }
+
+    // Initial state setup (hidden until panel becomes visible)
+    resetAllSlides();
+})();
 
 // ============================================================
 // ACCORDION
