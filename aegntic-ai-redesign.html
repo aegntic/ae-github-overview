@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="light">
 <head>
     <meta charset="UTF-8">
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -27,18 +27,54 @@
     <script type="application/ld+json">
     {"@context":"https://schema.org","@type":"ItemList","name":"Core Modules","numberOfItems":5,"itemListElement":[{"@type":"ListItem","position":1,"name":"Orchestration"},{"@type":"ListItem","position":2,"name":"Authenticity"},{"@type":"ListItem","position":3,"name":"Continuity"},{"@type":"ListItem","position":4,"name":"Sovereignty"},{"@type":"ListItem","position":5,"name":"Experiential Memory"}]}
     </script>
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;450;500;600&family=JetBrains+Mono:wght@400;500&display=swap">
+    <script>(function(){try{var t=localStorage.getItem('aegntic-theme');if(t==='dark')document.documentElement.setAttribute('data-theme','dark');}catch(e){}})();</script>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600&family=Inter:wght@400;450;500;600&family=JetBrains+Mono:wght@400;500&display=swap">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
     <style>
-        :root{--black:#0a0a0a;--deep-black:#0e0e0e;--border-dark:#2a2a2d;--cool-slate:#767d88;--mid-slate:#7d848e;--white:#e8e8e8;--teal:#00d4b8;--bronze:#b38b5e}
+        /* ── Light palette (default) ── */
+        :root {
+            --bg: #f0f6f8;
+            --surface: #f0efec;
+            --surface-raised: #ffffff;
+            --text: #1a1a18;
+            --text-secondary: #6b6b68;
+            --text-muted: #999;
+            --edge: #e2e1dd;
+            --edge-light: #f0f0ed;
+            --teal: #00b39e;
+            --teal-bg: rgba(0,179,158,0.07);
+            --bronze: #b38b5e;
+            --bronze-bg: rgba(179,139,94,0.07);
+            --canvas-opacity: 0.18;
+            --radius: 8px;
+            --radius-sm: 4px;
+        }
+        /* ── Dark palette (toggle) ── */
+        [data-theme="dark"] {
+            --bg: #0a0a0f;
+            --surface: #141419;
+            --surface-raised: #1a1a22;
+            --text: #f0f0ed;
+            --text-secondary: #8a8a8f;
+            --text-muted: #666;
+            --edge: #1e1e25;
+            --edge-light: #16161c;
+            --teal: #00d4b8;
+            --teal-bg: rgba(0,212,184,0.06);
+            --bronze: #c9a06e;
+            --bronze-bg: rgba(201,160,110,0.06);
+            --canvas-opacity: 0.85;
+        }
         *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-        body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;background:var(--black);color:var(--mid-slate);overflow:hidden;-webkit-font-smoothing:antialiased;line-height:1.5;font-size:16px}
-        h1,h2,h3{font-weight:500;color:var(--white);line-height:1.0;letter-spacing:-0.9px}
-        .fd{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif}.fm{font-family:'JetBrains Mono',monospace}
+        body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;background:var(--bg);color:var(--text-secondary);overflow:hidden;-webkit-font-smoothing:antialiased;line-height:1.5;font-size:16px;transition:background 0.4s,color 0.4s}
+        h1,h2,h3{font-weight:500;color:var(--text);line-height:1.0;letter-spacing:-0.9px}
+        .fd{font-family:'Space Grotesk','Inter',-apple-system,BlinkMacSystemFont,sans-serif}.fm{font-family:'JetBrains Mono',monospace}
 
         /* FX CANVAS */
-        #fx-canvas{position:fixed;inset:0;width:100vw;height:100dvh;z-index:0;pointer-events:none}
-        #vignette{position:fixed;inset:0;z-index:1;pointer-events:none;background:radial-gradient(ellipse at center,transparent 15%,rgba(0,0,0,0.7) 70%,rgba(0,0,0,0.95) 100%)}
+        #fx-canvas{position:fixed;inset:0;width:100vw;height:100dvh;z-index:0;pointer-events:none;opacity:var(--canvas-opacity);transition:opacity 0.6s}
+        #vignette{position:fixed;inset:0;z-index:1;pointer-events:none}
+        [data-theme="light"] #vignette{background:none}
+        [data-theme="dark"] #vignette{background:radial-gradient(ellipse at center,transparent 15%,rgba(0,0,0,0.5) 70%,rgba(0,0,0,0.85) 100%)}
 
         /* VIEWPORT */
         #viewport{position:fixed;inset:0;overflow:hidden;width:100vw;height:100dvh;z-index:10}
@@ -46,55 +82,64 @@
         .panel{position:absolute;width:100vw;height:100dvh;display:flex;align-items:center;justify-content:center;overflow:hidden}
 
         /* NAV */
-        #nav{position:fixed;top:0;left:0;right:0;z-index:200;background:rgba(10,10,10,0.85);border-bottom:1px solid var(--border-dark);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);height:54px}
+        #nav{position:fixed;top:0;left:0;right:0;z-index:200;background:var(--surface-raised);border-bottom:1px solid var(--edge);height:54px;transition:background 0.4s,border-color 0.4s}
+        [data-theme="dark"] #nav{background:rgba(10,10,15,0.88);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px)}
         #nav-inner{max-width:80rem;margin:0 auto;padding:0 1.5rem;height:100%;display:flex;align-items:center;justify-content:space-between}
         #nav-logo-link{display:flex;align-items:center;gap:0.6rem;text-decoration:none;color:inherit}
         #nav-logo{height:22px;width:auto}
-        .nav-brand{font-family:'Inter',sans-serif;font-weight:600;font-size:0.75rem;letter-spacing:-0.5px;color:var(--white)}
+        .nav-brand{font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:0.75rem;letter-spacing:-0.5px;color:var(--text)}
+
+        /* THEME TOGGLE */
+        #theme-toggle{background:none;border:1px solid var(--edge);border-radius:6px;color:var(--text-muted);font-size:0.7rem;padding:0.35rem 0.5rem;cursor:pointer;transition:border-color 150ms,color 150ms;display:flex;align-items:center;gap:0.35rem}
+        #theme-toggle:hover{border-color:var(--text);color:var(--text)}
+        #theme-toggle svg{width:14px;height:14px}
 
         /* DROPDOWN */
-        #menu-btn{display:flex;align-items:center;gap:0.45rem;background:none;border:1px solid var(--border-dark);border-radius:6px;color:var(--cool-slate);font-size:0.7rem;font-family:'JetBrains Mono',monospace;letter-spacing:0.08em;text-transform:uppercase;padding:0.35rem 0.75rem;cursor:pointer;transition:border-color 150ms,color 150ms}
-        #menu-btn:hover{border-color:var(--white);color:var(--white)}
+        #menu-btn{display:flex;align-items:center;gap:0.45rem;background:none;border:1px solid var(--edge);border-radius:6px;color:var(--text-muted);font-size:0.7rem;font-family:'JetBrains Mono',monospace;letter-spacing:0.08em;text-transform:uppercase;padding:0.35rem 0.75rem;cursor:pointer;transition:border-color 150ms,color 150ms}
+        #menu-btn:hover{border-color:var(--text);color:var(--text)}
         #menu-btn svg{transition:transform 300ms cubic-bezier(0.23,1,0.32,1)}
         #menu-btn.open svg{transform:rotate(180deg)}
-        #menu-dropdown{position:absolute;top:calc(100% + 6px);right:0;background:rgba(3,3,3,0.97);border:1px solid var(--border-dark);border-radius:8px;backdrop-filter:blur(28px);-webkit-backdrop-filter:blur(28px);min-width:210px;padding:0.4rem;opacity:0;visibility:hidden;transform:translateY(-8px) scale(0.96);transition:opacity 200ms ease,transform 200ms ease,visibility 200ms}
+        #menu-dropdown{position:absolute;top:calc(100% + 6px);right:0;background:var(--surface-raised);border:1px solid var(--edge);border-radius:8px;min-width:210px;padding:0.4rem;opacity:0;visibility:hidden;transform:translateY(-8px) scale(0.96);transition:opacity 200ms ease,transform 200ms ease,visibility 200ms;box-shadow:0 8px 30px rgba(0,0,0,0.08)}
+        [data-theme="dark"] #menu-dropdown{background:rgba(3,3,3,0.97);box-shadow:0 8px 30px rgba(0,0,0,0.4)}
         #menu-dropdown.open{opacity:1;visibility:visible;transform:translateY(0) scale(1)}
         .menu-item{display:flex;align-items:center;gap:0.65rem;padding:0.55rem 0.75rem;border-radius:8px;cursor:pointer;transition:background 150ms;text-decoration:none;color:inherit}
-        .menu-item:hover{background:rgba(255,255,255,0.04)}
+        [data-theme="light"] .menu-item:hover{background:var(--teal-bg)}
+        [data-theme="dark"] .menu-item:hover{background:rgba(255,255,255,0.04)}
         .menu-item.active .menu-label{color:var(--teal)}
-        .menu-num{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--mid-slate);width:18px}
-        .menu-label{font-size:0.78rem;color:var(--white);transition:color 150ms}
-        .menu-sep{height:1px;background:var(--border-dark);margin:0.3rem 0.75rem}
-        .menu-ext{font-size:0.72rem;color:var(--mid-slate)}
-        .menu-ext:hover .menu-label{color:var(--white)}
+        .menu-num{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--text-muted);width:18px}
+        .menu-label{font-size:0.78rem;color:var(--text);transition:color 150ms}
+        .menu-sep{height:1px;background:var(--edge);margin:0.3rem 0.75rem}
+        .menu-ext{font-size:0.72rem;color:var(--text-muted)}
+        .menu-ext:hover .menu-label{color:var(--text)}
 
         /* PROGRESS */
         #progress{position:fixed;bottom:1.25rem;left:50%;transform:translateX(-50%);z-index:101;display:flex;align-items:center;gap:5px}
-        .prog-dot{width:22px;height:2px;border-radius:1px;background:var(--border-dark);transition:background 300ms,width 300ms}
-        .prog-dot.active{background:var(--white);width:34px}
-        .prog-dot.passed{background:rgba(255,255,255,0.15)}
+        .prog-dot{width:22px;height:2px;border-radius:1px;background:var(--edge);transition:background 300ms,width 300ms}
+        .prog-dot.active{background:var(--text);width:34px}
+        .prog-dot.passed{background:var(--text-muted)}
 
         /* SECTION LABEL */
-        .slabel{font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:450;letter-spacing:0.35px;text-transform:uppercase;color:var(--cool-slate)}
+        .slabel{font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:450;letter-spacing:0.35px;text-transform:uppercase;color:var(--teal)}
 
-        /* GLASS */
-        .glass{background:var(--deep-black);border:1px solid var(--border-dark);border-radius:8px}
+        /* CARD */
+        .glass{background:var(--surface-raised);border:1px solid var(--edge);border-radius:var(--radius);transition:background 0.4s,border-color 0.4s}
 
         /* ACCORDION */
-        .prim-item{border-bottom:1px solid var(--border-dark);cursor:pointer;transition:background 150ms}
+        .prim-item{border-bottom:1px solid var(--edge);cursor:pointer;transition:background 150ms}
         .prim-item:last-child{border-bottom:none}
-        .prim-item:hover{background:rgba(255,255,255,0.02)}
+        [data-theme="light"] .prim-item:hover{background:var(--teal-bg)}
+        [data-theme="dark"] .prim-item:hover{background:rgba(255,255,255,0.02)}
         .prim-head{display:flex;align-items:center;justify-content:space-between;padding:0.8rem 1rem}
-        .prim-name{font-family:'Inter',sans-serif;font-size:0.95rem;font-weight:500;letter-spacing:-0.5px;color:var(--white)}
+        .prim-name{font-family:'Space Grotesk',sans-serif;font-size:0.95rem;font-weight:500;letter-spacing:-0.5px;color:var(--text)}
         .prim-tag{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:0.1em;text-transform:uppercase;padding:2px 6px;border-radius:4px}
         .prim-body{max-height:0;overflow:hidden;transition:max-height 400ms cubic-bezier(0.23,1,0.32,1),padding 300ms;padding:0 1rem}
         .prim-item.open .prim-body{max-height:200px;padding:0 1rem 0.75rem}
-        .prim-chev{transition:transform 300ms ease-out;color:var(--mid-slate)}
+        .prim-chev{transition:transform 300ms ease-out;color:var(--text-muted)}
         .prim-item.open .prim-chev{transform:rotate(180deg)}
 
         /* PROJECT CARDS */
-        .pcard{background:var(--deep-black);border:1px solid var(--border-dark);border-radius:8px;padding:0.9rem;transition:border-color 150ms,background 150ms;text-decoration:none;color:inherit;display:block}
-        .pcard:hover{border-color:var(--mid-slate);background:#121212}
+        .pcard{background:var(--surface-raised);border:1px solid var(--edge);border-radius:var(--radius);padding:0.9rem;transition:border-color 150ms,box-shadow 200ms;text-decoration:none;color:inherit;display:block}
+        .pcard:hover{border-color:var(--text-muted);box-shadow:0 2px 12px rgba(0,0,0,0.06)}
 
         /* SUB-SLIDES (THE PROBLEM multi-step) */
         #p1{overflow:hidden}
@@ -103,9 +148,9 @@
         .subslide.active{opacity:1;pointer-events:auto}
         .subslide-inner{max-width:40rem;padding:0 2rem}
         .subslide-nav{position:absolute;bottom:2.5rem;left:50%;transform:translateX(-50%);display:flex;align-items:center;gap:0.5rem;z-index:20}
-        .subslide-dot{width:24px;height:2px;border-radius:1px;background:var(--border-dark);cursor:pointer;transition:background 300ms,width 300ms}
+        .subslide-dot{width:24px;height:2px;border-radius:1px;background:var(--edge);cursor:pointer;transition:background 300ms,width 300ms}
         .subslide-dot.active{background:var(--teal);width:36px}
-        .subslide-counter{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:0.15em;color:var(--cool-slate);margin-left:0.75rem}
+        .subslide-counter{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:0.15em;color:var(--text-muted);margin-left:0.75rem}
         /* GSAP word/char split targets */
         .word,.char{display:inline-block}
         .typewriter-cursor{display:inline-block;width:2px;height:1em;background:var(--teal);margin-left:2px;vertical-align:text-bottom;animation:blink 0.7s step-end infinite}
@@ -113,7 +158,7 @@
         /* fail row stagger */
         .fail-row{opacity:0;transform:translateX(-20px)}
         .fail-label{position:relative;overflow:hidden}
-        .fail-label::after{content:'';position:absolute;left:0;top:55%;width:100%;height:1px;background:rgba(232,232,232,0.12);transform:scaleX(0);transform-origin:left}
+        .fail-label::after{content:'';position:absolute;left:0;top:55%;width:100%;height:1px;background:var(--text-muted);transform:scaleX(0);transform-origin:left}
         .fail-row.struck .fail-label::after{transform:scaleX(1);transition:transform 0.5s cubic-bezier(0.23,1,0.32,1)}
         /* pillars */
         .pillar{opacity:0;transform:translateY(30px) scale(0.95)}
@@ -135,41 +180,52 @@
             .reveal{opacity:1;transform:none;transition:none}
             .prim-body{transition:none}
         }
+        @media(min-width:1024px){
+            #hero-headline-span{width:93vw!important}
+        }
         @media(max-width:768px){
             .panel{padding:0 1rem}
             .inner{max-width:100%!important}
+            #hero-headline-span{width:85vw}
         }
     </style>
 </head>
 <body>
 
-<!-- FX CANVAS — full viewport generative 3D graphics -->
+<!-- FX CANVAS — progressive sacred geometry -->
 <canvas id="fx-canvas"></canvas>
 <div id="vignette"></div>
 
 <!-- NAV -->
 <nav id="nav">
     <div id="nav-inner">
-        <a href="#" id="nav-logo-link">
-            <img id="nav-logo" src="data:image/png;base64,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" alt="ae">
+        <a href="javascript:void(0)" id="nav-logo-link" onclick="snap(0);return false">
+            <img id="nav-logo" src="data:image/png;base64,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" alt="ae">
             <span class="nav-brand">AEGNTIC</span>
         </a>
-        <div style="position:relative">
-            <button id="menu-btn" aria-label="Navigation menu" aria-expanded="false">
-                <span id="menu-current">HERO</span>
-                <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M4 6L8 10L12 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+        <div style="display:flex;align-items:center;gap:0.5rem">
+            <button id="theme-toggle" aria-label="Toggle theme">
+                <svg id="theme-icon-light" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+                <svg id="theme-icon-dark" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:none"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
             </button>
-            <div id="menu-dropdown" role="menu">
-                <a class="menu-item active" data-section="0" role="menuitem"><span class="menu-num">01</span><span class="menu-label">Hero</span></a>
-                <a class="menu-item" data-section="1" role="menuitem"><span class="menu-num">02</span><span class="menu-label">The Problem</span></a>
-                <a class="menu-item" data-section="2" role="menuitem"><span class="menu-num">03</span><span class="menu-label">The Layer</span></a>
-                <a class="menu-item" data-section="3" role="menuitem"><span class="menu-num">04</span><span class="menu-label">Proof</span></a>
-                <a class="menu-item" data-section="4" role="menuitem"><span class="menu-num">05</span><span class="menu-label">About</span></a>
-                <a class="menu-item" data-section="5" role="menuitem"><span class="menu-num">06</span><span class="menu-label">Enter</span></a>
-                <div class="menu-sep"></div>
-                <a class="menu-item menu-ext" href="https://github.com/aegntic" target="_blank"><span class="menu-num">&rarr;</span><span class="menu-label">GitHub</span></a>
-                <a class="menu-item menu-ext" href="https://tools.aegntic.ai" target="_blank"><span class="menu-num">&rarr;</span><span class="menu-label">Tools</span></a>
-                <a class="menu-item menu-ext" href="https://x.com/AEGNTIC" target="_blank"><span class="menu-num">&rarr;</span><span class="menu-label">X</span></a>
+            <div style="position:relative">
+                <button id="menu-btn" aria-label="Navigation menu" aria-expanded="false">
+                    <span id="menu-current">HERO</span>
+                    <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M4 6L8 10L12 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+                </button>
+                <div id="menu-dropdown" role="menu">
+                    <a class="menu-item active" data-section="0" role="menuitem"><span class="menu-num">00</span><span class="menu-label">Cover</span></a>
+                    <a class="menu-item" data-section="1" role="menuitem"><span class="menu-num">01</span><span class="menu-label">Hero</span></a>
+                    <a class="menu-item" data-section="2" role="menuitem"><span class="menu-num">02</span><span class="menu-label">The Problem</span></a>
+                    <a class="menu-item" data-section="3" role="menuitem"><span class="menu-num">03</span><span class="menu-label">The Layer</span></a>
+                    <a class="menu-item" data-section="4" role="menuitem"><span class="menu-num">04</span><span class="menu-label">Proof</span></a>
+                    <a class="menu-item" data-section="5" role="menuitem"><span class="menu-num">05</span><span class="menu-label">About</span></a>
+                    <a class="menu-item" data-section="6" role="menuitem"><span class="menu-num">06</span><span class="menu-label">Enter</span></a>
+                    <div class="menu-sep"></div>
+                    <a class="menu-item menu-ext" href="https://github.com/aegntic" target="_blank"><span class="menu-num">&rarr;</span><span class="menu-label">GitHub</span></a>
+                    <a class="menu-item menu-ext" href="https://tools.aegntic.ai" target="_blank"><span class="menu-num">&rarr;</span><span class="menu-label">Tools</span></a>
+                    <a class="menu-item menu-ext" href="https://x.com/AEGNTIC" target="_blank"><span class="menu-num">&rarr;</span><span class="menu-label">X</span></a>
+                </div>
             </div>
         </div>
     </div>
@@ -183,51 +239,70 @@
     <div class="prog-dot" data-i="3"></div>
     <div class="prog-dot" data-i="4"></div>
     <div class="prog-dot" data-i="5"></div>
+    <div class="prog-dot" data-i="6"></div>
 </div>
 
 <!-- VIEWPORT -->
 <div id="viewport">
 <div id="world">
 
-    <!-- 0: HERO -->
+    <!-- 0: SPLASH / COVER — minimal entry -->
     <div class="panel visible" id="p0" style="left:0vw;top:0vh">
-        <div class="inner" style="position:relative;z-index:10;text-align:center;max-width:46rem;padding:0 2rem">
-            <div class="reveal" style="margin-bottom:2rem;font-family:'Inter',sans-serif;font-size:clamp(52px,11vw,140px);font-weight:600;letter-spacing:-0.06em;line-height:0.85;color:var(--white);opacity:0.12;user-select:none;-webkit-user-select:none">AEGNTIC</div>
-            <div class="slabel reveal" style="margin-bottom:1.1rem;color:var(--teal);letter-spacing:0.2em">LAYER ZERO</div>
-            <h1 class="fd reveal" style="font-size:clamp(40px,8vw,72px);font-weight:500;line-height:1.0;letter-spacing:-1.2px">
-                What if intelligence<br>could persist?
-            </h1>
-            <p class="reveal" style="margin-top:1.5rem;font-size:18px;line-height:1.6;color:var(--mid-slate);max-width:540px;margin-left:auto;margin-right:auto">
-                Not stateless prompts. Not sessions that forget.<br>
-                Coordinated, sovereign, memory-bearing systems.
-            </p>
-            <div class="reveal" style="margin-top:1.5rem;display:flex;align-items:center;justify-content:center;gap:1rem;flex-wrap:wrap">
-                <div class="fm" style="font-size:0.7rem"><span id="stat-repos" style="color:var(--white);font-weight:500">42</span> <span style="color:var(--mid-slate)">REPOS</span></div>
-                <div style="color:var(--border-dark)">&middot;</div>
-                <div class="fm" style="font-size:0.7rem"><span id="stat-stars" style="color:var(--white);font-weight:500">72</span> <span style="color:var(--mid-slate)">STARS</span></div>
-                <div style="color:var(--border-dark)">&middot;</div>
-                <div class="fm" style="font-size:0.7rem"><span id="stat-followers" style="color:var(--white);font-weight:500">16</span> <span style="color:var(--mid-slate)">BUILDERS</span></div>
-            </div>
-            <div class="reveal" style="margin-top:2.5rem">
-                <span class="fm scroll-hint" style="font-size:9px;letter-spacing:0.2em;color:var(--cool-slate);opacity:0.6">SCROLL TO CONTINUE</span>
-            </div>
+        <canvas id="splash-canvas" style="position:absolute;inset:0;width:100%;height:100%"></canvas>
+        <div style="position:relative;z-index:10;text-align:center">
+            <h1 class="fd" id="splash-title" style="font-size:clamp(56px,14vw,180px);font-weight:600;letter-spacing:-0.06em;line-height:0.85;color:var(--text);opacity:0;user-select:none;-webkit-user-select:none">aegntic</h1>
+        </div>
+        <div style="position:absolute;bottom:3%;left:50%;transform:translateX(-50%);z-index:10">
+            <span class="fm scroll-hint" style="font-size:9px;letter-spacing:0.2em;color:var(--text-muted);opacity:0.5">SCROLL</span>
         </div>
     </div>
 
-    <!-- 1: THE PROBLEM (4 sub-slides) -->
+    <!-- 1: HERO — SOHub-exact editorial layout -->
     <div class="panel" id="p1" style="left:100vw;top:0vh">
+        <!-- SOHub headline cluster: bottom 13%, -right 13% (intentional right overflow), gap 24px -->
+        <div class="reveal" style="position:absolute;bottom:13%;right:-13%;z-index:2;display:flex;flex-direction:column;gap:24px">
+            <!-- Headline span: 93vw wide at large screens, 85vw on smaller — text crops on right edge -->
+            <span style="display:block;width:85vw" id="hero-headline-span">
+                <h1 style="font-family:'Inter','Inter Fallback',-apple-system,BlinkMacSystemFont,sans-serif;font-size:clamp(42px,5.6vw,56px);font-weight:600;line-height:1.0;letter-spacing:-0.075em;color:var(--text);margin:0">
+                    What if intelligence<br>could persist?
+                </h1>
+            </span>
+            <p style="font-size:clamp(14px,1.4vw,18px);line-height:1.5;color:var(--text-secondary);max-width:480px;margin:0">
+                Not stateless prompts. Not sessions that forget.<br>
+                Coordinated, sovereign, memory-bearing systems.
+            </p>
+            <div style="display:flex;align-items:center;gap:1.25rem;flex-wrap:wrap">
+                <div class="fm" style="font-size:0.7rem"><span id="stat-repos" style="color:var(--text);font-weight:500">42</span> <span style="color:var(--text-muted)">REPOS</span></div>
+                <div style="color:var(--edge)">&middot;</div>
+                <div class="fm" style="font-size:0.7rem"><span id="stat-stars" style="color:var(--text);font-weight:500">72</span> <span style="color:var(--text-muted)">STARS</span></div>
+                <div style="color:var(--edge)">&middot;</div>
+                <div class="fm" style="font-size:0.7rem"><span id="stat-followers" style="color:var(--text);font-weight:500">16</span> <span style="color:var(--text-muted)">BUILDERS</span></div>
+            </div>
+        </div>
+        <!-- Scroll indicator — SOHub: left 48px, bottom 13% (aligned with headline baseline) -->
+        <div class="reveal" style="position:absolute;bottom:13%;left:48px;z-index:10">
+            <span class="fm scroll-hint" style="font-size:10px;letter-spacing:0.15em;color:var(--text-muted);opacity:0.5">SCROLL</span>
+        </div>
+        <!-- Top-right brand mark -->
+        <div style="position:absolute;top:5rem;right:5%;z-index:10;opacity:0.04;user-select:none;-webkit-user-select:none;pointer-events:none">
+            <span class="fd" style="font-size:clamp(60px,12vw,180px);font-weight:600;letter-spacing:-0.06em;line-height:0.8;color:var(--text)">ae</span>
+        </div>
+    </div>
+
+    <!-- 2: THE PROBLEM (4 sub-slides) -->
+    <div class="panel" id="p2" style="left:200vw;top:0vh">
         <div class="slide-stage">
             <!-- SLIDE 1: THE PROBLEM — title hook -->
             <div class="subslide active" id="ps1">
                 <div class="subslide-inner" style="text-align:center">
                     <div class="slabel" id="ps1-label" style="margin-bottom:1.5rem;color:var(--teal);opacity:0">THE PROBLEM</div>
-                    <h2 class="fd" id="ps1-h" style="font-size:clamp(36px,6vw,56px);font-weight:500;line-height:1.05;letter-spacing:-1.5px;color:var(--white);opacity:0">
+                    <h2 class="fd" id="ps1-h" style="font-size:clamp(36px,6vw,56px);font-weight:500;line-height:1.05;letter-spacing:-1.5px;color:var(--text);opacity:0">
                         Every AI breakthrough<br>works in isolation.
                     </h2>
                     <div style="margin-top:1.75rem">
                         <div id="ps1-line" style="width:0;height:1px;background:var(--teal);margin:0 auto;opacity:0.4"></div>
                     </div>
-                    <p id="ps1-sub" style="margin-top:1.25rem;font-size:0.82rem;color:var(--cool-slate);opacity:0">
+                    <p id="ps1-sub" style="margin-top:1.25rem;font-size:0.82rem;color:var(--text-muted);opacity:0">
                         scroll to see why
                     </p>
                 </div>
@@ -237,15 +312,15 @@
             <div class="subslide" id="ps2">
                 <div class="subslide-inner">
                     <div class="slabel" id="ps2-label" style="margin-bottom:1.25rem;color:var(--teal);opacity:0">THE GROWING GAP</div>
-                    <h2 class="fd" id="ps2-h" style="font-size:clamp(32px,5vw,48px);font-weight:500;line-height:1.0;letter-spacing:-1px;margin-bottom:1.25rem;color:var(--white);opacity:0">
+                    <h2 class="fd" id="ps2-h" style="font-size:clamp(32px,5vw,48px);font-weight:500;line-height:1.0;letter-spacing:-1px;margin-bottom:1.25rem;color:var(--text);opacity:0">
                         The tools get better every week.
                     </h2>
-                    <p id="ps2-p1" style="font-size:0.95rem;line-height:1.7;color:var(--mid-slate);margin-bottom:1rem;opacity:0">
-                        But connecting them into something that <strong class="em-word" style="color:var(--white)">persists</strong>, <strong class="em-word" style="color:var(--white)">coordinates</strong>, and remains <strong class="em-word" style="color:var(--white)">under human control</strong>?
+                    <p id="ps2-p1" style="font-size:0.95rem;line-height:1.7;color:var(--text-secondary);margin-bottom:1rem;opacity:0">
+                        But connecting them into something that <strong class="em-word" style="color:var(--text)">persists</strong>, <strong class="em-word" style="color:var(--text)">coordinates</strong>, and remains <strong class="em-word" style="color:var(--text)">under human control</strong>?
                     </p>
                     <div id="ps2-gap" style="height:1rem"></div>
                     <div id="ps2-answer" style="opacity:0;transform:translateY(12px)">
-                        <p style="font-size:1.1rem;line-height:1.5;color:var(--white);font-weight:500">That infrastructure does not exist.</p>
+                        <p style="font-size:1.1rem;line-height:1.5;color:var(--text);font-weight:500">That infrastructure does not exist.</p>
                         <p style="font-size:0.95rem;line-height:1.5;color:var(--teal);margin-top:0.5rem;font-family:'JetBrains Mono',monospace;font-size:0.8rem;letter-spacing:0.05em">SO WE ARE BUILDING IT.</p>
                     </div>
                 </div>
@@ -255,25 +330,25 @@
             <div class="subslide" id="ps3">
                 <div class="subslide-inner">
                     <div class="slabel" id="ps3-label" style="margin-bottom:1.25rem;color:var(--teal);opacity:0">INFRASTRUCTURE STATUS</div>
-                    <h2 class="fd" id="ps3-h" style="font-size:clamp(28px,4.5vw,42px);font-weight:500;line-height:1.0;letter-spacing:-1px;margin-bottom:1.5rem;color:var(--white);opacity:0">
+                    <h2 class="fd" id="ps3-h" style="font-size:clamp(28px,4.5vw,42px);font-weight:500;line-height:1.0;letter-spacing:-1px;margin-bottom:1.5rem;color:var(--text);opacity:0">
                         Current approaches fail.
                     </h2>
-                    <div style="display:flex;flex-direction:column;gap:1px;background:var(--border-dark);border:1px solid var(--border-dark);border-radius:8px;overflow:hidden">
-                        <div class="fail-row" style="display:flex;align-items:flex-start;gap:0.65rem;padding:0.85rem 1rem;background:var(--deep-black)">
-                            <span class="fm fail-label" style="color:var(--cool-slate);font-size:0.7rem;min-width:105px">PROMPTS</span>
-                            <span style="font-size:0.78rem;color:var(--mid-slate);line-height:1.45">Context resets every session. No memory. No continuity of thought.</span>
+                    <div style="display:flex;flex-direction:column;gap:1px;background:var(--edge);border:1px solid var(--edge);border-radius:8px;overflow:hidden">
+                        <div class="fail-row" style="display:flex;align-items:flex-start;gap:0.65rem;padding:0.85rem 1rem;background:var(--surface-raised)">
+                            <span class="fm fail-label" style="color:var(--text-muted);font-size:0.7rem;min-width:105px">PROMPTS</span>
+                            <span style="font-size:0.78rem;color:var(--text-secondary);line-height:1.45">Context resets every session. No memory. No continuity of thought.</span>
                         </div>
-                        <div class="fail-row" style="display:flex;align-items:flex-start;gap:0.65rem;padding:0.85rem 1rem;background:var(--deep-black)">
-                            <span class="fm fail-label" style="color:var(--cool-slate);font-size:0.7rem;min-width:105px">FINE-TUNING</span>
-                            <span style="font-size:0.78rem;color:var(--mid-slate);line-height:1.45">Brittle, expensive. Cannot adapt in real-time to new contexts.</span>
+                        <div class="fail-row" style="display:flex;align-items:flex-start;gap:0.65rem;padding:0.85rem 1rem;background:var(--surface-raised)">
+                            <span class="fm fail-label" style="color:var(--text-muted);font-size:0.7rem;min-width:105px">FINE-TUNING</span>
+                            <span style="font-size:0.78rem;color:var(--text-secondary);line-height:1.45">Brittle, expensive. Cannot adapt in real-time to new contexts.</span>
                         </div>
-                        <div class="fail-row" style="display:flex;align-items:flex-start;gap:0.65rem;padding:0.85rem 1rem;background:var(--deep-black)">
-                            <span class="fm fail-label" style="color:var(--cool-slate);font-size:0.7rem;min-width:105px">RAG</span>
-                            <span style="font-size:0.78rem;color:var(--mid-slate);line-height:1.45">Retrieval, not understanding. Stitches text without comprehension.</span>
+                        <div class="fail-row" style="display:flex;align-items:flex-start;gap:0.65rem;padding:0.85rem 1rem;background:var(--surface-raised)">
+                            <span class="fm fail-label" style="color:var(--text-muted);font-size:0.7rem;min-width:105px">RAG</span>
+                            <span style="font-size:0.78rem;color:var(--text-secondary);line-height:1.45">Retrieval, not understanding. Stitches text without comprehension.</span>
                         </div>
-                        <div class="fail-row" style="display:flex;align-items:flex-start;gap:0.65rem;padding:0.85rem 1rem;background:var(--deep-black)">
-                            <span class="fm fail-label" style="color:var(--cool-slate);font-size:0.7rem;min-width:105px">MANUAL ORCH</span>
-                            <span style="font-size:0.78rem;color:var(--mid-slate);line-height:1.45">Human bottleneck. Breaks at multi-agent scale.</span>
+                        <div class="fail-row" style="display:flex;align-items:flex-start;gap:0.65rem;padding:0.85rem 1rem;background:var(--surface-raised)">
+                            <span class="fm fail-label" style="color:var(--text-muted);font-size:0.7rem;min-width:105px">MANUAL ORCH</span>
+                            <span style="font-size:0.78rem;color:var(--text-secondary);line-height:1.45">Human bottleneck. Breaks at multi-agent scale.</span>
                         </div>
                     </div>
                 </div>
@@ -282,30 +357,30 @@
             <!-- SLIDE 4: THE MISSING PIECE → COORDINATION LAYER -->
             <div class="subslide" id="ps4">
                 <div class="subslide-inner" style="text-align:center">
-                    <div id="ps4-pre" style="font-family:'JetBrains Mono',monospace;font-size:0.7rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--cool-slate);opacity:0;margin-bottom:2rem">
+                    <div id="ps4-pre" style="font-family:'JetBrains Mono',monospace;font-size:0.7rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--text-muted);opacity:0;margin-bottom:2rem">
                         aegntic.labs
                     </div>
                     <div class="coord-headline fd" id="ps4-cl" style="font-size:clamp(40px,7vw,72px);font-weight:600;line-height:0.95;letter-spacing:-2px;color:var(--teal);margin-bottom:1.5rem">
                         layer zero
                     </div>
-                    <p id="ps4-desc" style="font-size:0.9rem;line-height:1.6;color:var(--mid-slate);max-width:28rem;margin:0 auto 2rem;opacity:0">
+                    <p id="ps4-desc" style="font-size:0.9rem;line-height:1.6;color:var(--text-secondary);max-width:28rem;margin:0 auto 2rem;opacity:0">
                         The coordination layer for persistent human-AI intelligence. Infrastructure that connects, remembers, and remains sovereign.
                     </p>
                     <div style="display:flex;justify-content:center;gap:2rem;flex-wrap:wrap" id="ps4-pillars">
                         <div class="pillar" style="text-align:center;min-width:100px">
                             <div style="font-size:1.5rem;color:var(--teal);margin-bottom:0.4rem">&#x2B22;</div>
-                            <div class="fm" style="font-size:0.7rem;color:var(--white);letter-spacing:0.1em">CONNECT</div>
-                            <div style="font-size:0.7rem;color:var(--mid-slate);margin-top:0.25rem">Route signals</div>
+                            <div class="fm" style="font-size:0.7rem;color:var(--text);letter-spacing:0.1em">CONNECT</div>
+                            <div style="font-size:0.7rem;color:var(--text-secondary);margin-top:0.25rem">Route signals</div>
                         </div>
                         <div class="pillar" style="text-align:center;min-width:100px">
                             <div style="font-size:1.5rem;color:var(--bronze);margin-bottom:0.4rem">&#x2B22;</div>
-                            <div class="fm" style="font-size:0.7rem;color:var(--white);letter-spacing:0.1em">PERSIST</div>
-                            <div style="font-size:0.7rem;color:var(--mid-slate);margin-top:0.25rem">Memory that compounds</div>
+                            <div class="fm" style="font-size:0.7rem;color:var(--text);letter-spacing:0.1em">PERSIST</div>
+                            <div style="font-size:0.7rem;color:var(--text-secondary);margin-top:0.25rem">Memory that compounds</div>
                         </div>
                         <div class="pillar" style="text-align:center;min-width:100px">
                             <div style="font-size:1.5rem;color:var(--teal);margin-bottom:0.4rem">&#x2B22;</div>
-                            <div class="fm" style="font-size:0.7rem;color:var(--white);letter-spacing:0.1em">CONTROL</div>
-                            <div style="font-size:0.7rem;color:var(--mid-slate);margin-top:0.25rem">Sovereign oversight</div>
+                            <div class="fm" style="font-size:0.7rem;color:var(--text);letter-spacing:0.1em">CONTROL</div>
+                            <div style="font-size:0.7rem;color:var(--text-secondary);margin-top:0.25rem">Sovereign oversight</div>
                         </div>
                     </div>
                 </div>
@@ -322,112 +397,112 @@
         </div>
     </div>
 
-    <!-- 2: THE LAYER -->
-    <div class="panel" id="p2" style="left:200vw;top:0vh">
+    <!-- 3: THE LAYER -->
+    <div class="panel" id="p3" style="left:300vw;top:0vh">
         <div class="inner" style="max-width:40rem;padding:0 2rem">
             <div class="slabel reveal" style="margin-bottom:1.25rem;color:var(--teal)">THE LAYER</div>
             <h2 class="fd reveal" style="font-size:clamp(32px,5vw,48px);font-weight:500;line-height:1.0;letter-spacing:-1px;margin-bottom:0.5rem">
                 5 Core Modules. One foundation.
             </h2>
-            <p class="reveal" style="font-size:0.9rem;line-height:1.5;color:var(--mid-slate);margin-bottom:1.25rem">
+            <p class="reveal" style="font-size:0.9rem;line-height:1.5;color:var(--text-secondary);margin-bottom:1.25rem">
                 Modular, independent features. Each one valuable alone. Combined, they exponentially raise each other's value.
             </p>
             <div class="reveal glass" style="overflow:hidden" id="accordion">
                 <div class="prim-item" data-p="orch">
-                    <div class="prim-head"><div style="display:flex;align-items:center;gap:0.5rem"><span style="color:var(--teal)">&#x2726;</span><span class="prim-name">Orchestration</span></div><div style="display:flex;align-items:center;gap:0.5rem"><span class="prim-tag" style="color:var(--cool-slate);background:rgba(118,125,136,0.1)">COORDINATION</span><svg class="prim-chev" width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M4 6L8 10L12 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></div></div>
-                    <div class="prim-body"><p style="font-size:0.78rem;line-height:1.6;color:var(--mid-slate)">Multi-agent signal routing and distributed task coordination. The layer connects specialized agents, routes signals, and manages execution without a single point of failure.</p></div>
+                    <div class="prim-head"><div style="display:flex;align-items:center;gap:0.5rem"><span style="color:var(--teal)">&#x2726;</span><span class="prim-name">Orchestration</span></div><div style="display:flex;align-items:center;gap:0.5rem"><span class="prim-tag" style="color:var(--text-muted);background:var(--teal-bg)">COORDINATION</span><svg class="prim-chev" width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M4 6L8 10L12 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></div></div>
+                    <div class="prim-body"><p style="font-size:0.78rem;line-height:1.6;color:var(--text-secondary)">Multi-agent signal routing and distributed task coordination. The layer connects specialized agents, routes signals, and manages execution without a single point of failure.</p></div>
                 </div>
                 <div class="prim-item" data-p="auth">
-                    <div class="prim-head"><div style="display:flex;align-items:center;gap:0.5rem"><span style="color:var(--bronze)">&#x2726;</span><span class="prim-name">Authenticity</span></div><div style="display:flex;align-items:center;gap:0.5rem"><span class="prim-tag" style="color:var(--cool-slate);background:rgba(118,125,136,0.1)">HUMAN-LIKE</span><svg class="prim-chev" width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M4 6L8 10L12 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></div></div>
-                    <div class="prim-body"><p style="font-size:0.78rem;line-height:1.6;color:var(--mid-slate)">27 behavioral patterns. 98%+ detector resistance. Intelligence that feels and reads as human in real production environments, not just benchmarks.</p></div>
+                    <div class="prim-head"><div style="display:flex;align-items:center;gap:0.5rem"><span style="color:var(--bronze)">&#x2726;</span><span class="prim-name">Authenticity</span></div><div style="display:flex;align-items:center;gap:0.5rem"><span class="prim-tag" style="color:var(--text-muted);background:var(--bronze-bg)">HUMAN-LIKE</span><svg class="prim-chev" width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M4 6L8 10L12 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></div></div>
+                    <div class="prim-body"><p style="font-size:0.78rem;line-height:1.6;color:var(--text-secondary)">27 behavioral patterns. 98%+ detector resistance. Intelligence that feels and reads as human in real production environments, not just benchmarks.</p></div>
                 </div>
                 <div class="prim-item" data-p="cont">
-                    <div class="prim-head"><div style="display:flex;align-items:center;gap:0.5rem"><span style="color:var(--teal)">&#x2726;</span><span class="prim-name">Continuity</span></div><div style="display:flex;align-items:center;gap:0.5rem"><span class="prim-tag" style="color:var(--cool-slate);background:rgba(118,125,136,0.1)">PERSISTENCE</span><svg class="prim-chev" width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M4 6L8 10L12 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></div></div>
-                    <div class="prim-body"><p style="font-size:0.78rem;line-height:1.6;color:var(--mid-slate)">State that survives sessions and compounds over time. Agents remember, learn, and build on prior interactions instead of starting from zero each time.</p></div>
+                    <div class="prim-head"><div style="display:flex;align-items:center;gap:0.5rem"><span style="color:var(--teal)">&#x2726;</span><span class="prim-name">Continuity</span></div><div style="display:flex;align-items:center;gap:0.5rem"><span class="prim-tag" style="color:var(--text-muted);background:var(--teal-bg)">PERSISTENCE</span><svg class="prim-chev" width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M4 6L8 10L12 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></div></div>
+                    <div class="prim-body"><p style="font-size:0.78rem;line-height:1.6;color:var(--text-secondary)">State that survives sessions and compounds over time. Agents remember, learn, and build on prior interactions instead of starting from zero each time.</p></div>
                 </div>
                 <div class="prim-item" data-p="sov">
-                    <div class="prim-head"><div style="display:flex;align-items:center;gap:0.5rem"><span style="color:var(--bronze)">&#x2726;</span><span class="prim-name">Sovereignty</span></div><div style="display:flex;align-items:center;gap:0.5rem"><span class="prim-tag" style="color:var(--cool-slate);background:rgba(118,125,136,0.1)">OVERSIGHT</span><svg class="prim-chev" width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M4 6L8 10L12 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></div></div>
-                    <div class="prim-body"><p style="font-size:0.78rem;line-height:1.6;color:var(--mid-slate)">Human oversight that never fully relinquishes control. Autonomous systems remain supervised, steerable, and accountable at every layer.</p></div>
+                    <div class="prim-head"><div style="display:flex;align-items:center;gap:0.5rem"><span style="color:var(--bronze)">&#x2726;</span><span class="prim-name">Sovereignty</span></div><div style="display:flex;align-items:center;gap:0.5rem"><span class="prim-tag" style="color:var(--text-muted);background:var(--bronze-bg)">OVERSIGHT</span><svg class="prim-chev" width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M4 6L8 10L12 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></div></div>
+                    <div class="prim-body"><p style="font-size:0.78rem;line-height:1.6;color:var(--text-secondary)">Human oversight that never fully relinquishes control. Autonomous systems remain supervised, steerable, and accountable at every layer.</p></div>
                 </div>
                 <div class="prim-item" data-p="mem">
-                    <div class="prim-head"><div style="display:flex;align-items:center;gap:0.5rem"><span style="color:var(--teal)">&#x2726;</span><span class="prim-name">Experiential Memory</span></div><div style="display:flex;align-items:center;gap:0.5rem"><span class="prim-tag" style="color:var(--cool-slate);background:rgba(118,125,136,0.1)">COMPOUNDING</span><svg class="prim-chev" width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M4 6L8 10L12 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></div></div>
-                    <div class="prim-body"><p style="font-size:0.78rem;line-height:1.6;color:var(--mid-slate)">Intelligence that remembers and compounds. Not data storage, but experiential understanding that grows richer with each interaction and decision cycle.</p></div>
+                    <div class="prim-head"><div style="display:flex;align-items:center;gap:0.5rem"><span style="color:var(--teal)">&#x2726;</span><span class="prim-name">Experiential Memory</span></div><div style="display:flex;align-items:center;gap:0.5rem"><span class="prim-tag" style="color:var(--text-muted);background:var(--teal-bg)">COMPOUNDING</span><svg class="prim-chev" width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M4 6L8 10L12 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></div></div>
+                    <div class="prim-body"><p style="font-size:0.78rem;line-height:1.6;color:var(--text-secondary)">Intelligence that remembers and compounds. Not data storage, but experiential understanding that grows richer with each interaction and decision cycle.</p></div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- 3: PROOF -->
-    <div class="panel" id="p3" style="left:300vw;top:0vh">
+    <!-- 4: PROOF -->
+    <div class="panel" id="p4" style="left:400vw;top:0vh">
         <div class="inner" style="max-width:52rem;padding:0 2rem">
             <div class="slabel reveal" style="margin-bottom:1.25rem;color:var(--teal)">PROOF IT SHIPS</div>
             <h2 class="fd reveal" style="font-size:clamp(32px,5vw,48px);font-weight:500;line-height:1.0;letter-spacing:-1px;margin-bottom:1.25rem">
                 Not a pitch deck. Live systems you can inspect right now.
             </h2>
             <div class="reveal" style="margin-bottom:1rem">
-                <div class="glass" style="overflow:hidden;position:relative;height:10rem;background:var(--black)">
+                <div class="glass" style="overflow:hidden;position:relative;height:10rem;background:var(--bg)">
                     <canvas id="continuity-canvas" style="position:absolute;inset:0;width:100%;height:100%"></canvas>
-                    <div id="continuity-state" role="status" aria-live="polite" class="fm" style="position:absolute;bottom:0.6rem;right:0.6rem;font-size:9px;letter-spacing:0.15em;color:var(--white);background:rgba(10,10,10,0.7);padding:2px 6px;border-radius:4px">PERSISTING</div>
-                    <div class="fm" style="position:absolute;bottom:0.6rem;left:0.6rem;font-size:8px;letter-spacing:0.1em;color:var(--cool-slate)">DRAG TO RE-ORCHESTRATE</div>
+                    <div id="continuity-state" role="status" aria-live="polite" class="fm" style="position:absolute;bottom:0.6rem;right:0.6rem;font-size:9px;letter-spacing:0.15em;color:var(--text);background:var(--surface-raised);padding:2px 6px;border-radius:4px">PERSISTING</div>
+                    <div class="fm" style="position:absolute;bottom:0.6rem;left:0.6rem;font-size:8px;letter-spacing:0.1em;color:var(--text-muted)">DRAG TO RE-ORCHESTRATE</div>
                 </div>
             </div>
             <div id="project-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(185px,1fr));gap:0.5rem"></div>
         </div>
     </div>
 
-    <!-- 4: ABOUT -->
-    <div class="panel" id="p4" style="left:400vw;top:0vh">
+    <!-- 5: ABOUT -->
+    <div class="panel" id="p5" style="left:500vw;top:0vh">
         <div class="inner" style="max-width:36rem;padding:0 2rem">
             <div class="slabel reveal" style="margin-bottom:1.25rem;color:var(--teal)">ABOUT</div>
             <h2 class="fd reveal" style="font-size:clamp(32px,5vw,48px);font-weight:500;line-height:1.0;letter-spacing:-1px;margin-bottom:1rem">
                 Solo-built. Open source.<br>Thesis-driven infrastructure.
             </h2>
-            <p class="reveal" style="font-size:0.9rem;line-height:1.65;color:var(--mid-slate);margin-bottom:1.25rem">
+            <p class="reveal" style="font-size:0.9rem;line-height:1.65;color:var(--text-secondary);margin-bottom:1.25rem">
                 Aegntic is one developer building the coordination layer for persistent human&ndash;AI intelligence. 198 public repositories. Every project expresses one or more of the five core modules. No venture funding. No team of fifty. One thesis, pursued relentlessly.
             </p>
-            <div class="reveal" style="display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--border-dark);border:1px solid var(--border-dark);border-radius:8px;overflow:hidden;margin-bottom:1.25rem">
-                <div style="padding:1.5rem 1rem;background:var(--deep-black);text-align:center">
-                    <div class="fm" style="font-size:9px;letter-spacing:0.12em;color:var(--cool-slate);margin-bottom:0.5rem">REPOS</div>
-                    <div class="fd" style="font-size:clamp(36px,5vw,56px);font-weight:500;color:var(--white);letter-spacing:-1px" id="about-repos">198</div>
+            <div class="reveal" style="display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--edge);border:1px solid var(--edge);border-radius:8px;overflow:hidden;margin-bottom:1.25rem">
+                <div style="padding:1.5rem 1rem;background:var(--surface-raised);text-align:center">
+                    <div class="fm" style="font-size:9px;letter-spacing:0.12em;color:var(--text-muted);margin-bottom:0.5rem">REPOS</div>
+                    <div class="fd" style="font-size:clamp(36px,5vw,56px);font-weight:500;color:var(--text);letter-spacing:-1px" id="about-repos">198</div>
                 </div>
-                <div style="padding:1.5rem 1rem;background:var(--deep-black);text-align:center">
-                    <div class="fm" style="font-size:9px;letter-spacing:0.12em;color:var(--cool-slate);margin-bottom:0.5rem">STARS</div>
-                    <div class="fd" style="font-size:clamp(36px,5vw,56px);font-weight:500;color:var(--white);letter-spacing:-1px" id="about-stars">46</div>
+                <div style="padding:1.5rem 1rem;background:var(--surface-raised);text-align:center">
+                    <div class="fm" style="font-size:9px;letter-spacing:0.12em;color:var(--text-muted);margin-bottom:0.5rem">STARS</div>
+                    <div class="fd" style="font-size:clamp(36px,5vw,56px);font-weight:500;color:var(--text);letter-spacing:-1px" id="about-stars">46</div>
                 </div>
             </div>
             <div class="reveal" style="display:flex;align-items:center;gap:0.6rem;flex-wrap:wrap">
-                <span class="fm" style="font-size:11px;font-weight:450;letter-spacing:0.35px;text-transform:uppercase;color:var(--cool-slate);padding:8px 12px;background:#111;border-radius:4px">TypeScript</span>
-                <span class="fm" style="font-size:11px;font-weight:450;letter-spacing:0.35px;text-transform:uppercase;color:var(--cool-slate);padding:8px 12px;background:#111;border-radius:4px">Python</span>
-                <span class="fm" style="font-size:11px;font-weight:450;letter-spacing:0.35px;text-transform:uppercase;color:var(--cool-slate);padding:8px 12px;background:#111;border-radius:4px">Rust</span>
-                <span class="fm" style="font-size:11px;font-weight:450;letter-spacing:0.35px;text-transform:uppercase;color:var(--cool-slate);padding:8px 12px;background:#111;border-radius:4px">JavaScript</span>
-                <span class="fm" style="font-size:11px;font-weight:450;letter-spacing:0.35px;text-transform:uppercase;color:var(--cool-slate);padding:8px 12px;background:#111;border-radius:4px">Go</span>
+                <span class="fm" style="font-size:11px;font-weight:450;letter-spacing:0.35px;text-transform:uppercase;color:var(--text-muted);padding:8px 12px;background:var(--surface);border-radius:4px">TypeScript</span>
+                <span class="fm" style="font-size:11px;font-weight:450;letter-spacing:0.35px;text-transform:uppercase;color:var(--text-muted);padding:8px 12px;background:var(--surface);border-radius:4px">Python</span>
+                <span class="fm" style="font-size:11px;font-weight:450;letter-spacing:0.35px;text-transform:uppercase;color:var(--text-muted);padding:8px 12px;background:var(--surface);border-radius:4px">Rust</span>
+                <span class="fm" style="font-size:11px;font-weight:450;letter-spacing:0.35px;text-transform:uppercase;color:var(--text-muted);padding:8px 12px;background:var(--surface);border-radius:4px">JavaScript</span>
+                <span class="fm" style="font-size:11px;font-weight:450;letter-spacing:0.35px;text-transform:uppercase;color:var(--text-muted);padding:8px 12px;background:var(--surface);border-radius:4px">Go</span>
             </div>
-            <p class="reveal" style="margin-top:1rem;font-size:0.78rem;line-height:1.5;color:var(--mid-slate)">
-                Building in public since 2025. Follow the build on <a href="https://x.com/AEGNTIC" target="_blank" style="color:var(--white);text-decoration:none">X</a> or browse the <a href="https://github.com/aegntic" target="_blank" style="color:var(--white);text-decoration:none">source</a>.
+            <p class="reveal" style="margin-top:1rem;font-size:0.78rem;line-height:1.5;color:var(--text-secondary)">
+                Building in public since 2025. Follow the build on <a href="https://x.com/AEGNTIC" target="_blank" style="color:var(--text);text-decoration:none">X</a> or browse the <a href="https://github.com/aegntic" target="_blank" style="color:var(--text);text-decoration:none">source</a>.
             </p>
         </div>
     </div>
 
-    <!-- 5: ENTER / CTA -->
-    <div class="panel" id="p5" style="left:500vw;top:0vh">
+    <!-- 6: ENTER / CTA -->
+    <div class="panel" id="p6" style="left:600vw;top:0vh">
         <div class="inner" style="position:relative;z-index:10;max-width:32rem;padding:0 2rem;text-align:center">
             <div class="slabel reveal" style="margin-bottom:1.25rem;color:var(--teal)">ENTER THE LAYER</div>
             <h2 class="fd reveal" style="font-size:clamp(40px,8vw,72px);font-weight:500;line-height:1.0;letter-spacing:-1.2px;margin-bottom:0.85rem">
                 Agentic Empowerment.<br>Verified. Layer zero.
             </h2>
-            <p class="reveal" style="font-size:0.9rem;line-height:1.6;color:var(--mid-slate);margin-bottom:1.75rem">
+            <p class="reveal" style="font-size:0.9rem;line-height:1.6;color:var(--text-secondary);margin-bottom:1.75rem">
                 The coordination layer is open, sovereign, and compounding. Browse the source. Build on the modules. See it in production.
             </p>
             <div class="reveal" style="display:flex;align-items:center;justify-content:center;gap:0.75rem;flex-wrap:wrap">
-                <a href="https://github.com/aegntic" target="_blank" style="display:inline-flex;align-items:center;height:2.5rem;padding:0 1.25rem;border-radius:6px;background:var(--white);color:var(--black);font-size:14px;font-weight:600;text-decoration:none;transition:opacity 150ms" onmouseover="this.style.opacity='0.85'" onmouseout="this.style.opacity='1'">BROWSE THE SOURCE</a>
-                <a href="https://tools.aegntic.ai" target="_blank" style="display:inline-flex;align-items:center;height:2.5rem;padding:0 1.25rem;border-radius:6px;border:1px solid var(--border-dark);font-size:14px;font-weight:500;text-decoration:none;color:var(--cool-slate);transition:all 150ms" onmouseover="this.style.color='var(--white)';this.style.borderColor='var(--white)'" onmouseout="this.style.color='var(--cool-slate)';this.style.borderColor='var(--border-dark)'">SEE THE LAYER IN PRODUCTS</a>
+                <a href="https://github.com/aegntic" target="_blank" style="display:inline-flex;align-items:center;height:2.5rem;padding:0 1.25rem;border-radius:6px;background:var(--text);color:var(--bg);font-size:14px;font-weight:600;text-decoration:none;transition:opacity 150ms" onmouseover="this.style.opacity='0.85'" onmouseout="this.style.opacity='1'">BROWSE THE SOURCE</a>
+                <a href="https://tools.aegntic.ai" target="_blank" style="display:inline-flex;align-items:center;height:2.5rem;padding:0 1.25rem;border-radius:6px;border:1px solid var(--edge);font-size:14px;font-weight:500;text-decoration:none;color:var(--text-secondary);transition:all 150ms" onmouseover="this.style.color='var(--text)';this.style.borderColor='var(--text)'" onmouseout="this.style.color='var(--text-secondary)';this.style.borderColor='var(--edge)'">SEE THE LAYER IN PRODUCTS</a>
             </div>
-            <div class="reveal" style="margin-top:2rem;padding-top:1rem;border-top:1px solid var(--border-dark);font-size:0.65rem;color:var(--mid-slate);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:0.4rem">
+            <div class="reveal" style="margin-top:2rem;padding-top:1rem;border-top:1px solid var(--edge);font-size:0.65rem;color:var(--text-muted);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:0.4rem">
                 <span>&copy; aegntic &mdash; Solo-built infrastructure for persistent intelligence.</span>
                 <div style="display:flex;gap:0.75rem">
-                    <a href="https://tools.aegntic.ai" style="color:var(--mid-slate);text-decoration:none" onmouseover="this.style.color='var(--white)'" onmouseout="this.style.color='var(--mid-slate)'">Tools</a>
-                    <a href="https://x.com/AEGNTIC" style="color:var(--mid-slate);text-decoration:none" onmouseover="this.style.color='var(--white)'" onmouseout="this.style.color='var(--mid-slate)'">X</a>
-                    <a href="https://github.com/aegntic" style="color:var(--mid-slate);text-decoration:none" onmouseover="this.style.color='var(--white)'" onmouseout="this.style.color='var(--mid-slate)'">GitHub</a>
+                    <a href="https://tools.aegntic.ai" style="color:var(--text-muted);text-decoration:none" onmouseover="this.style.color='var(--text)'" onmouseout="this.style.color='var(--text-muted)'">Tools</a>
+                    <a href="https://x.com/AEGNTIC" style="color:var(--text-muted);text-decoration:none" onmouseover="this.style.color='var(--text)'" onmouseout="this.style.color='var(--text-muted)'">X</a>
+                    <a href="https://github.com/aegntic" style="color:var(--text-muted);text-decoration:none" onmouseover="this.style.color='var(--text)'" onmouseout="this.style.color='var(--text-muted)'">GitHub</a>
                 </div>
             </div>
         </div>
@@ -438,8 +513,28 @@
 
 <script>
 // ============================================================
+// THEME TOGGLE
+// ============================================================
+(() => {
+    const html = document.documentElement;
+    const btn = document.getElementById('theme-toggle');
+    const iconLight = document.getElementById('theme-icon-light');
+    const iconDark = document.getElementById('theme-icon-dark');
+    function apply(theme) {
+        html.setAttribute('data-theme', theme);
+        localStorage.setItem('aegntic-theme', theme);
+        iconLight.style.display = theme === 'light' ? 'block' : 'none';
+        iconDark.style.display = theme === 'dark' ? 'block' : 'none';
+    }
+    btn.addEventListener('click', () => {
+        apply(html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
+    });
+    // Sync icon on load
+    apply(html.getAttribute('data-theme') || 'light');
+})();
+
+// ============================================================
 // FX ENGINE — Progressive Sacred Geometry
-// Tetrahedron → Cube → Octahedron → Dodecahedron → Icosahedron → Metatron
 // ============================================================
 const FX = (() => {
     const C = document.getElementById('fx-canvas');
@@ -450,9 +545,7 @@ const FX = (() => {
     let t = 0;
     const PRM_FX = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-    // ── Platonic Solid Geometry Library ──
     const PHI = (1 + Math.sqrt(5)) / 2;
-
     function norm(v) { const l = Math.sqrt(v[0]*v[0]+v[1]*v[1]+v[2]*v[2]) || 1; return [v[0]/l,v[1]/l,v[2]/l]; }
     function edgesFromVerts(verts, maxDist) {
         const edges = [];
@@ -463,20 +556,12 @@ const FX = (() => {
             }
         return edges;
     }
-
-    // Tetrahedron: 4 verts, 6 edges
     const TET_V = [[1,1,1],[1,-1,-1],[-1,1,-1],[-1,-1,1]].map(norm);
     const TET_E = [[0,1],[0,2],[0,3],[1,2],[1,3],[2,3]];
-
-    // Cube (hexahedron): 8 verts, 12 edges
     const CUBE_V = [[-1,-1,-1],[1,-1,-1],[1,1,-1],[-1,1,-1],[-1,-1,1],[1,-1,1],[1,1,1],[-1,1,1]].map(v => norm(v));
     const CUBE_E = [[0,1],[1,2],[2,3],[3,0],[4,5],[5,6],[6,7],[7,4],[0,4],[1,5],[2,6],[3,7]];
-
-    // Octahedron: 6 verts, 12 edges
     const OCT_V = [[1,0,0],[-1,0,0],[0,1,0],[0,-1,0],[0,0,1],[0,0,-1]];
     const OCT_E = [[0,2],[0,3],[0,4],[0,5],[1,2],[1,3],[1,4],[1,5],[2,4],[2,5],[3,4],[3,5]];
-
-    // Dodecahedron: 20 verts, 30 edges
     const DODE_V = (function() {
         const a = 1/PHI, b = PHI;
         return [
@@ -486,339 +571,87 @@ const FX = (() => {
         ].map(v => norm(v));
     })();
     const DODE_E = edgesFromVerts(DODE_V, 0.72);
-
-    // Icosahedron: 12 verts, 30 edges
     const ICO_NORM = Math.sqrt(1 + PHI*PHI);
     const ICO_V = [[-1,PHI,0],[1,PHI,0],[-1,-PHI,0],[1,-PHI,0],[0,-1,PHI],[0,1,PHI],[0,-1,-PHI],[0,1,-PHI],[PHI,0,-1],[PHI,0,1],[-PHI,0,-1],[-PHI,0,1]].map(v => [v[0]/ICO_NORM,v[1]/ICO_NORM,v[2]/ICO_NORM]);
     const ICO_E = edgesFromVerts(ICO_V, 1.2);
-
-    // Metatron's Cube: 13 points (center + 12 around) with sacred connections
     const META_V = (function() {
-        const pts = [[0,0,0]]; // center
-        for (let i = 0; i < 6; i++) { // inner hex
-            const a = i * Math.PI / 3;
-            pts.push([Math.cos(a)*0.5, Math.sin(a)*0.5, 0]);
-        }
-        for (let i = 0; i < 6; i++) { // outer hex
-            const a = i * Math.PI / 3 + Math.PI / 6;
-            pts.push([Math.cos(a), Math.sin(a), 0]);
-        }
+        const pts = [[0,0,0]];
+        for (let i = 0; i < 6; i++) { const a = i * Math.PI / 3; pts.push([Math.cos(a)*0.5, Math.sin(a)*0.5, 0]); }
+        for (let i = 0; i < 6; i++) { const a = i * Math.PI / 3 + Math.PI / 6; pts.push([Math.cos(a), Math.sin(a), 0]); }
         return pts.map(norm);
     })();
     const META_E = (function() {
         const e = [];
-        // Center to all
         for (let i = 1; i < 13; i++) e.push([0,i]);
-        // Inner hex ring
         for (let i = 1; i <= 6; i++) e.push([i, i%6+1]);
-        // Outer hex ring
         for (let i = 7; i <= 12; i++) e.push([i, i%6+7]);
-        // Cross connections (inner to outer)
         for (let i = 1; i <= 6; i++) { e.push([i, i+6]); e.push([i, ((i+1)%6)+7]); }
         return e;
     })();
 
-    // Geometry per panel — tight zoom so full shape is never on screen at once
     const GEO = [
-        { v: TET_V, e: TET_E, sc: 3.8, rs: 0.15, glow: 10, hue: 0.6, rings: 1, pDen: 0.4 }, // Panel 0: HERO — tetrahedron closeup
-        { v: CUBE_V,e: CUBE_E,sc: 3.2, rs: 0.12,glow: 12, hue: 0.15,rings: 1, pDen: 0.5 }, // Panel 1: PROBLEM — cube closeup
-        { v: OCT_V, e: OCT_E, sc: 3.5, rs: 0.18,glow: 14, hue: 0.1, rings: 2, pDen: 0.5 }, // Panel 2: LAYER — octahedron closeup
-        { v: DODE_V,e: DODE_E,sc: 3.0, rs: 0.1, glow: 16, hue: 0.7, rings: 2, pDen: 0.6 }, // Panel 3: PROOF — dodecahedron closeup
-        { v: ICO_V, e: ICO_E, sc: 2.8, rs: 0.14,glow: 18, hue: 0.1, rings: 3, pDen: 0.5 }, // Panel 4: ABOUT — icosahedron closeup
-        { v: META_V,e: META_E,sc: 3.6, rs: 0.08,glow: 24, hue: 0.1, rings: 4, pDen: 0.8 }, // Panel 5: CTA — Metatron's Cube closeup
+        { v: TET_V, e: TET_E, sc: 3.8, rs: 0.15, glow: 10, hue: 0.6, rings: 1, pDen: 0.4 },
+        { v: CUBE_V,e: CUBE_E,sc: 3.2, rs: 0.12,glow: 12, hue: 0.15,rings: 1, pDen: 0.5 },
+        { v: OCT_V, e: OCT_E, sc: 3.5, rs: 0.18,glow: 14, hue: 0.1, rings: 2, pDen: 0.5 },
+        { v: DODE_V,e: DODE_E,sc: 3.0, rs: 0.1, glow: 16, hue: 0.7, rings: 2, pDen: 0.6 },
+        { v: ICO_V, e: ICO_E, sc: 2.8, rs: 0.14,glow: 18, hue: 0.1, rings: 3, pDen: 0.5 },
+        { v: META_V,e: META_E,sc: 3.6, rs: 0.08,glow: 24, hue: 0.1, rings: 4, pDen: 0.8 },
     ];
-
-    // Particles
     const PARTS = [];
-    for (let i = 0; i < 90; i++) {
-        PARTS.push({
-            a: Math.random() * Math.PI * 2,
-            r: 1.8 + Math.random() * 2.2,
-            y: (Math.random() - 0.5) * 2.5,
-            spd: 0.15 + Math.random() * 0.45,
-            sz: 0.4 + Math.random() * 1.2,
-            tilt: Math.random() * Math.PI,
-            off: Math.random() * Math.PI * 2
-        });
-    }
-
-    // Signal trails (particles that travel along rings)
+    for (let i = 0; i < 90; i++) { PARTS.push({ a: Math.random()*Math.PI*2, r: 1.8+Math.random()*2.2, y: (Math.random()-0.5)*2.5, spd: 0.15+Math.random()*0.45, sz: 0.4+Math.random()*1.2, tilt: Math.random()*Math.PI, off: Math.random()*Math.PI*2 }); }
     const SIGNALS = [];
-    for (let i = 0; i < 24; i++) {
-        SIGNALS.push({
-            ringIdx: Math.floor(Math.random() * 5),
-            angle: Math.random() * Math.PI * 2,
-            speed: 0.3 + Math.random() * 0.8,
-            trail: [],
-            maxTrail: 6 + Math.floor(Math.random() * 8)
-        });
-    }
+    for (let i = 0; i < 24; i++) { SIGNALS.push({ ringIdx: Math.floor(Math.random()*5), angle: Math.random()*Math.PI*2, speed: 0.3+Math.random()*0.8, trail: [], maxTrail: 6+Math.floor(Math.random()*8) }); }
 
-    function resize() {
-        dpr = window.devicePixelRatio || 1;
-        W = window.innerWidth; H = window.innerHeight;
-        C.width = W * dpr; C.height = H * dpr;
-    }
+    function resize() { dpr = window.devicePixelRatio||1; W = window.innerWidth; H = window.innerHeight; C.width = W*dpr; C.height = H*dpr; }
     function rX(p,a){const c=Math.cos(a),s=Math.sin(a);return[p[0],p[1]*c-p[2]*s,p[1]*s+p[2]*c];}
     function rY(p,a){const c=Math.cos(a),s=Math.sin(a);return[p[0]*c+p[2]*s,p[1],-p[0]*s+p[2]*c];}
     function rZ(p,a){const c=Math.cos(a),s=Math.sin(a);return[p[0]*c-p[1]*s,p[0]*s+p[1]*c,p[2]];}
     function lerp(a,b,f){return a+(b-a)*f;}
     function smoothstep(f){return f*f*(3-2*f);}
     function clamp(v,lo,hi){return Math.max(lo,Math.min(hi,v));}
+    function colorFromHue(h) { if(h<0.25)return{r:70,g:100,b:115}; if(h>0.75)return{r:110,g:90,b:65}; return{r:Math.round(lerp(70,110,h)),g:Math.round(lerp(100,90,h)),b:Math.round(lerp(115,65,h))}; }
+    function lerpScene(a,b,f){const s=smoothstep(f);return{sc:lerp(a.sc,b.sc,s),rs:lerp(a.rs,b.rs,s),glow:lerp(a.glow,b.glow,s),hue:lerp(a.hue,b.hue,s),rings:lerp(a.rings,b.rings,s),pDen:lerp(a.pDen,b.pDen,s)};}
+    function getScene(){const idx=Math.floor(prog);const frac=prog-idx;const i1=Math.min(idx+1,GEO.length-1);const geo=frac<0.5?GEO[idx]:GEO[i1];const params=lerpScene(GEO[idx],GEO[i1],frac);return{geo,params};}
 
-    function colorFromHue(h) {
-        if (h < 0.25) return {r:70,g:100,b:115};
-        if (h > 0.75) return {r:110,g:90,b:65};
-        return {r:Math.round(lerp(70,110,h)),g:Math.round(lerp(100,90,h)),b:Math.round(lerp(115,65,h))};
-    }
-
-    function lerpScene(a, b, f) {
-        const s = smoothstep(f);
-        return {
-            sc: lerp(a.sc, b.sc, s), rs: lerp(a.rs, b.rs, s), glow: lerp(a.glow, b.glow, s),
-            hue: lerp(a.hue, b.hue, s), rings: lerp(a.rings, b.rings, s), pDen: lerp(a.pDen, b.pDen, s)
-        };
-    }
-
-    function getScene() {
-        const idx = Math.floor(prog);
-        const frac = prog - idx;
-        const i1 = Math.min(idx + 1, GEO.length - 1);
-        const geo = frac < 0.5 ? GEO[idx] : GEO[i1];
-        const params = lerpScene(GEO[idx], GEO[i1], frac);
-        return { geo, params };
-    }
-
-    function drawFlowerOfLife(cx, cy, baseR, alpha, cs, time) {
-        const r = baseR * 0.45;
-        X.globalAlpha = alpha * 0.15;
-        X.strokeStyle = cs;
-        X.lineWidth = 0.5;
-        X.beginPath(); X.arc(cx, cy, r, 0, Math.PI*2); X.stroke();
-        for (let i = 0; i < 6; i++) {
-            const a = i * Math.PI / 3 + time * 0.05;
-            X.beginPath(); X.arc(cx + Math.cos(a)*r, cy + Math.sin(a)*r, r, 0, Math.PI*2); X.stroke();
-        }
-        X.globalAlpha = alpha * 0.08;
-        X.beginPath(); X.arc(cx, cy, r*2, 0, Math.PI*2); X.stroke();
-    }
-
-    function drawSriYantra(cx, cy, baseR, alpha, cs, time) {
-        X.globalAlpha = alpha * 0.12;
-        X.strokeStyle = cs;
-        X.lineWidth = 0.4;
-        const sizes = [1.0, 0.82, 0.65, 0.5, 0.38, 0.28, 0.2, 0.14, 0.09];
-        sizes.forEach((s, idx) => {
-            const r = baseR * 0.5 * s;
-            const rot = (idx % 2 === 0 ? 1 : -1) * (idx * 0.18 + time * 0.03);
-            X.beginPath();
-            for (let i = 0; i <= 3; i++) {
-                const a = rot + i * Math.PI * 2 / 3;
-                const px = cx + Math.cos(a) * r, py = cy + Math.sin(a) * r;
-                if (i === 0) X.moveTo(px, py); else X.lineTo(px, py);
-            }
-            X.closePath(); X.stroke();
-        });
-    }
+    function drawFlowerOfLife(cx,cy,baseR,alpha,cs,time){const r=baseR*0.45;X.globalAlpha=alpha*0.15;X.strokeStyle=cs;X.lineWidth=0.5;X.beginPath();X.arc(cx,cy,r,0,Math.PI*2);X.stroke();for(let i=0;i<6;i++){const a=i*Math.PI/3+time*0.05;X.beginPath();X.arc(cx+Math.cos(a)*r,cy+Math.sin(a)*r,r,0,Math.PI*2);X.stroke();}X.globalAlpha=alpha*0.08;X.beginPath();X.arc(cx,cy,r*2,0,Math.PI*2);X.stroke();}
+    function drawSriYantra(cx,cy,baseR,alpha,cs,time){X.globalAlpha=alpha*0.12;X.strokeStyle=cs;X.lineWidth=0.4;const sizes=[1.0,0.82,0.65,0.5,0.38,0.28,0.2,0.14,0.09];sizes.forEach((s,idx)=>{const r=baseR*0.5*s;const rot=(idx%2===0?1:-1)*(idx*0.18+time*0.03);X.beginPath();for(let i=0;i<=3;i++){const a=rot+i*Math.PI*2/3;const px=cx+Math.cos(a)*r,py=cy+Math.sin(a)*r;if(i===0)X.moveTo(px,py);else X.lineTo(px,py);}X.closePath();X.stroke();});}
 
     function render() {
-        X.save();
-        X.scale(dpr, dpr);
-        X.clearRect(0, 0, W, H);
-
-        const cx = W / 2, cy = H / 2;
-        const { geo, params } = getScene();
-        const scale = params.sc;
-        const rotSpd = params.rs;
-        const glow = params.glow;
-        const hue = params.hue;
-        const ringCount = Math.round(params.rings);
-        const pSpd = params.pDen;
-
-        const col = colorFromHue(hue);
-        const col2 = colorFromHue(1 - hue);
-        const cs = `rgb(${col.r},${col.g},${col.b})`;
-        const cs2 = `rgb(${col2.r},${col2.g},${col2.b})`;
-        const csA = a => `rgba(${col.r},${col.g},${col.b},${a})`;
-
-        const px = (mx - 0.5) * 0.2;
-        const py = (my - 0.5) * 0.12;
-        const ry = t * rotSpd + prog * 0.6 + px;
-        const rx = t * rotSpd * 0.25 + py + 0.3;
-        const rz = t * rotSpd * 0.12;
-        const baseR = Math.min(W, H) * 0.22 * Math.max(scale, 0.01);
-        const FOV = 1500;
-
-        function proj(p) {
-            const z = p[2] + FOV * 0.5;
-            const f = FOV / Math.max(z, 50);
-            return {x:p[0]*f, y:p[1]*f, z:z, f:f};
-        }
-
-        // Center glow
-        if (glow > 0) {
-            const grd = X.createRadialGradient(cx, cy, 0, cx, cy, baseR * 2);
-            grd.addColorStop(0, csA(0.04));
-            grd.addColorStop(0.5, csA(0.015));
-            grd.addColorStop(1, 'rgba(0,0,0,0)');
-            X.fillStyle = grd;
-            X.fillRect(0, 0, W, H);
-        }
-
-        // Grid floor
-        if (scale > 0.5) {
-            X.globalAlpha = 0.03;
-            X.strokeStyle = cs;
-            X.lineWidth = 0.5;
-            const gridY = cy + baseR * 1.2;
-            for (let i = -12; i <= 12; i++) {
-                const frac = i / 12;
-                const gs = baseR * 3;
-                X.beginPath(); X.moveTo(cx - gs, gridY + (frac * gs * 0.15)); X.lineTo(cx + gs, gridY + (frac * gs * 0.15)); X.stroke();
-                X.beginPath(); X.moveTo(cx + frac * gs, gridY - gs * 0.1); X.lineTo(cx + frac * gs * 0.3, gridY + gs * 0.2); X.stroke();
-            }
-        }
-
-        // Orbital rings
-        for (let r = 0; r < ringCount; r++) {
-            const tiltX = (r/Math.max(ringCount,1))*Math.PI*0.8 - Math.PI*0.3;
-            const tiltZ = r * 0.4;
-            const ringR = baseR * (1.6 + r * 0.35);
-            const ringSpd = rotSpd * (0.6 + r * 0.18);
-            X.globalAlpha = 0.06 + (1/(r+1))*0.04;
-            X.strokeStyle = cs; X.lineWidth = 0.6;
-            X.beginPath();
-            for (let s = 0; s <= 80; s++) {
-                const a = (s/80)*Math.PI*2 + t*ringSpd;
-                let p = [Math.cos(a)*ringR, 0, Math.sin(a)*ringR];
-                p = rX(p,tiltX); p = rZ(p,tiltZ); p = rY(p,ry); p = rX(p,rx);
-                const pr = proj(p);
-                if (s === 0) X.moveTo(cx+pr.x, cy+pr.y); else X.lineTo(cx+pr.x, cy+pr.y);
-            }
-            X.stroke();
-            for (let n = 0; n < 3+r; n++) {
-                const a = (n/(3+r))*Math.PI*2 + t*ringSpd;
-                let p = [Math.cos(a)*ringR, 0, Math.sin(a)*ringR];
-                p = rX(p,tiltX); p = rZ(p,tiltZ); p = rY(p,ry); p = rX(p,rx);
-                const pr = proj(p);
-                X.globalAlpha = 0.35; X.fillStyle = cs2;
-                X.beginPath(); X.arc(cx+pr.x, cy+pr.y, 1.5, 0, Math.PI*2); X.fill();
-            }
-        }
-
-        // Signal particles
-        for (let i = 0; i < SIGNALS.length; i++) {
-            const sig = SIGNALS[i];
-            if (sig.ringIdx >= ringCount) continue;
-            sig.angle += sig.speed * 0.02 * pSpd;
-            const r = sig.ringIdx;
-            const tiltX = (r/Math.max(ringCount,1))*Math.PI*0.8 - Math.PI*0.3;
-            const tiltZ = r*0.4;
-            const ringR = baseR*(1.6+r*0.35);
-            let p = [Math.cos(sig.angle)*ringR, 0, Math.sin(sig.angle)*ringR];
-            p = rX(p,tiltX); p = rZ(p,tiltZ); p = rY(p,ry); p = rX(p,rx);
-            const pr = proj(p);
-            sig.trail.push({x:cx+pr.x, y:cy+pr.y});
-            if (sig.trail.length > sig.maxTrail) sig.trail.shift();
-            for (let j = 0; j < sig.trail.length; j++) {
-                X.globalAlpha = (j/sig.trail.length)*0.5; X.fillStyle = cs;
-                X.beginPath(); X.arc(sig.trail[j].x, sig.trail[j].y, 1+(j/sig.trail.length)*1.5, 0, Math.PI*2); X.fill();
-            }
-            X.globalAlpha = 0.8; X.fillStyle = cs;
-            X.beginPath(); X.arc(cx+pr.x, cy+pr.y, 2.5, 0, Math.PI*2); X.fill();
-        }
-
-        // Platonic solid wireframe
-        if (geo.v && geo.e && scale > 0.3) {
-            const verts = geo.v, edges = geo.e;
-            const pts = verts.map(v => {
-                let p = [v[0]*baseR, v[1]*baseR, v[2]*baseR];
-                p = rZ(p,rz); p = rY(p,ry); p = rX(p,rx);
-                const pr = proj(p);
-                return {x:cx+pr.x, y:cy+pr.y, z:pr.z};
-            });
-            X.shadowColor = cs; X.shadowBlur = glow; X.lineCap = 'round';
-            edges.forEach(([a,b]) => {
-                const pa = pts[a], pb = pts[b];
-                const avgZ = (pa.z+pb.z)/2;
-                const depth = (avgZ - FOV*0.3)/(FOV*0.8);
-                const alpha = 0.08 + 0.65*Math.max(0, Math.min(1, 1-depth));
-                X.globalAlpha = alpha; X.strokeStyle = cs;
-                X.lineWidth = 0.6 + (1-depth)*0.8;
-                X.beginPath(); X.moveTo(pa.x, pa.y); X.lineTo(pb.x, pb.y); X.stroke();
-            });
-            X.shadowBlur = 8;
-            pts.forEach(p => {
-                const depth = (p.z - FOV*0.3)/(FOV*0.8);
-                X.globalAlpha = 0.15 + 0.75*Math.max(0, Math.min(1, 1-depth));
-                X.fillStyle = cs;
-                X.beginPath(); X.arc(p.x, p.y, 1.5+(1-depth)*1.5, 0, Math.PI*2); X.fill();
-            });
-        }
-
-        // Sacred geometry overlays (final panel)
-        if (prog >= 4.5) {
-            const fadeIn = clamp((prog - 4.5) / 0.5, 0, 1);
-            drawFlowerOfLife(cx, cy, baseR * 0.35, fadeIn, cs, t);
-            drawFlowerOfLife(cx, cy, baseR * 0.22, fadeIn * 0.5, cs2, t);
-        }
-        if (prog >= 4.8) drawSriYantra(cx, cy, baseR * 0.25, clamp((prog - 4.8) / 0.2, 0, 1), cs2, t);
-
-        // Ambient particles
-        X.shadowColor = cs2; X.shadowBlur = 3;
-        const ap = Math.round(PARTS.length * pSpd);
-        for (let i = 0; i < ap; i++) {
-            const p = PARTS[i];
-            const a = p.a + t*p.spd*pSpd;
-            const r3d = p.r*baseR*0.5;
-            let pt = [Math.cos(a)*r3d, p.y*baseR*0.4+Math.sin(t*0.4+p.off)*baseR*0.15, Math.sin(a)*r3d];
-            pt = rZ(pt,rz*0.2); pt = rY(pt,ry*0.4); pt = rX(pt,rx*0.3);
-            const pr = proj(pt);
-            const depth = (pr.z-FOV*0.3)/(FOV*0.8);
-            X.globalAlpha = Math.max(0.03,0.3*(1-depth)); X.fillStyle = cs2;
-            X.beginPath(); X.arc(cx+pr.x,cy+pr.y,p.sz,0,Math.PI*2); X.fill();
-        }
-
-        // Connection lines
-        X.shadowBlur = 0; X.lineWidth = 0.3;
-        for (let i = 0; i < ap; i++) {
-            const ai = PARTS[i]; const aA = ai.a+t*ai.spd*pSpd; const rA = ai.r*baseR*0.5;
-            let pA = [Math.cos(aA)*rA, ai.y*baseR*0.4, Math.sin(aA)*rA];
-            pA = rY(pA,ry*0.4); pA = rX(pA,rx*0.3); const prA = proj(pA);
-            for (let j = i+1; j < Math.min(i+5,ap); j++) {
-                const bj = PARTS[j]; const aB = bj.a+t*bj.spd*pSpd; const rB = bj.r*baseR*0.5;
-                let pB = [Math.cos(aB)*rB, bj.y*baseR*0.4, Math.sin(aB)*rB];
-                pB = rY(pB,ry*0.4); pB = rX(pB,rx*0.3); const prB = proj(pB);
-                const dx=(cx+prA.x)-(cx+prB.x),dy=(cy+prA.y)-(cy+prB.y),d=Math.sqrt(dx*dx+dy*dy);
-                if (d<80) { X.globalAlpha=(1-d/80)*0.06; X.strokeStyle=cs2; X.beginPath(); X.moveTo(cx+prA.x,cy+prA.y); X.lineTo(cx+prB.x,cy+prB.y); X.stroke(); }
-            }
-        }
-
-        X.restore();
-        t += 0.016;
-        if (!PRM_FX) requestAnimationFrame(render);
+        X.save(); X.scale(dpr,dpr); X.clearRect(0,0,W,H);
+        const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+        const cx=W/2,cy=H/2;const{geo,params}=getScene();const scale=params.sc,rotSpd=params.rs,glow=params.glow,hue=params.hue,ringCount=Math.round(params.rings),pSpd=params.pDen;
+        const col=colorFromHue(hue),col2=colorFromHue(1-hue);
+        const cs=`rgb(${col.r},${col.g},${col.b})`,cs2=`rgb(${col2.r},${col2.g},${col2.b})`,csA=a=>`rgba(${col.r},${col.g},${col.b},${a})`;
+        const px=(mx-0.5)*0.2,py=(my-0.5)*0.12;const ry=t*rotSpd+prog*0.6+px,rx=t*rotSpd*0.25+py+0.3,rz=t*rotSpd*0.12;
+        const baseR=Math.min(W,H)*0.22*Math.max(scale,0.01);const FOV=1500;
+        function proj(p){const z=p[2]+FOV*0.5;const f=FOV/Math.max(z,50);return{x:p[0]*f,y:p[1]*f,z:z,f:f};}
+        // Adjust opacity for theme
+        const themeFade = isDark ? 1.0 : 0.6;
+        if(glow>0){const grd=X.createRadialGradient(cx,cy,0,cx,cy,baseR*2);grd.addColorStop(0,csA(0.04*themeFade));grd.addColorStop(0.5,csA(0.015*themeFade));grd.addColorStop(1,'rgba(0,0,0,0)');X.fillStyle=grd;X.fillRect(0,0,W,H);}
+        if(scale>0.5){X.globalAlpha=0.03*themeFade;X.strokeStyle=cs;X.lineWidth=0.5;const gridY=cy+baseR*1.2;for(let i=-12;i<=12;i++){const frac=i/12;const gs=baseR*3;X.beginPath();X.moveTo(cx-gs,gridY+(frac*gs*0.15));X.lineTo(cx+gs,gridY+(frac*gs*0.15));X.stroke();X.beginPath();X.moveTo(cx+frac*gs,gridY-gs*0.1);X.lineTo(cx+frac*gs*0.3,gridY+gs*0.2);X.stroke();}}
+        for(let r=0;r<ringCount;r++){const tiltX=(r/Math.max(ringCount,1))*Math.PI*0.8-Math.PI*0.3;const tiltZ=r*0.4;const ringR=baseR*(1.6+r*0.35);const ringSpd=rotSpd*(0.6+r*0.18);X.globalAlpha=(0.06+(1/(r+1))*0.04)*themeFade;X.strokeStyle=cs;X.lineWidth=0.6;X.beginPath();for(let s=0;s<=80;s++){const a=(s/80)*Math.PI*2+t*ringSpd;let p=[Math.cos(a)*ringR,0,Math.sin(a)*ringR];p=rX(p,tiltX);p=rZ(p,tiltZ);p=rY(p,ry);p=rX(p,rx);const pr=proj(p);if(s===0)X.moveTo(cx+pr.x,cy+pr.y);else X.lineTo(cx+pr.x,cy+pr.y);}X.stroke();for(let n=0;n<3+r;n++){const a=(n/(3+r))*Math.PI*2+t*ringSpd;let p=[Math.cos(a)*ringR,0,Math.sin(a)*ringR];p=rX(p,tiltX);p=rZ(p,tiltZ);p=rY(p,ry);p=rX(p,rx);const pr=proj(p);X.globalAlpha=0.35*themeFade;X.fillStyle=cs2;X.beginPath();X.arc(cx+pr.x,cy+pr.y,1.5,0,Math.PI*2);X.fill();}}
+        for(let i=0;i<SIGNALS.length;i++){const sig=SIGNALS[i];if(sig.ringIdx>=ringCount)continue;sig.angle+=sig.speed*0.02*pSpd;const r=sig.ringIdx;const tiltX=(r/Math.max(ringCount,1))*Math.PI*0.8-Math.PI*0.3;const tiltZ=r*0.4;const ringR=baseR*(1.6+r*0.35);let p=[Math.cos(sig.angle)*ringR,0,Math.sin(sig.angle)*ringR];p=rX(p,tiltX);p=rZ(p,tiltZ);p=rY(p,ry);p=rX(p,rx);const pr=proj(p);sig.trail.push({x:cx+pr.x,y:cy+pr.y});if(sig.trail.length>sig.maxTrail)sig.trail.shift();for(let j=0;j<sig.trail.length;j++){X.globalAlpha=(j/sig.trail.length)*0.5*themeFade;X.fillStyle=cs;X.beginPath();X.arc(sig.trail[j].x,sig.trail[j].y,1+(j/sig.trail.length)*1.5,0,Math.PI*2);X.fill();}X.globalAlpha=0.8*themeFade;X.fillStyle=cs;X.beginPath();X.arc(cx+pr.x,cy+pr.y,2.5,0,Math.PI*2);X.fill();}
+        if(geo.v&&geo.e&&scale>0.3){const verts=geo.v,edges=geo.e;const pts=verts.map(v=>{let p=[v[0]*baseR,v[1]*baseR,v[2]*baseR];p=rZ(p,rz);p=rY(p,ry);p=rX(p,rx);const pr=proj(p);return{x:cx+pr.x,y:cy+pr.y,z:pr.z};});X.shadowColor=cs;X.shadowBlur=glow*themeFade;X.lineCap='round';edges.forEach(([a,b])=>{const pa=pts[a],pb=pts[b];const avgZ=(pa.z+pb.z)/2;const depth=(avgZ-FOV*0.3)/(FOV*0.8);const alpha=(0.08+0.65*Math.max(0,Math.min(1,1-depth)))*themeFade;X.globalAlpha=alpha;X.strokeStyle=cs;X.lineWidth=0.6+(1-depth)*0.8;X.beginPath();X.moveTo(pa.x,pa.y);X.lineTo(pb.x,pb.y);X.stroke();});X.shadowBlur=8*themeFade;pts.forEach(p=>{const depth=(p.z-FOV*0.3)/(FOV*0.8);X.globalAlpha=(0.15+0.75*Math.max(0,Math.min(1,1-depth)))*themeFade;X.fillStyle=cs;X.beginPath();X.arc(p.x,p.y,1.5+(1-depth)*1.5,0,Math.PI*2);X.fill();});}
+        if(prog>=4.5){const fadeIn=clamp((prog-4.5)/0.5,0,1);drawFlowerOfLife(cx,cy,baseR*0.35,fadeIn*themeFade,cs,t);drawFlowerOfLife(cx,cy,baseR*0.22,fadeIn*0.5*themeFade,cs2,t);}
+        if(prog>=4.8)drawSriYantra(cx,cy,baseR*0.25,clamp((prog-4.8)/0.2,0,1)*themeFade,cs2,t);
+        X.shadowColor=cs2;X.shadowBlur=3*themeFade;const ap=Math.round(PARTS.length*pSpd);
+        for(let i=0;i<ap;i++){const p=PARTS[i];const a=p.a+t*p.spd*pSpd;const r3d=p.r*baseR*0.5;let pt=[Math.cos(a)*r3d,p.y*baseR*0.4+Math.sin(t*0.4+p.off)*baseR*0.15,Math.sin(a)*r3d];pt=rZ(pt,rz*0.2);pt=rY(pt,ry*0.4);pt=rX(pt,rx*0.3);const pr=proj(pt);const depth=(pr.z-FOV*0.3)/(FOV*0.8);X.globalAlpha=Math.max(0.03,0.3*(1-depth))*themeFade;X.fillStyle=cs2;X.beginPath();X.arc(cx+pr.x,cy+pr.y,p.sz,0,Math.PI*2);X.fill();}
+        X.shadowBlur=0;X.lineWidth=0.3;
+        for(let i=0;i<ap;i++){const ai=PARTS[i];const aA=ai.a+t*ai.spd*pSpd;const rA=ai.r*baseR*0.5;let pA=[Math.cos(aA)*rA,ai.y*baseR*0.4,Math.sin(aA)*rA];pA=rY(pA,ry*0.4);pA=rX(pA,rx*0.3);const prA=proj(pA);for(let j=i+1;j<Math.min(i+5,ap);j++){const bj=PARTS[j];const aB=bj.a+t*bj.spd*pSpd;const rB=bj.r*baseR*0.5;let pB=[Math.cos(aB)*rB,bj.y*baseR*0.4,Math.sin(aB)*rB];pB=rY(pB,ry*0.4);pB=rX(pB,rx*0.3);const prB=proj(pB);const dx=(cx+prA.x)-(cx+prB.x),dy=(cy+prA.y)-(cy+prB.y),d=Math.sqrt(dx*dx+dy*dy);if(d<80){X.globalAlpha=(1-d/80)*0.06*themeFade;X.strokeStyle=cs2;X.beginPath();X.moveTo(cx+prA.x,cy+prA.y);X.lineTo(cx+prB.x,cy+prB.y);X.stroke();}}}
+        X.restore();t+=0.016;if(!PRM_FX)requestAnimationFrame(render);
     }
-
     return {
-        init() {
-            resize();
-            window.addEventListener('resize', resize);
-            window.addEventListener('mousemove', e => { mx = e.clientX/W; my = e.clientY/H; });
-            window.addEventListener('touchmove', e => { mx = e.touches[0].clientX/W; my = e.touches[0].clientY/H; }, {passive:true});
-            render();
-        },
-        setProgress(p) { prog = p; }
+        init(){resize();window.addEventListener('resize',resize);window.addEventListener('mousemove',e=>{mx=e.clientX/W;my=e.clientY/H;});window.addEventListener('touchmove',e=>{mx=e.touches[0].clientX/W;my=e.touches[0].clientY/H;},{passive:true});render();},
+        setProgress(p){prog=p;}
     };
 })();
-
 
 // ============================================================
 // SCROLL ENGINE — spring physics, horizontal only
 // ============================================================
 const PRM = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-const SECTIONS = 6;
-const LABELS = ['HERO','THE PROBLEM','THE LAYER','PROOF','ABOUT','ENTER'];
-
+const SECTIONS = 7;
+const LABELS = ['COVER','HERO','THE PROBLEM','THE LAYER','PROOF','ABOUT','ENTER'];
 let prog = 0, target = 0, vel = 0, animating = false;
 const world = document.getElementById('world');
 const pDots = document.querySelectorAll('.prog-dot');
@@ -827,70 +660,22 @@ const menuDrop = document.getElementById('menu-dropdown');
 const menuCurrent = document.getElementById('menu-current');
 const menuItems = menuDrop.querySelectorAll('.menu-item[data-section]');
 
-function cam() {
-    const vw = window.innerWidth;
-    world.style.transform = `translate3d(${-prog * vw}px, 0, 0)`;
-    const idx = Math.round(prog);
-    pDots.forEach((d, i) => { d.classList.toggle('active', i === idx); d.classList.toggle('passed', i < idx); });
-    menuCurrent.textContent = LABELS[idx] || LABELS[0];
-    menuItems.forEach(m => m.classList.toggle('active', parseInt(m.dataset.section) === idx));
-    for (let i = 0; i < SECTIONS; i++) {
-        const panel = document.getElementById('p' + i);
-        if (i === idx) panel.classList.add('visible');
-        else panel.classList.remove('visible');
-    }
-    FX.setProgress(prog);
-}
-
-function tick() {
-    const diff = target - prog;
-    if (Math.abs(diff) < 0.0008 && Math.abs(vel) < 0.0008) { prog = target; vel = 0; animating = false; cam(); return; }
-    vel += diff * 0.07;
-    vel *= 0.83;
-    prog += vel;
-    prog = Math.max(0, Math.min(SECTIONS - 1, prog));
-    if (prog <= 0 && vel < 0) vel = 0;
-    if (prog >= SECTIONS - 1 && vel > 0) vel = 0;
-    cam();
-    requestAnimationFrame(tick);
-}
-
-function snap(i) {
-    target = Math.max(0, Math.min(SECTIONS - 1, i));
-    if (!animating) { animating = true; requestAnimationFrame(tick); }
-    closeMenu();
-}
-
-let wAcc = 0, wTO = null;
-window.addEventListener('wheel', e => {
-    // Sub-slide engine fully owns scroll when p1 is visible
-    if (Math.round(target) === 1 && document.getElementById('p1').classList.contains('visible')) return;
-    e.preventDefault(); wAcc += e.deltaY; if (Math.abs(wAcc) >= 70) { snap(Math.round(target) + (wAcc > 0 ? 1 : -1)); wAcc = 0; } clearTimeout(wTO); wTO = setTimeout(() => wAcc = 0, 180);
-}, { passive: false });
-let tx0 = 0;
-window.addEventListener('touchstart', e => { tx0 = e.touches[0].clientX; }, { passive: true });
-window.addEventListener('touchend', e => {
-    if (Math.round(target) === 1 && document.getElementById('p1').classList.contains('visible')) return;
-    const dx = e.changedTouches[0].clientX - tx0; if (Math.abs(dx) > 50) snap(Math.round(target) + (dx < 0 ? 1 : -1));
-}, { passive: true });
-window.addEventListener('keydown', e => {
-    if (Math.round(target) === 1 && document.getElementById('p1').classList.contains('visible') && (e.key === 'ArrowRight' || e.key === 'ArrowDown' || e.key === 'ArrowLeft' || e.key === 'ArrowUp' || e.key === ' ')) return;
-    if (e.key === 'ArrowRight' || e.key === 'ArrowDown' || e.key === ' ') { e.preventDefault(); snap(Math.round(target) + 1); }
-    else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') { e.preventDefault(); snap(Math.round(target) - 1); }
-    else if (e.key === 'Home') snap(0);
-    else if (e.key === 'End') snap(SECTIONS - 1);
-});
-
-// Dropdown menu
-function toggleMenu() { const o = menuBtn.classList.toggle('open'); menuDrop.classList.toggle('open', o); menuBtn.setAttribute('aria-expanded', o); }
-function closeMenu() { menuBtn.classList.remove('open'); menuDrop.classList.remove('open'); menuBtn.setAttribute('aria-expanded', 'false'); }
-menuBtn.addEventListener('click', e => { e.stopPropagation(); toggleMenu(); });
-menuItems.forEach(m => m.addEventListener('click', () => snap(parseInt(m.dataset.section))));
-document.addEventListener('click', e => { if (!menuDrop.contains(e.target) && !menuBtn.contains(e.target)) closeMenu(); });
-document.addEventListener('keydown', e => { if (e.key === 'Escape') closeMenu(); });
-
+function cam(){const vw=window.innerWidth;world.style.transform=`translate3d(${-prog*vw}px,0,0)`;const idx=Math.round(prog);pDots.forEach((d,i)=>{d.classList.toggle('active',i===idx);d.classList.toggle('passed',i<idx);});menuCurrent.textContent=LABELS[idx]||LABELS[0];menuItems.forEach(m=>m.classList.toggle('active',parseInt(m.dataset.section)===idx));for(let i=0;i<SECTIONS;i++){const panel=document.getElementById('p'+i);if(i===idx)panel.classList.add('visible');else panel.classList.remove('visible');}FX.setProgress(prog);}
+function tick(){const diff=target-prog;if(Math.abs(diff)<0.0008&&Math.abs(vel)<0.0008){prog=target;vel=0;animating=false;cam();return;}vel+=diff*0.07;vel*=0.83;prog+=vel;prog=Math.max(0,Math.min(SECTIONS-1,prog));if(prog<=0&&vel<0)vel=0;if(prog>=SECTIONS-1&&vel>0)vel=0;cam();requestAnimationFrame(tick);}
+function snap(i){target=Math.max(0,Math.min(SECTIONS-1,i));if(!animating){animating=true;requestAnimationFrame(tick);}closeMenu();}
+let wAcc=0,wTO=null;
+window.addEventListener('wheel',e=>{if(Math.round(target)===2&&document.getElementById('p2').classList.contains('visible'))return;e.preventDefault();wAcc+=e.deltaY;if(Math.abs(wAcc)>=70){snap(Math.round(target)+(wAcc>0?1:-1));wAcc=0;}clearTimeout(wTO);wTO=setTimeout(()=>wAcc=0,180);},{passive:false});
+let tx0=0;
+window.addEventListener('touchstart',e=>{tx0=e.touches[0].clientX;},{passive:true});
+window.addEventListener('touchend',e=>{if(Math.round(target)===2&&document.getElementById('p2').classList.contains('visible'))return;const dx=e.changedTouches[0].clientX-tx0;if(Math.abs(dx)>50)snap(Math.round(target)+(dx<0?1:-1));},{passive:true});
+window.addEventListener('keydown',e=>{if(Math.round(target)===2&&document.getElementById('p2').classList.contains('visible')&&(e.key==='ArrowRight'||e.key==='ArrowDown'||e.key==='ArrowLeft'||e.key==='ArrowUp'||e.key===' '))return;if(e.key==='ArrowRight'||e.key==='ArrowDown'||e.key===' '){e.preventDefault();snap(Math.round(target)+1);}else if(e.key==='ArrowLeft'||e.key==='ArrowUp'){e.preventDefault();snap(Math.round(target)-1);}else if(e.key==='Home')snap(0);else if(e.key==='End')snap(SECTIONS-1);});
+function toggleMenu(){const o=menuBtn.classList.toggle('open');menuDrop.classList.toggle('open',o);menuBtn.setAttribute('aria-expanded',o);}
+function closeMenu(){menuBtn.classList.remove('open');menuDrop.classList.remove('open');menuBtn.setAttribute('aria-expanded','false');}
+menuBtn.addEventListener('click',e=>{e.stopPropagation();toggleMenu();});
+menuItems.forEach(m=>m.addEventListener('click',()=>snap(parseInt(m.dataset.section))));
+document.addEventListener('click',e=>{if(!menuDrop.contains(e.target)&&!menuBtn.contains(e.target))closeMenu();});
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeMenu();});
 cam();
-
 
 // ============================================================
 // SUB-SLIDE ENGINE — GSAP kinetic typography for THE PROBLEM
@@ -899,361 +684,214 @@ cam();
     const slides = [document.getElementById('ps1'), document.getElementById('ps2'), document.getElementById('ps3'), document.getElementById('ps4')];
     const dots = document.querySelectorAll('.subslide-dot');
     const counter = document.getElementById('slide-counter');
-    let current = 0;
-    let locked = false;
-    let panelVisible = false;
-
-    function splitWords(el) {
-        if (!el || el.dataset.split === '1') return;
-        el.dataset.split = '1';
-        const html = el.innerHTML;
-        // Split on spaces and <br>
-        const parts = html.split(/(<br\s*\/?>)/gi);
-        let result = '';
-        parts.forEach(part => {
-            if (part.match(/<br\s*\/?>/gi)) { result += part; return; }
-            const words = part.trim().split(/\s+/);
-            words.forEach(w => {
-                if (w.startsWith('<') || w.endsWith('>')) { result += w + ' '; return; }
-                result += `<span class="word" style="opacity:0;transform:translateY(20px) rotateX(-15deg);display:inline-block">${w}</span> `;
-            });
-        });
-        el.innerHTML = result;
-    }
-
-    function animateSlide(idx) {
-        if (locked) return;
-        locked = true;
-        const tl = gsap.timeline({ onComplete: () => { locked = false; } });
-
-        // Kill any running animations on slides
-        gsap.killTweensOf(slides);
-
-        // Transition: fade out current, fade in next
-        tl.to(slides[current], { opacity: 0, duration: 0.35, ease: 'power2.in' });
-        slides[current].classList.remove('active');
-        current = idx;
-        slides[current].classList.add('active');
-        tl.set(slides[current], { opacity: 1 });
-
-        // Update nav
-        dots.forEach((d, i) => d.classList.toggle('active', i === idx));
-        counter.textContent = `${idx + 1}/4`;
-
-        // Choreographed animations per slide
-        if (idx === 0) animSlide1(tl);
-        else if (idx === 1) animSlide2(tl);
-        else if (idx === 2) animSlide3(tl);
-        else if (idx === 3) animSlide4(tl);
-    }
-
-    function animSlide1(tl) {
-        // Label slides in from left
-        tl.fromTo('#ps1-label', { opacity: 0, x: -30 }, { opacity: 1, x: 0, duration: 0.5, ease: 'power3.out' }, 0.1);
-        // Heading: split into words, stagger reveal
-        const h = document.getElementById('ps1-h');
-        splitWords(h);
-        const words = h.querySelectorAll('.word');
-        tl.set(h, { opacity: 1 });
-        tl.to(words, { opacity: 1, y: 0, rotateX: 0, duration: 0.6, stagger: 0.08, ease: 'back.out(1.4)' }, 0.3);
-        // Teal line expands
-        tl.to('#ps1-line', { width: '60px', opacity: 0.4, duration: 0.6, ease: 'power2.out' }, 0.9);
-        // Sub text fades in
-        tl.to('#ps1-sub', { opacity: 0.5, duration: 0.4 }, 1.2);
-    }
-
-    function animSlide2(tl) {
-        // Label
-        tl.fromTo('#ps2-label', { opacity: 0, y: -10 }, { opacity: 1, y: 0, duration: 0.4, ease: 'power2.out' }, 0.1);
-        // Heading word stagger
-        const h = document.getElementById('ps2-h');
-        splitWords(h);
-        const words = h.querySelectorAll('.word');
-        tl.set(h, { opacity: 1 });
-        tl.to(words, { opacity: 1, y: 0, rotateX: 0, duration: 0.5, stagger: 0.06, ease: 'power3.out' }, 0.2);
-        // Paragraph: emphasis words glow
-        tl.to('#ps2-p1', { opacity: 1, duration: 0.5 }, 0.7);
-        // Emphasis words scale punch
-        const ems = document.querySelectorAll('#ps2-p1 .em-word');
-        tl.fromTo(ems, { scale: 0.9, color: 'var(--mid-slate)' }, { scale: 1, color: 'var(--white)', duration: 0.4, stagger: 0.15, ease: 'back.out(2)' }, 0.9);
-        // Answer section slides up
-        tl.to('#ps2-answer', { opacity: 1, y: 0, duration: 0.6, ease: 'power3.out' }, 1.5);
-    }
-
-    function animSlide3(tl) {
-        // Label
-        tl.fromTo('#ps3-label', { opacity: 0, y: -10 }, { opacity: 1, y: 0, duration: 0.4, ease: 'power2.out' }, 0.1);
-        // Heading: each word scales in from nothing
-        const h = document.getElementById('ps3-h');
-        splitWords(h);
-        const words = h.querySelectorAll('.word');
-        tl.set(h, { opacity: 1 });
-        tl.fromTo(words, { opacity: 0, scale: 0.5, y: 15 }, { opacity: 1, scale: 1, y: 0, duration: 0.5, stagger: 0.1, ease: 'back.out(1.7)' }, 0.15);
-        // Fail rows: slide in one by one with strikethrough
-        const rows = document.querySelectorAll('.fail-row');
-        tl.to(rows, { opacity: 1, x: 0, duration: 0.45, stagger: 0.15, ease: 'power3.out',
-            onComplete: function() {
-                // Trigger strikethrough after each row appears
-                rows.forEach((r, i) => {
-                    gsap.delayedCall(i * 0.15 + 0.3, () => r.classList.add('struck'));
-                });
-            }
-        }, 0.6);
-    }
-
-    function animSlide4(tl) {
-        // Pre-text typewriter feel
-        const pre = document.getElementById('ps4-pre');
-        tl.to(pre, { opacity: 1, duration: 0.6 }, 0.1);
-        // COORDINATION LAYER: massive scale punch with blur removal
-        const cl = document.getElementById('ps4-cl');
-        tl.to(cl, { opacity: 1, scale: 1, filter: 'blur(0px)', duration: 0.8, ease: 'power3.out' }, 0.5);
-        // Description
-        tl.to('#ps4-desc', { opacity: 1, duration: 0.5 }, 1.1);
-        // Pillars stagger up
-        const pillars = document.querySelectorAll('#ps4-pillars .pillar');
-        tl.to(pillars, { opacity: 1, y: 0, scale: 1, duration: 0.5, stagger: 0.15, ease: 'back.out(1.5)' }, 1.3);
-    }
-
-    // Wheel within p1 to cycle sub-slides
+    let current = 0, locked = false, panelVisible = false;
+    const _origHTML = new WeakMap();
+    function splitWords(el) { if (!el || el.dataset.split === '1') return; _origHTML.set(el, el.innerHTML); el.dataset.split = '1'; const html = el.innerHTML; const parts = html.split(/(<br\s*\/?>)/gi); let result = ''; parts.forEach(part => { if (part.match(/<br\s*\/?>/gi)) { result += part; return; } const words = part.trim().split(/\s+/); words.forEach(w => { if (w.startsWith('<') || w.endsWith('>')) { result += w + ' '; return; } result += `<span class="word" style="opacity:0;transform:translateY(20px) rotateX(-15deg);display:inline-block">${w}</span> `; }); }); el.innerHTML = result; }
+    function restoreWords(el) { if (!el) return; if (_origHTML.has(el)) { el.innerHTML = _origHTML.get(el); } el.dataset.split = '0'; }
+    function animateSlide(idx) { if (locked) return; locked = true; const tl = gsap.timeline({ onComplete: () => { locked = false; } }); gsap.killTweensOf(slides); tl.to(slides[current], { opacity: 0, duration: 0.35, ease: 'power2.in' }); slides[current].classList.remove('active'); current = idx; slides[current].classList.add('active'); tl.set(slides[current], { opacity: 1 }); dots.forEach((d, i) => d.classList.toggle('active', i === idx)); counter.textContent = `${idx + 1}/4`; if (idx === 0) animSlide1(tl); else if (idx === 1) animSlide2(tl); else if (idx === 2) animSlide3(tl); else if (idx === 3) animSlide4(tl); }
+    function animSlide1(tl) { tl.fromTo('#ps1-label', { opacity: 0, x: -30 }, { opacity: 1, x: 0, duration: 0.5, ease: 'power3.out' }, 0.1); const h = document.getElementById('ps1-h'); splitWords(h); const words = h.querySelectorAll('.word'); tl.set(h, { opacity: 1 }); tl.to(words, { opacity: 1, y: 0, rotateX: 0, duration: 0.6, stagger: 0.08, ease: 'back.out(1.4)' }, 0.3); tl.to('#ps1-line', { width: '60px', opacity: 0.4, duration: 0.6, ease: 'power2.out' }, 0.9); tl.to('#ps1-sub', { opacity: 0.5, duration: 0.4 }, 1.2); }
+    function animSlide2(tl) { tl.fromTo('#ps2-label', { opacity: 0, y: -10 }, { opacity: 1, y: 0, duration: 0.4, ease: 'power2.out' }, 0.1); const h = document.getElementById('ps2-h'); splitWords(h); const words = h.querySelectorAll('.word'); tl.set(h, { opacity: 1 }); tl.to(words, { opacity: 1, y: 0, rotateX: 0, duration: 0.5, stagger: 0.06, ease: 'power3.out' }, 0.2); tl.to('#ps2-p1', { opacity: 1, duration: 0.5 }, 0.7); const ems = document.querySelectorAll('#ps2-p1 .em-word'); tl.fromTo(ems, { scale: 0.9, color: 'var(--text-secondary)' }, { scale: 1, color: 'var(--text)', duration: 0.4, stagger: 0.15, ease: 'back.out(2)' }, 0.9); tl.to('#ps2-answer', { opacity: 1, y: 0, duration: 0.6, ease: 'power3.out' }, 1.5); }
+    function animSlide3(tl) { tl.fromTo('#ps3-label', { opacity: 0, y: -10 }, { opacity: 1, y: 0, duration: 0.4, ease: 'power2.out' }, 0.1); const h = document.getElementById('ps3-h'); splitWords(h); const words = h.querySelectorAll('.word'); tl.set(h, { opacity: 1 }); tl.fromTo(words, { opacity: 0, scale: 0.5, y: 15 }, { opacity: 1, scale: 1, y: 0, duration: 0.5, stagger: 0.1, ease: 'back.out(1.7)' }, 0.15); const rows = document.querySelectorAll('.fail-row'); tl.to(rows, { opacity: 1, x: 0, duration: 0.45, stagger: 0.15, ease: 'power3.out', onComplete: function() { rows.forEach((r, i) => { gsap.delayedCall(i * 0.15 + 0.3, () => r.classList.add('struck')); }); } }, 0.6); }
+    function animSlide4(tl) { tl.to('#ps4-pre', { opacity: 1, duration: 0.6 }, 0.1); tl.to('#ps4-cl', { opacity: 1, scale: 1, filter: 'blur(0px)', duration: 0.8, ease: 'power3.out' }, 0.5); tl.to('#ps4-desc', { opacity: 1, duration: 0.5 }, 1.1); const pillars = document.querySelectorAll('#ps4-pillars .pillar'); tl.to(pillars, { opacity: 1, y: 0, scale: 1, duration: 0.5, stagger: 0.15, ease: 'back.out(1.5)' }, 1.3); }
     let p1WheelAcc = 0, p1WheelTO = null;
-    function onP1Wheel(e) {
-        if (!panelVisible) return;
-        e.preventDefault();
-        e.stopPropagation();
-        p1WheelAcc += e.deltaY;
-        if (Math.abs(p1WheelAcc) >= 60 && !locked) {
-            const dir = p1WheelAcc > 0 ? 1 : -1;
-            const next = current + dir;
-            // At edges: let main engine take over to adjacent panel
-            if (next < 0 || next > 3) {
-                p1WheelAcc = 0;
-                const mainDir = next < 0 ? -1 : 1;
-                snap(Math.round(target) + mainDir);
-                return;
-            }
-            animateSlide(next);
-            p1WheelAcc = 0;
-        }
-        clearTimeout(p1WheelTO);
-        p1WheelTO = setTimeout(() => p1WheelAcc = 0, 200);
-    }
-
-    // Touch support within p1
+    function onP1Wheel(e) { if (!panelVisible) return; e.preventDefault(); e.stopPropagation(); p1WheelAcc += e.deltaY; if (Math.abs(p1WheelAcc) >= 60 && !locked) { const dir = p1WheelAcc > 0 ? 1 : -1; const next = current + dir; if (next < 0 || next > 3) { p1WheelAcc = 0; snap(Math.round(target) + (next < 0 ? -1 : 1)); return; } animateSlide(next); p1WheelAcc = 0; } clearTimeout(p1WheelTO); p1WheelTO = setTimeout(() => p1WheelAcc = 0, 200); }
     let p1tx0 = 0;
     function onP1TouchStart(e) { p1tx0 = e.touches[0].clientX; }
-    function onP1TouchEnd(e) {
-        if (!panelVisible) return;
-        const dx = e.changedTouches[0].clientX - p1tx0;
-        if (Math.abs(dx) > 40 && !locked) {
-            const dir = dx < 0 ? 1 : -1;
-            const next = current + dir;
-            if (next < 0 || next > 3) {
-                snap(Math.round(target) + (next < 0 ? -1 : 1));
-            } else {
-                animateSlide(next);
-            }
-        }
-    }
-
-    // Keyboard override when on p1
+    function onP1TouchEnd(e) { if (!panelVisible) return; const dx = e.changedTouches[0].clientX - p1tx0; if (Math.abs(dx) > 40 && !locked) { const dir = dx < 0 ? 1 : -1; const next = current + dir; if (next < 0 || next > 3) snap(Math.round(target) + (next < 0 ? -1 : 1)); else animateSlide(next); } }
     let keyReady = false;
-    function onP1Key(e) {
-        if (!keyReady || !panelVisible || locked) return;
-        if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
-            e.preventDefault(); e.stopPropagation();
-            if (current < 3) animateSlide(current + 1);
-            else snap(Math.round(target) + 1);
-        } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
-            e.preventDefault(); e.stopPropagation();
-            if (current > 0) animateSlide(current - 1);
-            else snap(Math.round(target) - 1);
-        } else if (e.key === ' ') {
-            e.preventDefault(); e.stopPropagation();
-            if (current < 3) animateSlide(current + 1);
-            else snap(Math.round(target) + 1);
-        }
-    }
-
-    // Attach events to p1 panel — use capture phase to intercept before main engine
-    const p1 = document.getElementById('p1');
+    function onP1Key(e) { if (!keyReady || !panelVisible || locked) return; if (e.key === 'ArrowRight' || e.key === 'ArrowDown') { e.preventDefault(); e.stopPropagation(); if (current < 3) animateSlide(current + 1); else snap(Math.round(target) + 1); } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') { e.preventDefault(); e.stopPropagation(); if (current > 0) animateSlide(current - 1); else snap(Math.round(target) - 1); } else if (e.key === ' ') { e.preventDefault(); e.stopPropagation(); if (current < 3) animateSlide(current + 1); else snap(Math.round(target) + 1); } }
+    const p1 = document.getElementById('p2');
     p1.addEventListener('wheel', onP1Wheel, { passive: false, capture: true });
     p1.addEventListener('touchstart', onP1TouchStart, { passive: true, capture: true });
     p1.addEventListener('touchend', onP1TouchEnd, { passive: true, capture: true });
-    document.addEventListener('keydown', onP1Key, true); // capture phase
-
-    // Dot clicks
-    dots.forEach(d => d.addEventListener('click', () => {
-        const idx = parseInt(d.dataset.slide);
-        if (idx !== current && !locked) animateSlide(idx);
-    }));
-
-    // Override main scroll engine when p1 is visible and sub-slide is not at edge
-    // We intercept by watching the panel's visible state
-    const observer = new MutationObserver(() => {
-        const wasVisible = panelVisible;
-        panelVisible = p1.classList.contains('visible');
-        if (panelVisible && !wasVisible) {
-            // Panel just became visible — play entrance animation for current sub-slide
-            keyReady = false; // Block keyboard until entrance animation settles
-            animateSlide(current);
-            setTimeout(() => { keyReady = true; }, 800); // Unblock after entrance
-        }
-        if (!panelVisible && wasVisible) {
-            // Reset all sub-slide elements for re-entry
-            resetAllSlides();
-        }
-    });
+    document.addEventListener('keydown', onP1Key, true);
+    dots.forEach(d => d.addEventListener('click', () => { const idx = parseInt(d.dataset.slide); if (idx !== current && !locked) animateSlide(idx); }));
+    const observer = new MutationObserver(() => { const wasVisible = panelVisible; panelVisible = p1.classList.contains('visible'); if (panelVisible && !wasVisible) { keyReady = false; animateSlide(current); setTimeout(() => { keyReady = true; }, 800); } if (!panelVisible && wasVisible) resetAllSlides(); });
     observer.observe(p1, { attributes: true, attributeFilter: ['class'] });
-
-    function resetAllSlides() {
-        // Reset to slide 0
-        slides.forEach(s => s.classList.remove('active'));
-        slides[0].classList.add('active');
-        slides.forEach(s => gsap.set(s, { opacity: 0 }));
-        gsap.set(slides[0], { opacity: 1 });
-        current = 0;
-        dots.forEach((d, i) => d.classList.toggle('active', i === 0));
-        counter.textContent = '1/4';
-        // Reset internal elements
-        gsap.set('#ps1-label', { opacity: 0, x: -30 });
-        gsap.set('#ps1-h', { opacity: 0 });
-        gsap.set('#ps1-line', { width: 0, opacity: 0 });
-        gsap.set('#ps1-sub', { opacity: 0 });
-        gsap.set('#ps2-label', { opacity: 0 });
-        gsap.set('#ps2-h', { opacity: 0 });
-        gsap.set('#ps2-p1', { opacity: 0 });
-        gsap.set('#ps2-answer', { opacity: 0, y: 12 });
-        gsap.set('#ps3-label', { opacity: 0 });
-        gsap.set('#ps3-h', { opacity: 0 });
-        document.querySelectorAll('.fail-row').forEach(r => { r.style.opacity = '0'; r.style.transform = 'translateX(-20px)'; r.classList.remove('struck'); });
-        gsap.set('#ps4-pre', { opacity: 0 });
-        gsap.set('#ps4-cl', { opacity: 0, scale: 0.8, filter: 'blur(8px)' });
-        gsap.set('#ps4-desc', { opacity: 0 });
-        document.querySelectorAll('#ps4-pillars .pillar').forEach(p => { p.style.opacity = '0'; p.style.transform = 'translateY(30px) scale(0.95)'; });
-        // Re-split headings for next visit
-        ['ps1-h','ps2-h','ps3-h'].forEach(id => { const el = document.getElementById(id); if (el) el.dataset.split = '0'; });
-    }
-
-    // Initial state setup (hidden until panel becomes visible)
+    function resetAllSlides() { slides.forEach(s => s.classList.remove('active')); slides[0].classList.add('active'); slides.forEach(s => gsap.set(s, { opacity: 0 })); gsap.set(slides[0], { opacity: 1 }); current = 0; dots.forEach((d, i) => d.classList.toggle('active', i === 0)); counter.textContent = '1/4'; gsap.set('#ps1-label', { opacity: 0, x: -30 }); gsap.set('#ps1-h', { opacity: 0 }); gsap.set('#ps1-line', { width: 0, opacity: 0 }); gsap.set('#ps1-sub', { opacity: 0 }); gsap.set('#ps2-label', { opacity: 0 }); gsap.set('#ps2-h', { opacity: 0 }); gsap.set('#ps2-p1', { opacity: 0 }); gsap.set('#ps2-answer', { opacity: 0, y: 12 }); gsap.set('#ps3-label', { opacity: 0 }); gsap.set('#ps3-h', { opacity: 0 }); document.querySelectorAll('.fail-row').forEach(r => { r.style.opacity = '0'; r.style.transform = 'translateX(-20px)'; r.classList.remove('struck'); }); gsap.set('#ps4-pre', { opacity: 0 }); gsap.set('#ps4-cl', { opacity: 0, scale: 0.8, filter: 'blur(8px)' }); gsap.set('#ps4-desc', { opacity: 0 }); document.querySelectorAll('#ps4-pillars .pillar').forEach(p => { p.style.opacity = '0'; p.style.transform = 'translateY(30px) scale(0.95)'; }); ['ps1-h','ps2-h','ps3-h'].forEach(id => { restoreWords(document.getElementById(id)); }); }
     resetAllSlides();
 })();
 
 // ============================================================
 // ACCORDION
 // ============================================================
-document.querySelectorAll('.prim-item').forEach(item => {
-    item.addEventListener('click', () => {
-        const was = item.classList.contains('open');
-        document.querySelectorAll('.prim-item').forEach(i => i.classList.remove('open'));
-        if (!was) item.classList.add('open');
-    });
-});
-
+document.querySelectorAll('.prim-item').forEach(item => { item.addEventListener('click', () => { const was = item.classList.contains('open'); document.querySelectorAll('.prim-item').forEach(i => i.classList.remove('open')); if (!was) item.classList.add('open'); }); });
 
 // ============================================================
 // GITHUB DATA
 // ============================================================
 const GithubData = (() => {
     const CK = 'aegntic:github-data', CM = 6*60*60*1000;
-    const FB = {
-        totalPublicRepos: 42, totalStars: 72, followers: 16,
-        topRepos: [
-            { name: 'cldcde', language: 'TypeScript', stargazers_count: 12, description: 'Community hub and production MCP servers for Claude Code.' },
-            { name: 'aegntic-MCP', language: 'TypeScript', stargazers_count: 10, description: 'Production MCP server collection.' },
-            { name: 'google-labs-extension', language: 'TypeScript', stargazers_count: 8, description: 'Google Labs browser extension.' },
-            { name: 'aegnt-27', language: 'Python', stargazers_count: 7, description: '27 behavioral authenticity patterns achieving 98%+ detector resistance.' },
-            { name: 'ae-co-system', language: 'TypeScript', stargazers_count: 6, description: 'Living ecosystem map and coordination surface.' },
-            { name: 'DAILYDOCO', language: 'Rust', stargazers_count: 5, description: 'Automated broadcast-quality documentation at 95%+ human authenticity.' }
-        ]
-    };
+    const FB = { totalPublicRepos: 42, totalStars: 72, followers: 16, topRepos: [
+        { name: 'cldcde', language: 'TypeScript', stargazers_count: 12, description: 'Community hub and production MCP servers for Claude Code.' },
+        { name: 'aegntic-MCP', language: 'TypeScript', stargazers_count: 10, description: 'Production MCP server collection.' },
+        { name: 'google-labs-extension', language: 'TypeScript', stargazers_count: 8, description: 'Google Labs browser extension.' },
+        { name: 'aegnt-27', language: 'Python', stargazers_count: 7, description: '27 behavioral authenticity patterns achieving 98%+ detector resistance.' },
+        { name: 'ae-co-system', language: 'TypeScript', stargazers_count: 6, description: 'Living ecosystem map and coordination surface.' },
+        { name: 'DAILYDOCO', language: 'Rust', stargazers_count: 5, description: 'Automated broadcast-quality documentation at 95%+ human authenticity.' }
+    ]};
     function load() { try { const r = localStorage.getItem(CK); if (!r) return null; const d = JSON.parse(r); if (Date.now()-d.fetchedAt < CM) return d; } catch(e){} return null; }
     function save(d) { try { localStorage.setItem(CK, JSON.stringify(d)); } catch(e){} }
-    async function fetchGH() {
-        try {
-            const [p, r] = await Promise.all([window.fetch('https://api.github.com/users/aegntic'), window.fetch('https://api.github.com/users/aegntic/repos?per_page=100&sort=stars&type=public')]);
-            const pj = await p.json(), rj = await r.json();
-            const t = rj.sort((a,b)=>b.stargazers_count-a.stargazers_count).slice(0,6).map(x=>({name:x.name,language:x.language,stargazers_count:x.stargazers_count,description:x.description}));
-            const d = { totalPublicRepos: pj.public_repos||FB.totalPublicRepos, totalStars: rj.reduce((s,x)=>s+x.stargazers_count,0)||FB.totalStars, followers: pj.followers||FB.followers, topRepos: t, fetchedAt: Date.now() };
-            save(d); return d;
-        } catch(e) { return FB; }
-    }
+    async function fetchGH() { try { const [p,r] = await Promise.all([window.fetch('https://api.github.com/users/aegntic'),window.fetch('https://api.github.com/users/aegntic/repos?per_page=100&sort=stars&type=public')]); const pj=await p.json(),rj=await r.json(); const t=rj.sort((a,b)=>b.stargazers_count-a.stargazers_count).slice(0,6).map(x=>({name:x.name,language:x.language,stargazers_count:x.stargazers_count,description:x.description})); const d={totalPublicRepos:pj.public_repos||FB.totalPublicRepos,totalStars:rj.reduce((s,x)=>s+x.stargazers_count,0)||FB.totalStars,followers:pj.followers||FB.followers,topRepos:t,fetchedAt:Date.now()}; save(d); return d; } catch(e) { return FB; } }
     return { load, fetch: fetchGH, FB };
 })();
-
-function countUp(el, t, d=800) {
-    const s = parseInt(el.textContent)||0; if(s===t)return;
-    const st = performance.now();
-    function k(n) { const p = Math.min((n-st)/d,1); el.textContent = Math.round(s+(t-s)*(1-Math.pow(1-p,3))); if(p<1) requestAnimationFrame(k); }
-    requestAnimationFrame(k);
-}
-
-function renderGrid(tr) {
-    const g = document.getElementById('project-grid'); if(!g||!tr||!tr.length) return;
-    const lc = {TypeScript:'#3178c6',Python:'#3572A5',Rust:'#dea584',JavaScript:'#f1e05a',Go:'#00ADD8',Shell:'#89e051'};
-    g.innerHTML = tr.map(r=>`<a href="https://github.com/aegntic/${r.name}" target="_blank" class="pcard"><div style="display:flex;align-items:center;justify-content:space-between"><span class="fd" style="font-weight:500;font-size:0.78rem;color:var(--white)">${r.name}</span>${r.language?`<span class="fm" style="font-size:9px;padding:1px 5px;border-radius:3px;background:rgba(118,125,136,0.12);color:var(--cool-slate)">${r.language}</span>`:''}</div><div style="margin-top:0.3rem;font-size:0.68rem;color:var(--mid-slate);line-height:1.4;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden">${r.description||''}</div><div style="margin-top:0.4rem" class="fm"><span style="font-size:9px;color:var(--cool-slate)">&#9733; ${r.stargazers_count}</span></div></a>`).join('');
-}
-
-async function bootGH() {
-    const c = GithubData.load(); const d = c || await GithubData.fetch();
-    const sr = document.getElementById('stat-repos'), ss = document.getElementById('stat-stars'), sf = document.getElementById('stat-followers');
-    if(sr) countUp(sr, d.totalPublicRepos); if(ss) countUp(ss, d.totalStars); if(sf) countUp(sf, d.followers);
-    const ar = document.getElementById('about-repos'), as = document.getElementById('about-stars');
-    if(ar) ar.textContent = d.totalPublicRepos; if(as) as.textContent = d.totalStars;
-    renderGrid(d.topRepos);
-    if(!c) return;
-    GithubData.fetch().then(f => {
-        if(sr) countUp(sr, f.totalPublicRepos); if(ss) countUp(ss, f.totalStars); if(sf) countUp(sf, f.followers);
-        if(ar) ar.textContent = f.totalPublicRepos; if(as) as.textContent = f.totalStars;
-        renderGrid(f.topRepos);
-    });
-}
-
+function countUp(el,t,d=800){const s=parseInt(el.textContent)||0;if(s===t)return;const st=performance.now();function k(n){const p=Math.min((n-st)/d,1);el.textContent=Math.round(s+(t-s)*(1-Math.pow(1-p,3)));if(p<1)requestAnimationFrame(k);}requestAnimationFrame(k);}
+function renderGrid(tr){const g=document.getElementById('project-grid');if(!g||!tr||!tr.length)return;g.innerHTML=tr.map(r=>`<a href="https://github.com/aegntic/${r.name}" target="_blank" class="pcard"><div style="display:flex;align-items:center;justify-content:space-between"><span class="fd" style="font-weight:500;font-size:0.78rem;color:var(--text)">${r.name}</span>${r.language?`<span class="fm" style="font-size:9px;padding:1px 5px;border-radius:3px;background:var(--surface);color:var(--text-muted)">${r.language}</span>`:''}</div><div style="margin-top:0.3rem;font-size:0.68rem;color:var(--text-secondary);line-height:1.4;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden">${r.description||''}</div><div style="margin-top:0.4rem" class="fm"><span style="font-size:9px;color:var(--text-muted)">&#9733; ${r.stargazers_count}</span></div></a>`).join('');}
+async function bootGH(){const c=GithubData.load();const d=c||await GithubData.fetch();const sr=document.getElementById('stat-repos'),ss=document.getElementById('stat-stars'),sf=document.getElementById('stat-followers');if(sr)countUp(sr,d.totalPublicRepos);if(ss)countUp(ss,d.totalStars);if(sf)countUp(sf,d.followers);const ar=document.getElementById('about-repos'),as=document.getElementById('about-stars');if(ar)ar.textContent=d.totalPublicRepos;if(as)as.textContent=d.totalStars;renderGrid(d.topRepos);if(!c)return;GithubData.fetch().then(f=>{if(sr)countUp(sr,f.totalPublicRepos);if(ss)countUp(ss,f.totalStars);if(sf)countUp(sf,f.followers);if(ar)ar.textContent=f.totalPublicRepos;if(as)as.textContent=f.totalStars;renderGrid(f.topRepos);});}
 
 // ============================================================
-// CONTINUITY DEMO (interactive canvas in Proof panel)
+// CONTINUITY DEMO
 // ============================================================
-let cC, cX, cN=[], cME=[];
-function initCont() {
-    cC = document.getElementById('continuity-canvas'); if(!cC)return;
-    cX = cC.getContext('2d');
-    function rs(){const d=window.devicePixelRatio||1;cC.width=cC.offsetWidth*d;cC.height=cC.offsetHeight*d;cX.scale(d,d);}
-    rs(); window.addEventListener('resize',rs);
-    for(let i=0;i<6;i++) cN.push({x:55+(i%3)*75,y:35+Math.floor(i/2)*70,bx:55+(i%3)*75,by:35+Math.floor(i/2)*70,ph:i*0.9,sz:4});
-    let drag=null;
-    cC.addEventListener('mousedown',e=>{const r=cC.getBoundingClientRect();const d=window.devicePixelRatio||1;const mx=(e.clientX-r.left)*d,my=(e.clientY-r.top)*d;drag=cN.find(n=>Math.hypot(n.x-mx,n.y-my)<18);});
-    window.addEventListener('mouseup',()=>drag=null);
-    cC.addEventListener('mousemove',e=>{if(!drag)return;const r=cC.getBoundingClientRect();const d=window.devicePixelRatio||1;drag.x=(e.clientX-r.left)*d;drag.y=(e.clientY-r.top)*d;});
-    cC.addEventListener('touchstart',e=>{e.preventDefault();const t=e.touches[0];const r=cC.getBoundingClientRect();const d=window.devicePixelRatio||1;drag=cN.find(n=>Math.hypot(n.x-(t.clientX-r.left)*d,n.y-(t.clientY-r.top)*d)<22);},{passive:false});
-    window.addEventListener('touchend',()=>drag=null);
-    cC.addEventListener('touchmove',e=>{if(!drag)return;e.preventDefault();const t=e.touches[0];const r=cC.getBoundingClientRect();const d=window.devicePixelRatio||1;drag.x=(t.clientX-r.left)*d;drag.y=(t.clientY-r.top)*d;},{passive:false});
-    aCont();
-    setInterval(()=>{cME.push(Date.now());if(cME.length>9)cME.shift();const s=document.getElementById('continuity-state');if(s)s.textContent=`PERSISTING \u2022 ${cME.length} EVENTS`;},1650);
-}
-function aCont() {
-    if(!cX||!cC)return;
-    const d=window.devicePixelRatio||1; cX.clearRect(0,0,cC.offsetWidth*d,cC.offsetHeight*d);
-    const t=Date.now()/900;
-    cX.strokeStyle='rgba(60,60,60,0.3)';cX.lineWidth=1;
-    for(let i=0;i<cN.length;i++)for(let j=i+1;j<cN.length;j++){const a=cN[i],b=cN[j];if(Math.hypot(a.x-b.x,a.y-b.y)<140){cX.beginPath();cX.moveTo(a.x,a.y);cX.lineTo(b.x,b.y);cX.stroke();}}
-    cN.forEach((n,i)=>{const p=Math.sin(t+n.ph)*0.7+1;cX.fillStyle='rgba(40,60,70,0.08)';for(let k=0;k<3;k++){cX.beginPath();cX.arc(n.bx+(n.x-n.bx)*0.3*k,n.by+(n.y-n.by)*0.3*k,n.sz*p*(0.5-k*0.15),0,Math.PI*2);cX.fill();}
-    cX.fillStyle=i%2===0?'rgba(40,60,70,0.6)':'rgba(60,50,40,0.6)';cX.beginPath();cX.arc(n.x,n.y,n.sz*p*0.85,0,Math.PI*2);cX.fill();
-    cX.strokeStyle='rgba(255,255,255,0.06)';cX.lineWidth=0.8;cX.beginPath();cX.arc(n.x,n.y,n.sz*p*1.3,0,Math.PI*2);cX.stroke();});
-    if(!PRM) requestAnimationFrame(aCont);
-}
-
+let cC,cX,cN=[],cME=[];
+function initCont(){cC=document.getElementById('continuity-canvas');if(!cC)return;cX=cC.getContext('2d');function rs(){const d=window.devicePixelRatio||1;cC.width=cC.offsetWidth*d;cC.height=cC.offsetHeight*d;cX.scale(d,d);}rs();window.addEventListener('resize',rs);for(let i=0;i<6;i++)cN.push({x:55+(i%3)*75,y:35+Math.floor(i/2)*70,bx:55+(i%3)*75,by:35+Math.floor(i/2)*70,ph:i*0.9,sz:4});let drag=null;cC.addEventListener('mousedown',e=>{const r=cC.getBoundingClientRect();const d=window.devicePixelRatio||1;const mx=(e.clientX-r.left)*d,my=(e.clientY-r.top)*d;drag=cN.find(n=>Math.hypot(n.x-mx,n.y-my)<18);});window.addEventListener('mouseup',()=>drag=null);cC.addEventListener('mousemove',e=>{if(!drag)return;const r=cC.getBoundingClientRect();const d=window.devicePixelRatio||1;drag.x=(e.clientX-r.left)*d;drag.y=(e.clientY-r.top)*d;});cC.addEventListener('touchstart',e=>{e.preventDefault();const t=e.touches[0];const r=cC.getBoundingClientRect();const d=window.devicePixelRatio||1;drag=cN.find(n=>Math.hypot(n.x-(t.clientX-r.left)*d,n.y-(t.clientY-r.top)*d)<22);},{passive:false});window.addEventListener('touchend',()=>drag=null);cC.addEventListener('touchmove',e=>{if(!drag)return;e.preventDefault();const t=e.touches[0];const r=cC.getBoundingClientRect();const d=window.devicePixelRatio||1;drag.x=(t.clientX-r.left)*d;drag.y=(t.clientY-r.top)*d;},{passive:false});aCont();setInterval(()=>{cME.push(Date.now());if(cME.length>9)cME.shift();const s=document.getElementById('continuity-state');if(s)s.textContent=`PERSISTING \u2022 ${cME.length} EVENTS`;},1650);}
+function aCont(){if(!cX||!cC)return;const d=window.devicePixelRatio||1;cX.clearRect(0,0,cC.offsetWidth*d,cC.offsetHeight*d);const isDark=document.documentElement.getAttribute('data-theme')==='dark';const lineCol=isDark?'rgba(255,255,255,0.12)':'rgba(0,0,0,0.08)';const nodeColA=isDark?'rgba(0,212,184,0.6)':'rgba(0,179,158,0.5)';const nodeColB=isDark?'rgba(201,160,110,0.6)':'rgba(179,139,94,0.5)';const ringCol=isDark?'rgba(255,255,255,0.06)':'rgba(0,0,0,0.04)';const t=Date.now()/900;cX.strokeStyle=lineCol;cX.lineWidth=1;for(let i=0;i<cN.length;i++)for(let j=i+1;j<cN.length;j++){const a=cN[i],b=cN[j];if(Math.hypot(a.x-b.x,a.y-b.y)<140){cX.beginPath();cX.moveTo(a.x,a.y);cX.lineTo(b.x,b.y);cX.stroke();}}cN.forEach((n,i)=>{const p=Math.sin(t+n.ph)*0.7+1;cX.fillStyle=isDark?'rgba(0,212,184,0.06)':'rgba(0,179,158,0.04)';for(let k=0;k<3;k++){cX.beginPath();cX.arc(n.bx+(n.x-n.bx)*0.3*k,n.by+(n.y-n.by)*0.3*k,n.sz*p*(0.5-k*0.15),0,Math.PI*2);cX.fill();}cX.fillStyle=i%2===0?nodeColA:nodeColB;cX.beginPath();cX.arc(n.x,n.y,n.sz*p*0.85,0,Math.PI*2);cX.fill();cX.strokeStyle=ringCol;cX.lineWidth=0.8;cX.beginPath();cX.arc(n.x,n.y,n.sz*p*1.3,0,Math.PI*2);cX.stroke();});if(!PRM)requestAnimationFrame(aCont);}
 
 // ============================================================
 // BOOT
 // ============================================================
+// ============================================================
+// SPLASH CANVAS — ambient 3D sacred geometry for cover
+// ============================================================
+const SplashRender = (() => {
+    const C = document.getElementById('splash-canvas');
+    if (!C) return { init() {} };
+    const X = C.getContext('2d');
+    let W, H, dpr, t = 0;
+    const PRM_S = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    function resize() { dpr = window.devicePixelRatio || 1; W = C.offsetWidth; H = C.offsetHeight; C.width = W * dpr; C.height = H * dpr; }
+
+    const PHI = (1 + Math.sqrt(5)) / 2;
+    const ICO_NORM = Math.sqrt(1 + PHI*PHI);
+    const ICO_V = [[-1,PHI,0],[1,PHI,0],[-1,-PHI,0],[1,-PHI,0],[0,-1,PHI],[0,1,PHI],[0,-1,-PHI],[0,1,-PHI],[PHI,0,-1],[PHI,0,1],[-PHI,0,-1],[-PHI,0,1]].map(v => [v[0]/ICO_NORM,v[1]/ICO_NORM,v[2]/ICO_NORM]);
+    const edgeSet = new Set();
+    [[0,11,5],[0,5,1],[0,1,7],[0,7,10],[0,10,11],[1,5,9],[5,11,4],[11,10,2],[10,7,6],[7,1,8],[3,9,4],[3,4,2],[3,2,6],[3,6,8],[3,8,9],[4,9,5],[2,4,11],[6,2,10],[8,6,7],[9,8,1]].forEach(f => {
+        for (let i = 0; i < 3; i++) { const a = Math.min(f[i],f[(i+1)%3]), b = Math.max(f[i],f[(i+1)%3]); edgeSet.add(a+','+b); }
+    });
+    const ICO_E = [...edgeSet].map(e => e.split(',').map(Number));
+
+    function rX(p,a){const c=Math.cos(a),s=Math.sin(a);return[p[0],p[1]*c-p[2]*s,p[1]*s+p[2]*c];}
+    function rY(p,a){const c=Math.cos(a),s=Math.sin(a);return[p[0]*c+p[2]*s,p[1],-p[0]*s+p[2]*c];}
+    function rZ(p,a){const c=Math.cos(a),s=Math.sin(a);return[p[0]*c-p[1]*s,p[0]*s+p[1]*c,p[2]];}
+
+    function render() {
+        X.save(); X.scale(dpr, dpr); X.clearRect(0, 0, W, H);
+        const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+        const cx = W * 0.5, cy = H * 0.5;
+        const baseR = Math.min(W, H) * 0.32;
+        const FOV = 800;
+        const ry = t * 0.12, rx = t * 0.08 + 0.3, rz = t * 0.05;
+
+        // Ambient glow
+        const grd = X.createRadialGradient(cx, cy, 0, cx, cy, baseR * 3);
+        grd.addColorStop(0, isDark ? 'rgba(0,212,184,0.04)' : 'rgba(0,179,158,0.03)');
+        grd.addColorStop(0.5, isDark ? 'rgba(201,160,110,0.02)' : 'rgba(179,139,94,0.015)');
+        grd.addColorStop(1, 'rgba(0,0,0,0)');
+        X.fillStyle = grd; X.fillRect(0, 0, W, H);
+
+        // Orbit rings
+        for (let r = 0; r < 4; r++) {
+            const ringR = baseR * (1.3 + r * 0.3);
+            const tiltX = r * 0.4 - 0.2;
+            const tiltZ = r * 0.3;
+            X.globalAlpha = (isDark ? 0.04 : 0.025) + r * 0.008;
+            X.strokeStyle = r % 2 === 0
+                ? (isDark ? 'rgba(0,212,184,0.4)' : 'rgba(0,179,158,0.35)')
+                : (isDark ? 'rgba(201,160,110,0.3)' : 'rgba(179,139,94,0.25)');
+            X.lineWidth = 0.4;
+            X.beginPath();
+            for (let s = 0; s <= 80; s++) {
+                const a = (s / 80) * Math.PI * 2 + t * (0.1 + r * 0.04);
+                let p = [Math.cos(a) * ringR, 0, Math.sin(a) * ringR];
+                p = rX(p, tiltX); p = rZ(p, tiltZ); p = rY(p, ry); p = rX(p, rx);
+                const f = FOV / Math.max(p[2] + FOV * 0.5, 50);
+                const sx = cx + p[0] * f, sy = cy + p[1] * f;
+                if (s === 0) X.moveTo(sx, sy); else X.lineTo(sx, sy);
+            }
+            X.stroke();
+        }
+
+        // Icosahedron — centered, semi-transparent, overlaid with text
+        const pts = ICO_V.map(v => {
+            let p = [v[0] * baseR, v[1] * baseR, v[2] * baseR];
+            p = rZ(p, rz); p = rY(p, ry); p = rX(p, rx);
+            const z = p[2] + FOV * 0.5;
+            const f = FOV / Math.max(z, 50);
+            return { x: cx + p[0] * f, y: cy + p[1] * f, z };
+        });
+
+        // Edges
+        X.shadowColor = isDark ? 'rgba(0,212,184,0.3)' : 'rgba(0,179,158,0.2)';
+        X.shadowBlur = isDark ? 10 : 6;
+        X.lineCap = 'round';
+        ICO_E.forEach(([a, b]) => {
+            const avgZ = (pts[a].z + pts[b].z) / 2;
+            const depth = (avgZ - FOV * 0.2) / (FOV * 0.8);
+            const alpha = (0.06 + 0.35 * Math.max(0, Math.min(1, 1 - depth)));
+            X.globalAlpha = alpha;
+            X.strokeStyle = isDark ? '#00d4b8' : '#00b39e';
+            X.lineWidth = 0.4 + (1 - depth) * 0.6;
+            X.beginPath();
+            X.moveTo(pts[a].x, pts[a].y);
+            X.lineTo(pts[b].x, pts[b].y);
+            X.stroke();
+        });
+
+        // Vertices
+        X.shadowBlur = isDark ? 6 : 4;
+        pts.forEach(p => {
+            const depth = (p.z - FOV * 0.2) / (FOV * 0.8);
+            X.globalAlpha = 0.1 + 0.5 * Math.max(0, Math.min(1, 1 - depth));
+            X.fillStyle = isDark ? '#00d4b8' : '#00b39e';
+            X.beginPath();
+            X.arc(p.x, p.y, 1 + (1 - depth) * 1.2, 0, Math.PI * 2);
+            X.fill();
+        });
+
+        // Floating particles — mix teal and bronze
+        X.shadowBlur = 2;
+        for (let i = 0; i < 50; i++) {
+            const a = i * 2.399 + t * 0.15;
+            const r3 = baseR * (1.0 + 0.8 * Math.sin(i * 1.3 + t * 0.2));
+            const y3 = Math.sin(i * 0.7 + t * 0.3) * baseR * 0.6;
+            let p = [Math.cos(a) * r3, y3, Math.sin(a) * r3];
+            p = rY(p, ry * 0.3); p = rX(p, rx * 0.3);
+            const z = p[2] + FOV * 0.5;
+            const f = FOV / Math.max(z, 50);
+            const isTeal = i % 3 !== 0;
+            X.globalAlpha = isDark ? 0.2 : 0.12;
+            X.fillStyle = isTeal
+                ? (isDark ? 'rgba(0,212,184,0.7)' : 'rgba(0,179,158,0.5)')
+                : (isDark ? 'rgba(201,160,110,0.7)' : 'rgba(179,139,94,0.5)');
+            X.beginPath();
+            X.arc(cx + p[0] * f, cy + p[1] * f, 0.6 + Math.sin(i + t) * 0.3, 0, Math.PI * 2);
+            X.fill();
+        }
+
+        X.restore();
+        t += 0.008;
+        if (!PRM_S) requestAnimationFrame(render);
+    }
+
+    return {
+        init() {
+            resize();
+            window.addEventListener('resize', resize);
+            render();
+            // Animate the title in
+            const title = document.getElementById('splash-title');
+            if (title) {
+                gsap.to(title, { opacity: 1, duration: 1.2, delay: 0.3, ease: 'power2.out' });
+            }
+        }
+    };
+})();
+
 window.onload = () => {
     FX.init();
+    SplashRender.init();
     bootGH();
     initCont();
-    document.querySelectorAll('.glass').forEach(el => {
-        el.style.backgroundImage = 'linear-gradient(rgba(255,255,255,0.008) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,0.008) 1px,transparent 1px)';
-        el.style.backgroundSize = '3px 3px';
-    });
 };
 </script>
 </body>
