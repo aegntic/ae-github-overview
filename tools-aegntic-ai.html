@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AEGNTIC — Products &amp; Tools for Builders Who Ship</title>
+    <meta name="description" content="The commercial layer: products, licensing, and consulting from aegntic.ai. Everything built by one developer, tested in production.">
+    <link rel="canonical" href="https://tools.aegntic.ai/">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://tools.aegntic.ai/">
+    <meta property="og:title" content="AEGNTIC — Products &amp; Tools for Builders Who Ship">
+    <meta property="og:description" content="The commercial layer: products, licensing, and consulting. Part of the coordination layer for persistent human-AI intelligence.">
+    <meta property="og:image" content="https://aegntic.ai/og-aegntic-skeleton.png">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="AEGNTIC — Products &amp; Tools for Builders Who Ship">
+    <meta name="twitter:description" content="The commercial layer: products, licensing, and consulting from aegntic.ai.">
+    <script type="application/ld+json">
+    {"@context":"https://schema.org","@type":"Organization","name":"AEGNTIC","url":"https://tools.aegntic.ai","description":"Products, licensing, and consulting from the coordination layer for persistent human-AI intelligence.","sameAs":["https://aegntic.ai","https://github.com/aegntic","https://x.com/AEGNTIC"]}
+    </script>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600&family=Inter:wght@400;450;500;600&family=JetBrains+Mono:wght@400;500&display=swap">
+    <style>
+        :root {
+            --bg: #faf9f6;
+            --bg-card: #ffffff;
+            --text: #1a1a18;
+            --text-secondary: #6b6b6b;
+            --text-muted: #999;
+            --border: #e8e8e5;
+            --border-light: #f0f0ed;
+            --teal: #00b39e;
+            --teal-light: rgba(0,179,158,0.08);
+            --teal-mid: rgba(0,179,158,0.15);
+            --bronze: #b38b5e;
+            --bronze-light: rgba(179,139,94,0.08);
+            --bronze-mid: rgba(179,139,94,0.15);
+            --radius: 10px;
+            --radius-sm: 6px;
+            --shadow: 0 1px 3px rgba(0,0,0,0.04), 0 4px 12px rgba(0,0,0,0.03);
+            --shadow-hover: 0 2px 8px rgba(0,0,0,0.06), 0 8px 24px rgba(0,0,0,0.05);
+        }
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        html { scroll-behavior: smooth; -webkit-font-smoothing: antialiased; }
+        body {
+            font-family: 'Inter', system-ui, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            font-size: 16px;
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+        .fd { font-family: 'Space Grotesk', 'Inter', system-ui, sans-serif; }
+        .fm { font-family: 'JetBrains Mono', ui-monospace, monospace; }
+
+        /* Nav */
+        nav {
+            position: sticky; top: 0; z-index: 100;
+            background: rgba(250,249,246,0.85);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--border-light);
+            padding: 0 2rem;
+        }
+        .nav-inner {
+            max-width: 1200px; margin: 0 auto;
+            display: flex; align-items: center; justify-content: space-between;
+            height: 56px;
+        }
+        .nav-logo { display: flex; align-items: center; gap: 0.5rem; text-decoration: none; color: var(--text); }
+        .nav-logo img { width: 28px; height: 28px; border-radius: 4px; }
+        .nav-logo span { font-family: 'Space Grotesk', sans-serif; font-weight: 600; font-size: 15px; letter-spacing: -0.02em; }
+        .nav-links { display: flex; gap: 1.5rem; align-items: center; }
+        .nav-links a {
+            font-size: 13px; font-weight: 500; color: var(--text-secondary);
+            text-decoration: none; transition: color 150ms;
+        }
+        .nav-links a:hover { color: var(--text); }
+        .nav-tag {
+            font-size: 10px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase;
+            color: var(--teal); background: var(--teal-light);
+            padding: 3px 8px; border-radius: 4px;
+        }
+
+        /* Sections */
+        section { padding: 5rem 2rem; }
+        .container { max-width: 1200px; margin: 0 auto; }
+        .section-label {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 10px; font-weight: 500;
+            letter-spacing: 0.15em; text-transform: uppercase;
+            color: var(--teal); margin-bottom: 1rem;
+        }
+        .section-title {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: clamp(28px, 4vw, 42px);
+            font-weight: 600; line-height: 1.1;
+            letter-spacing: -0.02em;
+            margin-bottom: 0.75rem;
+        }
+        .section-subtitle {
+            font-size: 1rem; color: var(--text-secondary);
+            line-height: 1.6; max-width: 520px;
+        }
+
+        /* Hero */
+        .hero { padding: 6rem 2rem 4rem; text-align: center; }
+        .hero .section-subtitle { margin: 0 auto 2rem; max-width: 560px; }
+        .hero-ctas { display: flex; gap: 0.75rem; justify-content: center; flex-wrap: wrap; }
+        .btn {
+            display: inline-flex; align-items: center; gap: 0.4rem;
+            height: 44px; padding: 0 1.5rem;
+            border-radius: var(--radius-sm); font-size: 14px; font-weight: 600;
+            text-decoration: none; transition: all 150ms; cursor: pointer; border: none;
+        }
+        .btn-primary { background: var(--text); color: var(--bg); }
+        .btn-primary:hover { opacity: 0.85; }
+        .btn-outline { background: transparent; color: var(--text); border: 1px solid var(--border); }
+        .btn-outline:hover { border-color: var(--text); }
+        .launch-badge {
+            display: inline-flex; align-items: center; gap: 0.4rem;
+            font-size: 12px; font-weight: 500; color: var(--bronze);
+            background: var(--bronze-light);
+            padding: 6px 14px; border-radius: 20px;
+            margin-bottom: 1.5rem;
+        }
+
+        /* Grid */
+        .product-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+            gap: 1rem;
+            margin-top: 2.5rem;
+        }
+
+        /* Product card */
+        .pcard {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 1.5rem;
+            display: flex; flex-direction: column;
+            transition: all 200ms cubic-bezier(0.23,1,0.32,1);
+            text-decoration: none; color: var(--text);
+            position: relative;
+        }
+        .pcard:hover {
+            border-color: var(--border);
+            box-shadow: var(--shadow-hover);
+            transform: translateY(-2px);
+        }
+        .pcard-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 0.5rem; margin-bottom: 0.5rem; }
+        .pcard-name { font-family: 'Space Grotesk', sans-serif; font-weight: 600; font-size: 1rem; letter-spacing: -0.01em; }
+        .pcard-tag {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 9px; font-weight: 500;
+            letter-spacing: 0.08em; text-transform: uppercase;
+            padding: 2px 7px; border-radius: 3px;
+            white-space: nowrap; flex-shrink: 0;
+        }
+        .tag-teal { color: var(--teal); background: var(--teal-light); }
+        .tag-bronze { color: var(--bronze); background: var(--bronze-light); }
+        .pcard-desc { font-size: 0.82rem; color: var(--text-secondary); line-height: 1.5; margin-bottom: 0.75rem; flex: 1; }
+        .pcard-metric {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 11px; color: var(--text-muted);
+            margin-bottom: 1rem;
+        }
+        .pcard-footer { display: flex; align-items: center; justify-content: space-between; margin-top: auto; }
+        .pcard-price { font-family: 'Space Grotesk', sans-serif; font-weight: 600; font-size: 1.1rem; }
+        .pcard-price .old { color: var(--text-muted); text-decoration: line-through; font-weight: 400; font-size: 0.85rem; margin-right: 0.25rem; }
+        .pcard-cta {
+            font-size: 12px; font-weight: 600; color: var(--teal);
+            text-decoration: none; display: inline-flex; align-items: center; gap: 0.25rem;
+            transition: gap 150ms;
+        }
+        .pcard-cta:hover { gap: 0.4rem; }
+
+        /* Services */
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 1rem;
+            margin-top: 2.5rem;
+        }
+        .scard {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 1.5rem;
+            transition: all 200ms cubic-bezier(0.23,1,0.32,1);
+        }
+        .scard:hover {
+            box-shadow: var(--shadow-hover);
+            transform: translateY(-2px);
+        }
+        .scard-name { font-family: 'Space Grotesk', sans-serif; font-weight: 600; font-size: 1rem; margin-bottom: 0.5rem; }
+        .scard-desc { font-size: 0.82rem; color: var(--text-secondary); line-height: 1.5; margin-bottom: 1rem; }
+        .scard-meta { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--text-muted); margin-bottom: 0.75rem; }
+        .scard a { font-size: 13px; font-weight: 600; color: var(--bronze); text-decoration: none; }
+        .scard a:hover { text-decoration: underline; }
+
+        /* Stats */
+        .stats-row {
+            display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px;
+            background: var(--border); border: 1px solid var(--border); border-radius: var(--radius);
+            overflow: hidden; margin-top: 2.5rem;
+        }
+        .stat { background: var(--bg-card); padding: 1.75rem 1rem; text-align: center; }
+        .stat-val { font-family: 'Space Grotesk', sans-serif; font-size: clamp(28px, 4vw, 40px); font-weight: 600; letter-spacing: -1px; }
+        .stat-label {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 9px; letter-spacing: 0.12em; text-transform: uppercase;
+            color: var(--text-muted); margin-top: 0.25rem;
+        }
+
+        /* Footer */
+        footer {
+            border-top: 1px solid var(--border);
+            padding: 2rem;
+            text-align: center;
+        }
+        .footer-inner { max-width: 1200px; margin: 0 auto; }
+        .footer-links {
+            display: flex; justify-content: center; gap: 1.25rem; flex-wrap: wrap;
+            margin-bottom: 1rem;
+        }
+        .footer-links a {
+            font-size: 13px; font-weight: 500; color: var(--text-secondary);
+            text-decoration: none; transition: color 150ms;
+        }
+        .footer-links a:hover { color: var(--text); }
+        .footer-copy { font-size: 12px; color: var(--text-muted); }
+        .footer-copy a { color: var(--text-secondary); text-decoration: none; }
+        .footer-copy a:hover { color: var(--text); }
+
+        /* Responsive */
+        @media (max-width: 640px) {
+            section { padding: 3rem 1.25rem; }
+            .hero { padding: 4rem 1.25rem 2.5rem; }
+            .stats-row { grid-template-columns: repeat(2, 1fr); }
+            .nav-links .hide-mobile { display: none; }
+            .product-grid { grid-template-columns: 1fr; }
+            .services-grid { grid-template-columns: 1fr; }
+        }
+
+        /* Reduced motion */
+        @media (prefers-reduced-motion: reduce) {
+            .pcard, .scard { transition: none; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- Nav -->
+<nav>
+    <div class="nav-inner">
+        <a href="https://aegntic.ai" class="nav-logo">
+            <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAIAAAACACAYAAADDPmHLAABF5ElEQVR42u19eZhdVZXvWmvvM9xblVRVUpUREghJyAAIhEEELYaIOCHYVhRUnLrbbrURFRW7W8tSn7OCgLSNoiKOlAMoiDQKCRCmEFAgIRMJZKhMlVRqHs7Za70/zj7n7HOrMlLQ73vmfN/9qurWHfbZe+211/BbvwVw+Dp8Hb7+fi98md93+HoJLxEAxPyn+6/Ds3P4Gp2dLCIeAIQAEI/wfqx4Tpy/xfkp+/hurPgpexnvSFItI33WDtiBE2CCAAC2t7cj1APUAwBAPbRDO9RDvTumfY0T9z137bhrVwcCjAOA3QAwDsaPF2lvB6ivT76v4nuS39vbEerrpR3aEdrthyNiZ2cnAgDU1NRk9zV+/HjZy5wgAGBHB0BdHUBHRwfU1dWxfb4XEc1Ik60PYu0JkfiCCxb+58aNG9/HzL0CqEEYBUDQDsSwWCEQALHPJ/pIgBBQhAFIAAQRCUTEvj25LZbkvSL2xjD/NyKgZLoOBAQFMHkeQQARBVgAKZ8TJEQ2krxT0rlNJywZFwIKUjqHIoAkAAwiKMlbkgGgO+ksKAiYLoWAACIgS/p6FBFBTH4IAiIiiaOgxd4+gQACAQMDJW8WTKYOEJMbFLRjFQIhREhuKHk5AgAREougcDJ3AsAiImEYynHHnXAxAPy1uRmopQX4UAUARRg2bdw4dtOmjUcaIyDuJknWO/u9UgGk/8vmPpky57/JX8O3HFbstZEVB6Vfmp6BgCAigJj8FOTCe5P/22cwH41YyRO7R8VKjLjfkQ0D832cS3vyfel3pFIHmAhzOgZEwMJhLdnnWDFMhSr71mRIlKlZyYSPs/sB5II6DIMSTKwbDwAALS0vTgMAAACL7EEkVkpiYVFWmAGEsklk4VzJ2ZEKUMXyuYudLDIKQLpM6cK550C2dSV9P0OiVQBQyO6bZGIRAAgIxE4yJls8E8J8YQoqDlINQ46OTp6vOBFEAJDsvkxv105+qrFyBZG9N7kHHFmWrSCCICCl78g/weoNO8/OexidVxIISaKMGEiRilVJ8d7W86AFAJgTRcRMiRKziyEMiAAsVjOkuyeV5H0d2lLc94K5xsiEQPJFk0xmEIDFCo0UdyPkiyYigOkhZccniMPGw9nOtd9ndx/bMYoIEGF2fyBcFOJsfLk2cy3zAzHKC4vralCRTGNJQbNyYR4FBJABOFFYJCL7tPP0wRuBYEQEWBwVaBdMZG8WG9qd6EwEjjRtdpdLcaJS1Wptg8ICuQdIcvjZGSdHR2KuqsWx8RJtJZk2twPItbHrXwEkypcle2/2/SKFG5aKre0uvrgfjoWDrqCfErWSfJ87HYKSfydawShYJ/mxkwiNoDGGRk0AYk5uVxw1xtkEQYVKdCYFnTPR1YD2nK7cB9kOSlUpSsWeyFUxZsdq8guDu6ipECG46qPiLkA4mXBCcM7i4vns2g1YmHN7/haOudzilNxSLB5ljlpM7BWCwjBdWwFyjSQAgJTeAzpyhMN0yP6uQzgC7DbMvqjipEt0NkOFs4LZTeYLUNgIqdBghRZJFwOtKk9NIFdwxNEwqabg5Ox25r5C+eZWHrqzzkUDDzN7RQrCW9iVqeIQrhAKyXwNsfdBBaPY0QCIBaHKtQZnZwja1xmxzkTiZhAkblX2PVjUApJ4H6MkAIhiQCCzsLPdZc9IESFCKlh86eJTtmk5t2QrVGDm/7GjKawXl88kZuovn6TcaMLiEudCirlAQcEThKIWkuGGPqVGp6TOmVXR1k0VR+KTEbB1R3NjKPUEEAvav3D0pANQlHoCWNwlgKCsQBIiGGYAxNz5xOLmSqZU46gJAANwZoBV7CUWoXKp3FauKt8lcewhosecrS+lE0KICECCKAoAkIkAOfW1UQBFiQCQ9cezYxAJMDtEOXF5k22HIxlWaE1uTPa1MABTeohQqrDJ3pYkvouACHOyRQkgMR8xOSKAUbJwROpvMQCQsBh7lACmcQAgBEEgYE7lHSnZx4IaDHBiq6VD4ux8Y8DEriZK3AFMnwdQiGgnEKDHCJ/Y3dN1KhtmkGR6UjvqJbEBknnLXREp6CqgutrapRs3b/lHZh7hbC+ah/giMgoiBx/ilspNN4KR9tKFzrFCLcmL+iyyttdb3vzm9y9ZsvjU/qifiUix9Xqy8xNH2QbgdMIE0zhVYqDZmxqMBsq/+MUv1KJFi0jcQ3Hfa/LyhrP/VzIkMopfKmAENACYnr6eMQLGKiTKLUsRJ5IxykagpEEaKUb+bIxDX3LJJcYxqQ5fL10eJyZHtYg1lFDQjSwhjeoRQIQIFUaM68Ui6sMpyJdRCpSiQshZwAklgwgBgLfPI/0QdRliMQgima9Mh+ECL9+lFCkgzL0ITExVoTRXAxhF0egJADJz5kphHoxJg6+p23r4etl0gOS5jOI2RUCs8AhHwQjExP1BJ6uVCwEA0uEleXkvylwLETcySmk0U4wZzUAQs/0eN84uRTfh8PVyLn+KthCsiFFLHo6W0bMBbBQAsRDjzKNbhCyHzb+X/Gq0P43EnETZkvAQZpaglQgcZQGwRwtUAHlsOBQAQQ7rgJfhWpIqXBZhmwF1suFuWJyV2jsegA5F6eSxZimc/7mTcFgFvHwmoFAekU2PZbLGWBKVjkZTAygo5gGKhqA9cQ67AS/bxcCqEiiT5AA4S6z5o+kFZCLjqJ0s55481IELr8CiRYsIAGDHjlZcsmQYIrcZZbI/GxsbYcKECXLrrbfyvs63l3szNjc344qVK3HHjh2FHTBhwgSZN2+etLS0jLp6ZLZnr01audhDFgYRkTiOR+U7FQDArGOO/kSpFEgQ+lEQeJw+/MCLfF/JEUdMuldr7S5Y4WpubibYh5AQESilwPO87KGUBiIF+wgwqaampn2+4KVadPu96mC2UFNTk9ofVOsALg0AcN45jZ+pHVstpdAfKpdCLpWC9GHCwJMxVeXBs84664S9afxD0AAWWyM5aDLNrLGD1hthoqi1tdW0tLQwAEC5XIa77rpr8uLFf569bs36o7ZtaxvX19dXb0w8OWauMyJlExskJKO1HtBadQDA9qpSaXf9hAmdRx45ff3JJ5+88gMf+EDbwMCAaW1tzYShublZ0u95Ka4Eh4EEAKa1tdVorSCKYn/x4sVTli17ZGZb2/ajuru7xwAwVFVVDY4f37DpqKOOWn3ZZZdt8n2/v7W1Nc2UvuixElGOj3RgJlkEKAGm71XY8CA1gJk9e8antmza/LWYJQZElQJBANGIGD2xvv6+bTt2nxvHMQKANDc3U3qDIoKf//znT3300Ucv6uzseE17+87ZvX19DSaKYWhwEKIoBmbjgDnzYSICKCLQ2gPP98HzPBZat9fU1K2qqi4/OmvWzD/95Cc/exARB5zxjnZCCu0uMvZ+Sp/7j/9Y+NRTT/1DR+eeBTvbdx7Z09tTw8aAiWMAECBSQEqDVrq3tq5205gxY/46ffrRd1x//fV/rKur67DxFGXHKQepAeKFC8+56vFlj39laHAwAgTNOfBSWIR8z4te8YqTTl26dOnf7Nj5RR0Bx8465spyGEgYeFEQehw6R4DnkUyZPOEvzhGg7ESpf/qn97/71FNPeeDIaVNNzdhqCQIlnofiecSBR1EYeFEYeEOlwIuShx+lv4ehH4WBjkJfDQW+inxPRUqj0R6J7ykpl0JpaBgnM445+tmzznrVF6666qqZRFQY94u97NEFAADLly+f8u53v/uzp562YNW0I6fKmKqSeL4S7aFojcbzMAo8inxPRZ6mSCuKfUXiayVB4El9/TiZPWvmC+efv/DrN95449Gp0ex+x4EeAeeff85VtTXVUgr8obJV/2Hgcxj6Jgg8qa7e9xFw8AJw7IxPlkuBBIEXBYHHYejYAB7J1MkT/2wFQNubOvmkk078S33DOAlDTwJfczn0oqqSH5dLvimFPodWkPKHn/z07d+hz0GoOQh08TXJTcZ+oIc8TxnP11JVVZKJExt2n3DCcdc3NzcfNUpCkApy6b3vvezT8+fP3VI3rkZ8X4nvq7gU6qhc9uMwDEypFHA5DLgU+Jzcm8/2OVMOg7gUBpGvVexrkrHXZZk2/Yid5513TouIVB/kWDUAwAXnL/x0Xe0YKYXeUKlkv6sUcBj6xg88qa6u2qcA0MGbAFYfZ9nASh0pg1EUESLGTU1N7/7Rj3+4eOWzK87t6uyMEdEoRSKCihlIOPEERIqIV4v7Sgo9wCmWQMqKtGwdQBIEA9REhERkTBTHHbt3161ds+bDN930/YfOP//8tyOSeRHSTwBgbrjhhleec+7ZS/5wxx1fXb161ZS+3p5Ye8oorUgAlDATQFqa5cCiRYBFgEGQkxydUopIe2SieDDe1tZW/+hjj37uFScet/hLX2o+0R4vByywgiyCkmB17SnC4tZbCBDFoxkJzPEAiGlhnsXqEoIR6SUifstb3vCv999/70/atmwegygxKVIiQCyVhV7O+9OHoJCtfkPI812SJrlTkJ+tN6K8jJAQUSkiFuFo+/Ztk5cte/SXZ555+qdtNEwdjKEHAKSU4o9+9N/+9TvXXnPvIw8vPbWnuzPyfY+JSAkjSVqVxPl4M4wMFhHHGY4igZETCCqtPI4Ho2j16jULvv/9m/586aWXvtUWcqoDHCcLZwGY1ALMYRq4b7vi4AUAmSttFRciHfj+zo998vLXPfboY9/t2N3BvucZAFR7DSxDIsAoaESEk5JGQRYWSUQ6wTshiJt5dD0QgbT8K49MCYLWWpm+nh7z7IqVXz3rjNM/RnRgmsBa+RgEPr/97U1fue32392w4bnnSoAQE5FmTqpSxamEyWtPJAcsJgOTEcoIAYTSqCoSoSbAuG1L2/jF9/3l1osvvvgDByMEOUAHs8VHBKAUgjqqyaAKXDPm4k3MDEh07m9u/e3PdrbvQk/7CRpcZHi1TfIuwyxojFGIorXWSnmatFboeR5prZWI6NjEio0hETb2ZEjQ2IVqMCccjWkVD5DWGrp7esyKZ1d84y1veeO5AMDNzfu8b7v4Ib/5LW/8r/+5509XtbVtib3AYwBUaTny8BAVASIwIBgRkaR0TkiEUUQMAhiqXIisjpoBhJXW2uxs34lLH7z/xksvfft7AMDYOMM+VoMYXVC0JDVhqeZM0sGjWBuY7FbJy2fzGUBSWrZt3zEHEEArj5NzEcCWgSeIhbx+QIhQl8plKVeFj1WVqh4eO7b2KfLweTI46JX96mhwaNburu6TosHBE7u69xzX29PrxyYGhdoAApGrAWxCKjsq7AwYNqSITG9Or35y+RPffPzxx8865ZRT+gH2Wq5InueZt73t4m/8+c/3/EtnZ3fkaV8ZY3AY+jzX7pLgwUV5WoPyFWite4koNszVcRTpKI4AmYWIWMQWckgK6U/rCJm0Vtyxu4OWLl36vauuumrNV7/61YddV3r4Dk5i/oJ50SxnaWBJI66jWRfAecWXrUBBt4zaIoEpgwxDVn1jIfwCIKA9TePq6n557NzZ373nnsWPElEkw/PIdyulII7j4LLLLjn+6aefuWhb27YPdHR2ThIRI2Brqa0y6kDyNBg4pQQADIqRzO6O3Sf91T+9//UAsJtUrnF/WlNTk2ptbzUf+PB/l1x//f6uXNmeBkCMt1YCd20QFYQNQmstNt/6LfxD+O/7fktJibUvAKB2Xan0DyulUgoGQRYOSz5SMI8E5JXyfV8AuO9Te/futTfeeOPhn//8x3Gzs7MnUkojhFgPw4IFLxHxP//zN3/60Y8+8PhjT3m5q6vjfM8DAI7jYLPFYjHq6+uzALBv3z6WLVs2rbWaq1evxt/93d/91Ec/+tHDbr311ttmAXtHR3dOIqK/vx8zM7M/Ll68+NVvfetbn6uqqt4fERk/TvYZasuykOINAAAAAElFTkSuQmCC" alt="ae">
+            <span>AEGNTIC</span>
+        </a>
+        <div class="nav-links">
+            <a href="#products">Products</a>
+            <a href="#services" class="hide-mobile">Services</a>
+            <a href="https://aegntic.ai" class="hide-mobile">Thesis</a>
+            <span class="nav-tag">Launch 50% off</span>
+        </div>
+    </div>
+</nav>
+
+<!-- Hero -->
+<section class="hero">
+    <div class="launch-badge">Launch pricing active — 50% off everything</div>
+    <h1 class="fd section-title" style="font-size:clamp(36px,6vw,56px);margin-bottom:0.75rem;">
+        Products &amp; tools for<br>builders who ship
+    </h1>
+    <p class="section-subtitle">
+        Eight live systems. Two commercial products. Full source, tests, and documentation.
+        Part of <a href="https://aegntic.ai" style="color:var(--teal);text-decoration:none;font-weight:500">the coordination layer</a> for persistent human–AI intelligence.
+    </p>
+    <div class="hero-ctas">
+        <a href="#products" class="btn btn-primary">Browse Products</a>
+        <a href="#services" class="btn btn-outline">See Services</a>
+    </div>
+</section>
+
+<!-- Stats -->
+<section style="padding:0 2rem 4rem">
+    <div class="container">
+        <div class="stats-row">
+            <div class="stat">
+                <div class="fd stat-val">203</div>
+                <div class="fm stat-label">GitHub repos</div>
+            </div>
+            <div class="stat">
+                <div class="fd stat-val">14</div>
+                <div class="fm stat-label">Rust crates</div>
+            </div>
+            <div class="stat">
+                <div class="fd stat-val">1,700+</div>
+                <div class="fm stat-label">Tests passing</div>
+            </div>
+            <div class="stat">
+                <div class="fd stat-val">98%+</div>
+                <div class="fm stat-label">Detection resistance</div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Products -->
+<section id="products">
+    <div class="container">
+        <div class="section-label">PRODUCTS</div>
+        <h2 class="fd section-title">What we built so you don't have to</h2>
+        <p class="section-subtitle">Every product maps to a core module. Open source where possible. Commercial where it makes sense. Full source, tests, and docs always included.</p>
+        <div class="product-grid">
+
+            <!-- aegnt-27 -->
+            <a href="https://aegnt27.com" target="_blank" class="pcard">
+                <div class="pcard-head">
+                    <span class="pcard-name">aegnt-27</span>
+                    <span class="pcard-tag tag-bronze">Authenticity</span>
+                </div>
+                <div class="pcard-desc">Human Authenticity Engine. 27 behavioral patterns with 98%+ AI detection resistance across GPTZero, Originality.ai, Turnitin.</div>
+                <div class="fm pcard-metric">Rust core · MCP · WASM · &lt;2ms latency</div>
+                <div class="pcard-footer">
+                    <span class="fd pcard-price">$297–$1,497<span style="font-size:0.75rem;color:var(--text-muted)">/mo</span></span>
+                    <span class="pcard-cta">View plans &rarr;</span>
+                </div>
+            </a>
+
+            <!-- clawREFORM -->
+            <a href="https://clawreform.com" target="_blank" class="pcard">
+                <div class="pcard-head">
+                    <span class="pcard-name">clawREFORM</span>
+                    <span class="pcard-tag tag-teal">Orchestration</span>
+                </div>
+                <div class="pcard-desc">Self-evolving Agent OS. 14 Rust crates, governed self-editing, observable audit chains, and wake-on-demand specialists.</div>
+                <div class="fm pcard-metric">14 crates · 6 layers · governed self-editing</div>
+                <div class="pcard-footer">
+                    <span class="fd pcard-price" style="color:var(--teal)">Early access</span>
+                    <span class="pcard-cta">Get access &rarr;</span>
+                </div>
+            </a>
+
+            <!-- Prologue -->
+            <a href="https://logue.pro" target="_blank" class="pcard">
+                <div class="pcard-head">
+                    <span class="pcard-name">Prologue</span>
+                    <span class="pcard-tag tag-teal">Continuity</span>
+                </div>
+                <div class="pcard-desc">AI Agent Memory Library. Dual-layer persistence, compression ladders, visibility boundaries, and FPEF v2.0 safety framework.</div>
+                <div class="fm pcard-metric">174 tests · 371 assertions · 1 dep</div>
+                <div class="pcard-footer">
+                    <span class="fd pcard-price" style="color:var(--teal)">Open source</span>
+                    <span class="pcard-cta">npm install &rarr;</span>
+                </div>
+            </a>
+
+            <!-- CLDCDE -->
+            <a href="https://cldcde.cc" target="_blank" class="pcard">
+                <div class="pcard-head">
+                    <span class="pcard-name">CLDCDE</span>
+                    <span class="pcard-tag tag-teal">Experiential Memory</span>
+                </div>
+                <div class="pcard-desc">Claude Code Dev Ecosystem. 40+ CLI shortcuts, real-time context monitoring, and a focused toolkit for AI-native developers.</div>
+                <div class="fm pcard-metric">40+ shortcuts · npm packages · CLI</div>
+                <div class="pcard-footer">
+                    <span class="fd pcard-price" style="color:var(--teal)">Free</span>
+                    <span class="pcard-cta">Install &rarr;</span>
+                </div>
+            </a>
+
+            <!-- prompt.fail -->
+            <a href="https://prompt.fail" target="_blank" class="pcard">
+                <div class="pcard-head">
+                    <span class="pcard-name">prompt-FaiL</span>
+                    <span class="pcard-tag tag-bronze">Sovereignty</span>
+                </div>
+                <div class="pcard-desc">Multi-model prompt testing. Compare outputs across Claude, GPT-4, Gemini, and LLaMA side by side. Rate and iterate.</div>
+                <div class="fm pcard-metric">4 models · 6 frameworks · instant compare</div>
+                <div class="pcard-footer">
+                    <span class="fd pcard-price" style="color:var(--teal)">Free</span>
+                    <span class="pcard-cta">Use now &rarr;</span>
+                </div>
+            </a>
+
+            <!-- 4site -->
+            <a href="https://4site.pro" target="_blank" class="pcard">
+                <div class="pcard-head">
+                    <span class="pcard-name">4site</span>
+                    <span class="pcard-tag tag-teal">Experiential Memory</span>
+                </div>
+                <div class="pcard-desc">GitHub repo to production website in under 30 seconds. AI-powered generation with premium templates and responsive design.</div>
+                <div class="fm pcard-metric">&lt;30s generation · deploy anywhere</div>
+                <div class="pcard-footer">
+                    <span class="fd pcard-price" style="color:var(--teal)">Free</span>
+                    <span class="pcard-cta">Generate &rarr;</span>
+                </div>
+            </a>
+
+            <!-- Obsidian Indexer -->
+            <a href="https://buy.stripe.com/cNi9AU4Ybapkc9uebf1B601?prefilled_promo_code=LAUNCH50" target="_blank" class="pcard">
+                <div class="pcard-head">
+                    <span class="pcard-name">Obsidian Indexer</span>
+                    <span class="pcard-tag tag-teal">Applied Layer</span>
+                </div>
+                <div class="pcard-desc">Starter Kit. The complete system for turning your Obsidian vault into an indexed, searchable knowledge base with ReasoningBank adaptive learning.</div>
+                <div class="fm pcard-metric">859+ tests · CLI · classification · sync</div>
+                <div class="pcard-footer">
+                    <span class="fd pcard-price"><span class="old">$44</span>$22</span>
+                    <span class="pcard-cta">Buy &rarr;</span>
+                </div>
+            </a>
+
+            <!-- Vault Audit -->
+            <a href="https://buy.stripe.com/00weVe8an2WSehC3wB1B602?prefilled_promo_code=LAUNCH50" target="_blank" class="pcard" style="border-color:var(--bronze-mid)">
+                <div class="pcard-head">
+                    <div>
+                        <span class="pcard-name">Vault Audit</span>
+                        <span style="font-size:10px;font-weight:600;color:var(--bronze);background:var(--bronze-light);padding:1px 6px;border-radius:3px;margin-left:0.4rem;vertical-align:middle">RECOMMENDED</span>
+                    </div>
+                    <span class="pcard-tag tag-bronze">Applied Layer</span>
+                </div>
+                <div class="pcard-desc">Personalized deep-dive into your Obsidian vault. Structure analysis, duplicate detection, tag optimization, and a prioritized action plan.</div>
+                <div class="fm pcard-metric">Includes Starter Kit · full report · custom pipeline</div>
+                <div class="pcard-footer">
+                    <span class="fd pcard-price"><span class="old">$220</span>$110</span>
+                    <span class="pcard-cta">Buy &rarr;</span>
+                </div>
+            </a>
+
+        </div>
+    </div>
+</section>
+
+<!-- Services -->
+<section id="services" style="background:var(--bg-card);border-top:1px solid var(--border);border-bottom:1px solid var(--border)">
+    <div class="container">
+        <div class="section-label">SERVICES</div>
+        <h2 class="fd section-title">Custom AI systems, built by one person who ships faster than your team of 10</h2>
+        <p class="section-subtitle">Every project is scoped, priced, and delivered individually. No cookie-cutter solutions.</p>
+        <div class="services-grid">
+
+            <div class="scard">
+                <div class="scard-name">Custom AI Agent Development</div>
+                <div class="scard-desc">Bespoke AI agent systems. Multi-agent orchestration, persistent memory, multi-channel automation, and integration with existing tools.</div>
+                <div class="fm scard-meta">From $10,000 · 2–8 weeks</div>
+                <a href="mailto:aegntic.limited@gmail.com?subject=AI%20Agent%20Development">Discuss &rarr;</a>
+            </div>
+
+            <div class="scard">
+                <div class="scard-name">AI Automation Systems</div>
+                <div class="scard-desc">Automate entire business workflows. Social media, customer support, data processing, report generation.</div>
+                <div class="fm scard-meta">From $5,000 · $2–5K/mo support</div>
+                <a href="mailto:aegntic.limited@gmail.com?subject=AI%20Automation">Discuss &rarr;</a>
+            </div>
+
+            <div class="scard">
+                <div class="scard-name">AI Strategy &amp; Architecture</div>
+                <div class="scard-desc">Technical consulting for teams navigating AI adoption. Architecture reviews, stack recommendations, build-vs-buy analysis, workshops.</div>
+                <div class="fm scard-meta">$300/hr · $2,500/day workshop</div>
+                <a href="mailto:aegntic.limited@gmail.com?subject=AI%20Strategy%20Consulting">Discuss &rarr;</a>
+            </div>
+
+            <div class="scard">
+                <div class="scard-name">Developer Tool Development</div>
+                <div class="scard-desc">Custom dev tools and internal platforms. VS Code extensions, CLI tools, dashboards, CI/CD automation.</div>
+                <div class="fm scard-meta">From $5,000</div>
+                <a href="mailto:aegntic.limited@gmail.com?subject=Developer%20Tool%20Development">Discuss &rarr;</a>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+<!-- Footer -->
+<footer>
+    <div class="footer-inner">
+        <div class="footer-links">
+            <a href="https://aegntic.ai">aegntic.ai</a>
+            <a href="https://aegnt27.com">aegnt-27</a>
+            <a href="https://clawreform.com">clawREFORM</a>
+            <a href="https://logue.pro">Prologue</a>
+            <a href="https://cldcde.cc">CLDCDE</a>
+            <a href="https://prompt.fail">prompt-FaiL</a>
+            <a href="https://4site.pro">4site</a>
+            <a href="https://services.aegntic.ai">Services</a>
+            <a href="https://x.com/AEGNTIC">X</a>
+            <a href="https://github.com/aegntic">GitHub</a>
+        </div>
+        <div class="footer-copy">
+            &copy; aegntic — Solo-built infrastructure for persistent intelligence.
+            <span style="margin:0 0.5rem">·</span>
+            <a href="https://aegntic.ai">Part of the coordination layer</a>
+        </div>
+    </div>
+</footer>
+
+</body>
+</html>
