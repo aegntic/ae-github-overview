@@ -65,8 +65,17 @@
         .nav-cta{background:#d9e0e3;color:var(--text-dark);padding:0.5rem 1rem;border-radius:999px;font-size:0.75rem;font-weight:400;transition:transform 0.2s,opacity 0.2s;pointer-events:auto;display:inline-flex;align-items:center;gap:0.5rem;white-space:nowrap}
         @media(min-width:768px){.nav-cta{padding:0.5rem 1.25rem;font-size:0.8125rem}}
         .nav-cta:hover{transform:scale(1.03);opacity:0.85}
-        .nav-menu-btn{background:var(--text-dark);color:#fff;padding:0.5rem 1rem;border-radius:999px;font-size:0.8125rem;font-weight:400;pointer-events:auto;display:inline-flex;align-items:center;gap:0.5rem;border:none;cursor:pointer}
-        .nav-menu-btn svg{width:16px;height:16px}
+        .nav-menu-btn{background:var(--text-dark);color:var(--bg);padding:0.125rem;border-radius:999px;font-size:0.8125rem;font-weight:500;pointer-events:auto;display:inline-flex;align-items:center;gap:0; border:none;cursor:pointer;transition:transform 500ms cubic-bezier(.22,.68,0,1);will-change:transform}
+        .nav-menu-btn:hover{transform:scale(1.1)}
+        .nav-menu-btn-text{color:var(--bg);font-size:0.8125rem;font-weight:500;text-transform:uppercase;padding:0.35rem 0.75rem 0.35rem 1rem;display:block;position:relative;overflow:hidden;height:1.25rem;line-height:1.25rem}
+        .nav-menu-btn-text span{display:block;transition:transform 500ms cubic-bezier(.22,.68,0,1.2)}
+        .nav-menu-btn-text .menu-close{position:absolute;top:0;left:50%;transform:translate(-50%,100%)}
+        .nav-menu-btn.open .nav-menu-btn-text .menu-label{transform:translateY(-100%)}
+        .nav-menu-btn.open .nav-menu-btn-text .menu-close{transform:translate(-50%,0)}
+        .nav-menu-btn-icon{background:#1e242c;border-radius:50%;width:28px;height:28px;display:flex;align-items:center;justify-content:center;margin-right:0.25rem;transition:transform 500ms cubic-bezier(.22,.68,0,1.5);will-change:transform}
+        .nav-menu-btn:hover .nav-menu-btn-icon{transform:rotate(90deg)}
+        .nav-menu-btn-icon svg{width:14px;height:6px;color:var(--bg)}
+        @media(min-width:1024px){.nav-menu-btn-icon{width:36px;height:36px;margin-right:0.35rem}.nav-menu-btn-icon svg{width:18px;height:8px}.nav-menu-btn-text{padding:0.4rem 1rem 0.4rem 1.25rem;font-size:0.875rem;height:1.35rem;line-height:1.35rem}}
         .nav-mobile-btn{display:none;background:none;border:none;font-size:1.25rem;cursor:pointer;pointer-events:auto}
         @media(max-width:1023px){
             .nav-links{display:none!important}
@@ -224,14 +233,48 @@
             <a href="https://github.com/aegntic" target="_blank" rel="noopener">GitHub</a>
         </div>
         <a href="https://tools.aegntic.ai" class="nav-cta" target="_blank">Enter the Layer</a>
-        <button class="nav-menu-btn" onclick="document.querySelector('.nav-links').classList.toggle('mobile-open')" aria-label="Menu">
-            <span>Menu</span>
-            <svg viewBox="0 0 24 24" fill="currentColor"><circle cx="6" cy="12" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="18" cy="12" r="2"/></svg>
+        <button class="nav-menu-btn" id="menuBtn" onclick="toggleMenu()" aria-label="Menu" aria-expanded="false" aria-controls="site-menu">
+            <span class="nav-menu-btn-text">
+                <span class="menu-label">Menu</span>
+                <span class="menu-close">Close</span>
+            </span>
+            <span class="nav-menu-btn-icon">
+                <svg viewBox="0 0 14 6" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="11.45" cy="3" r="2.55" fill="currentColor"/><circle cx="2.55" cy="3" r="2.55" fill="currentColor"/></svg>
+            </span>
         </button>
     </nav>
     <style>
-        .nav-links.mobile-open{display:flex;flex-direction:column;position:fixed;top:3.5rem;left:1rem;right:1rem;background:var(--bg);padding:1.5rem;border-radius:1rem;box-shadow:0 10px 40px rgba(0,0,0,0.1);gap:1rem;z-index:99}
+        #site-menu{position:fixed;top:3.5rem;left:1rem;right:1rem;z-index:98;pointer-events:none;opacity:0;transform:translateY(-10px);transition:opacity 300ms ease,transform 300ms ease,visibility 300ms;visibility:hidden}
+        #site-menu.open{pointer-events:auto;opacity:1;transform:translateY(0);visibility:visible}
+        .site-menu-inner{background:#d9e0e3;border-radius:1.5rem;padding:1.5rem;display:flex;flex-direction:column;gap:0.25rem}
+        @media(min-width:1024px){#site-menu{top:4.5rem;left:auto;right:3rem;width:320px}#site-menu.open{transform:translateY(0)}.site-menu-inner{padding:2rem;border-radius:1.5rem}}
+        .menu-link{display:flex;flex-direction:row;align-items:center;gap:0; color:var(--text-dark);font-size:1.75rem;font-weight:600;letter-spacing:-0.02em;text-decoration:none;padding:0.5rem 1rem;border-radius:1rem;transition:background-color 200ms ease-out;white-space:nowrap}
+        .menu-link:hover{background:#fff}
+        .menu-link-arrow{width:0;overflow:hidden;transition:width 300ms ease-out;display:flex;align-items:center;flex-shrink:0}
+        .menu-link:hover .menu-link-arrow{width:1.5rem}
+        .menu-link-arrow svg{width:100%;height:auto}
+        @media(min-width:1024px){.menu-link{font-size:2.5rem;padding:0.75rem 1.25rem}.menu-link:hover .menu-link-arrow{width:2rem}}
     </style>
+    <nav id="site-menu" aria-hidden="true">
+        <div class="site-menu-inner">
+            <a href="#hero" class="menu-link" onclick="closeMenu()">
+                <span class="menu-link-arrow"><svg viewBox="0 0 45 38" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M24.4 2L41.5 19.1L24.4 36.2M0 19.1H40.3" stroke="currentColor" stroke-width="4.9"/></svg></span>
+                <span>Home</span>
+            </a>
+            <a href="#work" class="menu-link" onclick="closeMenu()">
+                <span class="menu-link-arrow"><svg viewBox="0 0 45 38" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M24.4 2L41.5 19.1L24.4 36.2M0 19.1H40.3" stroke="currentColor" stroke-width="4.9"/></svg></span>
+                <span>Work</span>
+            </a>
+            <a href="#services" class="menu-link" onclick="closeMenu()">
+                <span class="menu-link-arrow"><svg viewBox="0 0 45 38" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M24.4 2L41.5 19.1L24.4 36.2M0 19.1H40.3" stroke="currentColor" stroke-width="4.9"/></svg></span>
+                <span>Services</span>
+            </a>
+            <a href="#contact" class="menu-link" onclick="closeMenu()">
+                <span class="menu-link-arrow"><svg viewBox="0 0 45 38" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M24.4 2L41.5 19.1L24.4 36.2M0 19.1H40.3" stroke="currentColor" stroke-width="4.9"/></svg></span>
+                <span>Contact</span>
+            </a>
+        </div>
+    </nav>
 
     <!-- HERO -->
     <section class="hero" id="hero">
@@ -459,6 +502,37 @@
             setTimeout(()=>{
                 document.getElementById('loader').classList.add('done');
             },600);
+        });
+
+        // Menu toggle
+        function toggleMenu(){
+            const btn=document.getElementById('menuBtn');
+            const menu=document.getElementById('site-menu');
+            const isOpen=menu.classList.contains('open');
+            if(isOpen){
+                closeMenu();
+            }else{
+                menu.classList.add('open');
+                menu.setAttribute('aria-hidden','false');
+                btn.classList.add('open');
+                btn.setAttribute('aria-expanded','true');
+            }
+        }
+        function closeMenu(){
+            const btn=document.getElementById('menuBtn');
+            const menu=document.getElementById('site-menu');
+            menu.classList.remove('open');
+            menu.setAttribute('aria-hidden','true');
+            btn.classList.remove('open');
+            btn.setAttribute('aria-expanded','false');
+        }
+        // Close menu on outside click
+        document.addEventListener('click',e=>{
+            const btn=document.getElementById('menuBtn');
+            const menu=document.getElementById('site-menu');
+            if(menu.classList.contains('open') && !btn.contains(e.target) && !menu.contains(e.target)){
+                closeMenu();
+            }
         });
 
         // Scroll reveal for CTA
