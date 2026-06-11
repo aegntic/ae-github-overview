@@ -82,24 +82,25 @@
         .panel{position:absolute;width:100vw;height:100dvh;display:flex;align-items:center;justify-content:center;overflow:hidden}
 
         /* NAV */
-        #nav{position:fixed;top:0;left:0;right:0;z-index:200;background:var(--surface-raised);border-bottom:1px solid var(--edge);height:54px;transition:background 0.4s,border-color 0.4s}
-        [data-theme="dark"] #nav{background:rgba(10,10,15,0.88);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px)}
+        #nav{position:fixed;top:0;left:0;right:0;z-index:200;background:rgba(240,246,248,0.82);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-bottom:1px solid var(--edge);height:54px;transition:background 0.4s,border-color 0.4s}
+        [data-theme="dark"] #nav{background:rgba(10,10,15,0.82);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px)}
         #nav-inner{max-width:80rem;margin:0 auto;padding:0 1.5rem;height:100%;display:flex;align-items:center;justify-content:space-between}
-        #nav-logo-link{display:flex;align-items:center;gap:0.6rem;text-decoration:none;color:inherit}
+        #nav-logo-link{display:flex;align-items:center;gap:0.6rem;text-decoration:none;color:inherit;transition:transform 0.3s cubic-bezier(0.22, 0.68, 0, 1)}
+        #nav-logo-link:hover{transform:scale(1.03)}
         #nav-logo{height:22px;width:auto}
         .nav-brand{font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:0.75rem;letter-spacing:-0.5px;color:var(--text)}
 
         /* THEME TOGGLE */
-        #theme-toggle{background:none;border:1px solid var(--edge);border-radius:6px;color:var(--text-muted);font-size:0.7rem;padding:0.35rem 0.5rem;cursor:pointer;transition:border-color 150ms,color 150ms;display:flex;align-items:center;gap:0.35rem}
-        #theme-toggle:hover{border-color:var(--text);color:var(--text)}
+        #theme-toggle{background:none;border:1px solid var(--edge);border-radius:6px;color:var(--text-muted);font-size:0.7rem;padding:0.35rem 0.5rem;cursor:pointer;transition:border-color 150ms,color 150ms,transform 0.3s cubic-bezier(0.22, 0.68, 0, 1);display:flex;align-items:center;gap:0.35rem}
+        #theme-toggle:hover{border-color:var(--text);color:var(--text);transform:scale(1.05)}
         #theme-toggle svg{width:14px;height:14px}
 
         /* DROPDOWN */
-        #menu-btn{display:flex;align-items:center;gap:0.45rem;background:none;border:1px solid var(--edge);border-radius:6px;color:var(--text-muted);font-size:0.7rem;font-family:'JetBrains Mono',monospace;letter-spacing:0.08em;text-transform:uppercase;padding:0.35rem 0.75rem;cursor:pointer;transition:border-color 150ms,color 150ms}
-        #menu-btn:hover{border-color:var(--text);color:var(--text)}
+        #menu-btn{display:flex;align-items:center;gap:0.45rem;background:none;border:1px solid var(--edge);border-radius:6px;color:var(--text-muted);font-size:0.7rem;font-family:'JetBrains Mono',monospace;letter-spacing:0.08em;text-transform:uppercase;padding:0.35rem 0.75rem;cursor:pointer;transition:border-color 150ms,color 150ms,transform 0.3s cubic-bezier(0.22, 0.68, 0, 1)}
+        #menu-btn:hover{border-color:var(--text);color:var(--text);transform:scale(1.05)}
         #menu-btn svg{transition:transform 300ms cubic-bezier(0.23,1,0.32,1)}
         #menu-btn.open svg{transform:rotate(180deg)}
-        #menu-dropdown{position:absolute;top:calc(100% + 6px);right:0;background:var(--surface-raised);border:1px solid var(--edge);border-radius:8px;min-width:210px;padding:0.4rem;opacity:0;visibility:hidden;transform:translateY(-8px) scale(0.96);transition:opacity 200ms ease,transform 200ms ease,visibility 200ms;box-shadow:0 8px 30px rgba(0,0,0,0.08)}
+        #menu-dropdown{position:absolute;top:calc(100% + 6px);right:0;background:var(--surface-raised);border:1px solid var(--edge);border-radius:8px;min-width:210px;padding:0.4rem;opacity:0;visibility:hidden;transform:translateY(-8px) scale(0.96);transition:opacity 300ms cubic-bezier(0.34, 1.56, 0.64, 1),transform 300ms cubic-bezier(0.34, 1.56, 0.64, 1),visibility 300ms;box-shadow:0 8px 30px rgba(0,0,0,0.08)}
         [data-theme="dark"] #menu-dropdown{background:rgba(3,3,3,0.97);box-shadow:0 8px 30px rgba(0,0,0,0.4)}
         #menu-dropdown.open{opacity:1;visibility:visible;transform:translateY(0) scale(1)}
         .menu-item{display:flex;align-items:center;gap:0.65rem;padding:0.55rem 0.75rem;border-radius:8px;cursor:pointer;transition:background 150ms;text-decoration:none;color:inherit}
@@ -181,12 +182,12 @@
             .prim-body{transition:none}
         }
         @media(min-width:1024px){
-            #hero-headline-span{width:93vw!important}
+            #hero-headline-span, #hero-brand-span{width:93vw!important}
         }
         @media(max-width:768px){
             .panel{padding:0 1rem}
             .inner{max-width:100%!important}
-            #hero-headline-span{width:85vw}
+            #hero-headline-span, #hero-brand-span{width:85vw}
         }
 
         /* Hero visual anchor / 3D render styling */
@@ -201,7 +202,7 @@
             pointer-events: none;
             mix-blend-mode: screen;
             opacity: 0.85;
-            transition: opacity 0.4s, filter 0.4s;
+            transition: opacity 500ms cubic-bezier(0.23,1,0.32,1), transform 500ms cubic-bezier(0.23,1,0.32,1), filter 0.4s;
         }
         @media(min-width:1024px){
             .hero-render {
@@ -303,10 +304,16 @@
         <img src="glass_sculpture_render.png" class="hero-render reveal" alt="Aegntic Render">
         <!-- SOHub headline cluster: bottom 13%, -right 13% (intentional right overflow), gap 24px -->
         <div class="reveal" style="position:absolute;bottom:13%;right:-13%;z-index:2;display:flex;flex-direction:column;gap:24px">
+            <!-- Giant brand text mimicking SOHub logo -->
+            <span style="display:block;width:85vw" id="hero-brand-span">
+                <div class="fd" style="font-size:clamp(64px,11.5vw,144px);font-weight:700;line-height:0.85;letter-spacing:-0.065em;color:var(--text);text-transform:lowercase;margin:0">
+                    aegntic
+                </div>
+            </span>
             <!-- Headline span: 93vw wide at large screens, 85vw on smaller — text crops on right edge -->
             <span style="display:block;width:85vw" id="hero-headline-span">
-                <h1 style="font-family:'Inter','Inter Fallback',-apple-system,BlinkMacSystemFont,sans-serif;font-size:clamp(42px,5.6vw,56px);font-weight:600;line-height:1.0;letter-spacing:-0.075em;color:var(--text);margin:0">
-                    What if intelligence<br>could persist?
+                <h1 style="font-family:'Inter','Inter Fallback',-apple-system,BlinkMacSystemFont,sans-serif;font-size:clamp(22px,3.2vw,36px);font-weight:600;line-height:1.1;letter-spacing:-0.05em;color:var(--text);margin:0;max-width:680px">
+                    What if intelligence could persist?
                 </h1>
             </span>
             <p style="font-size:clamp(14px,1.4vw,18px);line-height:1.5;color:var(--text-secondary);max-width:480px;margin:0">
