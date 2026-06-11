@@ -55,48 +55,42 @@
         }
 
         /* ── NAV ── */
-        .nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:1.25rem 1rem;display:flex;align-items:center;justify-content:space-between}
+        .nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:1.25rem 1rem;display:flex;align-items:center;justify-content:space-between;pointer-events:none}
         @media(min-width:1024px){.nav{padding:1.5rem 3rem}}
-        .nav-logo{font-weight:600;font-size:0.875rem;letter-spacing:-0.02em;color:var(--text-dark)}
-        .nav-links{display:flex;align-items:center;gap:2rem;font-size:0.8125rem;font-weight:500}
+        .nav-logo{font-weight:600;font-size:0.875rem;letter-spacing:-0.02em;color:var(--text-dark);pointer-events:auto}
+        .nav-links{display:none;align-items:center;gap:2rem;font-size:0.8125rem;font-weight:500;pointer-events:auto}
+        @media(min-width:1024px){.nav-links{display:flex}}
         .nav-links a{opacity:0.6;transition:opacity 0.2s}
         .nav-links a:hover{opacity:1}
-        .nav-cta{background:var(--text-dark);color:var(--bg);padding:0.5rem 1.25rem;border-radius:999px;font-size:0.8125rem;font-weight:500;transition:transform 0.2s,opacity 0.2s}
-        .nav-cta:hover{transform:scale(1.03);opacity:0.9}
-        @media(max-width:767px){.nav-cta{padding:0.4rem 0.75rem;font-size:0.7rem}}
-        .nav-mobile-btn{display:none;background:none;border:none;font-size:1.25rem;cursor:pointer}
-        @media(max-width:768px){
-            .nav-links{display:none}
-            .nav-mobile-btn{display:block}
+        .nav-cta{background:#d9e0e3;color:var(--text-dark);padding:0.5rem 1.25rem;border-radius:999px;font-size:0.8125rem;font-weight:400;transition:transform 0.2s,opacity 0.2s;pointer-events:auto;display:inline-flex;align-items:center;gap:0.5rem}
+        .nav-cta:hover{transform:scale(1.03);opacity:0.85}
+        .nav-menu-btn{background:var(--text-dark);color:#fff;padding:0.5rem 1rem;border-radius:999px;font-size:0.8125rem;font-weight:400;pointer-events:auto;display:inline-flex;align-items:center;gap:0.5rem;border:none;cursor:pointer}
+        .nav-menu-btn svg{width:16px;height:16px}
+        .nav-mobile-btn{display:none;background:none;border:none;font-size:1.25rem;cursor:pointer;pointer-events:auto}
+        @media(max-width:1023px){
+            .nav-links{display:none!important}
+            .nav-cta{display:none}
         }
 
         /* ── HERO ── */
-        .hero{position:relative;width:100vw;height:40vh;min-height:320px;overflow:hidden}
-        @media(min-width:1024px){.hero{height:100dvh;min-height:600px}}
-        .hero-image{position:absolute;right:5%;bottom:12%;width:28vw;max-width:120px;z-index:1;animation:float 5s ease-in-out infinite,heroFadeIn 0.6s ease-out 0.3s forwards;opacity:0}
-        @media(min-width:768px){.hero-image{right:10%;width:26vw;max-width:220px;bottom:8%}}
-        @media(min-width:1024px){.hero-image{right:20%;width:26vw;max-width:380px;bottom:5%}}
-        @media(min-width:1280px){.hero-image{right:31%}}
-        .hero-image img{width:100%;height:auto;object-fit:contain}
+        .hero{position:relative;width:100vw;height:100dvh;min-height:600px;overflow:hidden}
+        .hero-render{position:absolute;inset:0;z-index:1;display:flex;align-items:center;justify-content:center;animation:heroImgIn 1s cubic-bezier(0.22,0.68,0,1) 0.3s both}
+        .hero-render svg{width:min(60vw,700px);height:auto;max-height:70vh;animation:float 6s ease-in-out infinite}
+        @media(min-width:1024px){.hero-render svg{width:min(50vw,800px)}}
 
-        .hero-content{position:absolute;bottom:0;left:0;right:0;padding:0 1rem 2rem;z-index:2}
-        @media(min-width:768px){.hero-content{padding:0 2rem 3rem}}
-        @media(min-width:1024px){.hero-content{padding:0 3rem 13vh;left:12rem}}
-        @media(min-width:1280px){.hero-content{left:16rem}}
+        .hero-watermark{position:absolute;inset:0;z-index:0;display:flex;align-items:center;justify-content:center;pointer-events:none;user-select:none}
+        .hero-watermark span{font-weight:700;font-size:clamp(8rem,22vw,18rem);letter-spacing:-0.04em;color:var(--text-dark);opacity:0.04;line-height:0.85;white-space:nowrap}
 
-        .hero-headline{font-size:clamp(2rem,5.5vw,3.5rem);font-weight:600;line-height:1.05;letter-spacing:-0.025em;color:var(--text-dark);max-width:90vw;opacity:0;animation:heroFadeIn 0.8s ease-out 0.1s forwards}
-        @media(min-width:1024px){.hero-headline{font-size:3.5rem;max-width:80vw}}
+        .hero-content{position:absolute;bottom:2.5rem;left:0;right:0;padding:0 1rem 0;z-index:2}
+        @media(min-width:768px){.hero-content{padding:0 2rem 0;bottom:3rem}}
+        @media(min-width:1024px){.hero-content{padding:0 3rem 0;bottom:13vh;left:3rem}}
+        @media(min-width:1280px){.hero-content{left:3rem}}
 
-        .hero-headline-line{display:block;overflow:hidden;white-space:nowrap}
-        @media(max-width:767px){.hero-headline-line{white-space:normal;overflow:visible}}
-        .hero-headline-line:nth-child(1){animation:lineReveal 0.8s ease-out 0.2s both}
-        .hero-headline-line:nth-child(2){animation:lineReveal 0.8s ease-out 0.4s both}
+        .hero-headline{font-size:clamp(1.5rem,3vw,2.25rem);font-weight:600;line-height:1.1;letter-spacing:-0.02em;color:var(--text-dark);max-width:18ch;opacity:0;animation:heroFadeIn 0.8s ease-out 0.5s forwards}
 
-        .hero-scroll{position:absolute;left:1rem;bottom:0.75rem;z-index:2;font-size:0.875rem;font-weight:600;color:var(--text-muted);opacity:0;animation:scrollPulse 3s ease-in-out infinite,heroFadeIn 0.6s ease-out 0.6s forwards}
-        @media(min-width:768px){.hero-scroll{font-size:1.125rem;bottom:1rem}}
-        @media(min-width:1024px){.hero-scroll{left:3rem;bottom:13%;font-size:1.875rem}}
-
-        .hero-watermark{position:absolute;top:1.5rem;right:2rem;z-index:1;font-family:'Inter',sans-serif;font-weight:600;font-size:0.75rem;letter-spacing:0.1em;color:var(--text-muted);opacity:0.15;text-transform:uppercase}
+        .hero-scroll{position:absolute;left:1rem;bottom:0.5rem;z-index:2;font-size:0.875rem;font-weight:500;color:var(--text-muted);opacity:0;animation:scrollPulse 3s ease-in-out infinite,heroFadeIn 0.6s ease-out 0.8s forwards}
+        @media(min-width:768px){.hero-scroll{bottom:0.75rem}}
+        @media(min-width:1024px){.hero-scroll{left:3rem;bottom:5%;font-size:1rem}}
 
         /* ── SECTION LABELS ── */
         .section-label{font-size:0.75rem;font-weight:500;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-muted);margin-bottom:1.5rem}
@@ -114,6 +108,10 @@
         .work-item{position:relative;border-radius:1.5rem;overflow:hidden;aspect-ratio:16/9;background:var(--surface-1);transition:transform 0.3s ease}
         @media(min-width:1024px){.work-item{border-radius:2rem}}
         .work-item:hover{transform:scale(1.02)}
+        .work-row-2{display:flex;flex-direction:column;gap:1.5rem}
+        @media(min-width:768px){.work-row-2{flex-direction:row}}
+        .work-item-half{aspect-ratio:4/3}
+        @media(min-width:768px){.work-item-half{flex:1}}
         .work-item img{width:100%;height:100%;object-fit:cover;opacity:0.85;transition:opacity 0.3s}
         .work-item:hover img{opacity:1}
 
@@ -199,7 +197,7 @@
 
     <!-- NAV -->
     <nav class="nav">
-        <a href="#" class="nav-logo">AEGNTIC</a>
+        <a href="#" class="nav-logo">aegntic</a>
         <div class="nav-links">
             <a href="#work">Work</a>
             <a href="#services">Services</a>
@@ -207,7 +205,10 @@
             <a href="https://github.com/aegntic" target="_blank" rel="noopener">GitHub</a>
         </div>
         <a href="https://tools.aegntic.ai" class="nav-cta" target="_blank">Enter the Layer</a>
-        <button class="nav-mobile-btn" onclick="document.querySelector('.nav-links').classList.toggle('mobile-open')" aria-label="Menu">&#9776;</button>
+        <button class="nav-menu-btn" onclick="document.querySelector('.nav-links').classList.toggle('mobile-open')" aria-label="Menu">
+            <span>Menu</span>
+            <svg viewBox="0 0 24 24" fill="currentColor"><circle cx="6" cy="12" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="18" cy="12" r="2"/></svg>
+        </button>
     </nav>
     <style>
         .nav-links.mobile-open{display:flex;flex-direction:column;position:fixed;top:3.5rem;left:1rem;right:1rem;background:var(--bg);padding:1.5rem;border-radius:1rem;box-shadow:0 10px 40px rgba(0,0,0,0.1);gap:1rem;z-index:99}
@@ -215,17 +216,67 @@
 
     <!-- HERO -->
     <section class="hero" id="hero">
-        <div class="hero-image" id="heroRender">
-            <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 540' fill='none'%3E%3Crect width='400' height='540' fill='%23f0f6f8'/%3E%3Ccircle cx='200' cy='250' r='120' fill='url(%23a)' opacity='0.8'/%3E%3Ccircle cx='280' cy='180' r='80' fill='url(%23b)' opacity='0.6'/%3E%3Ccircle cx='140' cy='320' r='60' fill='url(%23c)' opacity='0.5'/%3E%3Cpath d='M200 130 L200 370' stroke='%2311181c' stroke-width='1' opacity='0.15'/%3E%3Cpath d='M80 250 L320 250' stroke='%2311181c' stroke-width='1' opacity='0.15'/%3E%3Cpath d='M120 170 L280 330' stroke='%2311181c' stroke-width='1' opacity='0.1'/%3E%3Cpath d='M280 170 L120 330' stroke='%2311181c' stroke-width='1' opacity='0.1'/%3E%3Cdefs%3E%3CradialGradient id='a' cx='0' cy='0' r='1' gradientUnits='userSpaceOnUse' gradientTransform='translate(200 250) rotate(90) scale(120)'%3E%3Cstop stop-color='%2300b39e' stop-opacity='0.3'/%3E%3Cstop offset='1' stop-color='%2300b39e' stop-opacity='0'/%3E%3C/radialGradient%3E%3CradialGradient id='b' cx='0' cy='0' r='1' gradientUnits='userSpaceOnUse' gradientTransform='translate(280 180) rotate(90) scale(80)'%3E%3Cstop stop-color='%23b38b5e' stop-opacity='0.25'/%3E%3Cstop offset='1' stop-color='%23b38b5e' stop-opacity='0'/%3E%3C/radialGradient%3E%3CradialGradient id='c' cx='0' cy='0' r='1' gradientUnits='userSpaceOnUse' gradientTransform='translate(140 320) rotate(90) scale(60)'%3E%3Cstop stop-color='%2300b39e' stop-opacity='0.2'/%3E%3Cstop offset='1' stop-color='%2300b39e' stop-opacity='0'/%3E%3C/radialGradient%3E%3C/defs%3E%3C/svg%3E" alt="Aegntic Coordination Layer">
+        <div class="hero-watermark"><span>aegntic</span></div>
+        <div class="hero-render">
+            <svg viewBox="0 0 600 700" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <!-- Transparent background, no fill rect -->
+                <!-- Grid lines -->
+                <g opacity="0.06">
+                    <path d="M0 100h600M0 200h600M0 300h600M0 400h600M0 500h600M0 600h600" stroke="#11181c" stroke-width="0.5"/>
+                    <path d="M100 0v700M200 0v700M300 0v700M400 0v700M500 0v700" stroke="#11181c" stroke-width="0.5"/>
+                </g>
+                <!-- Outer orbital ring -->
+                <ellipse cx="300" cy="350" rx="220" ry="260" stroke="#11181c" stroke-width="0.5" opacity="0.08"/>
+                <!-- Connection lines from center -->
+                <g stroke="#11181c" stroke-width="0.8" opacity="0.12">
+                    <path d="M300 350 L300 120"/><path d="M300 350 L480 250"/><path d="M300 350 L480 450"/><path d="M300 350 L300 580"/><path d="M300 350 L120 450"/><path d="M300 350 L120 250"/>
+                </g>
+                <!-- Inner hexagon frame -->
+                <path d="M300 180 L430 255 L430 405 L300 480 L170 405 L170 255 Z" stroke="#11181c" stroke-width="1" opacity="0.1" fill="none"/>
+                <!-- Central core glow -->
+                <circle cx="300" cy="350" r="90" fill="url(#coreGlow)" opacity="0.6"/>
+                <!-- Central core -->
+                <circle cx="300" cy="350" r="55" fill="#11181c"/>
+                <circle cx="300" cy="350" r="45" fill="url(#coreGrad)"/>
+                <!-- Core detail rings -->
+                <circle cx="300" cy="350" r="35" stroke="#00b39e" stroke-width="1.5" opacity="0.7" fill="none"/>
+                <circle cx="300" cy="350" r="25" stroke="#b38b5e" stroke-width="1" opacity="0.5" fill="none"/>
+                <!-- Orbital nodes -->
+                <g>
+                    <circle cx="300" cy="120" r="18" fill="#11181c"/><circle cx="300" cy="120" r="12" fill="#00b39e" opacity="0.8"/>
+                    <circle cx="480" cy="250" r="14" fill="#11181c"/><circle cx="480" cy="250" r="9" fill="#b38b5e" opacity="0.7"/>
+                    <circle cx="480" cy="450" r="16" fill="#11181c"/><circle cx="480" cy="450" r="10" fill="#00b39e" opacity="0.6"/>
+                    <circle cx="300" cy="580" r="20" fill="#11181c"/><circle cx="300" cy="580" r="13" fill="#b38b5e" opacity="0.7"/>
+                    <circle cx="120" cy="450" r="15" fill="#11181c"/><circle cx="120" cy="450" r="10" fill="#00b39e" opacity="0.6"/>
+                    <circle cx="120" cy="250" r="17" fill="#11181c"/><circle cx="120" cy="250" r="11" fill="#b38b5e" opacity="0.8"/>
+                </g>
+                <!-- Small connector dots along lines -->
+                <g fill="#11181c" opacity="0.2">
+                    <circle cx="300" cy="235" r="3"/><circle cx="390" cy="300" r="2.5"/><circle cx="390" cy="400" r="3"/>
+                    <circle cx="300" cy="465" r="2.5"/><circle cx="210" cy="400" r="3"/><circle cx="210" cy="300" r="2.5"/>
+                </g>
+                <!-- Floating geometric accent -->
+                <rect x="260" y="310" width="80" height="80" rx="12" stroke="#00b39e" stroke-width="1" opacity="0.25" fill="none" transform="rotate(45 300 350)"/>
+                <rect x="275" y="325" width="50" height="50" rx="8" stroke="#b38b5e" stroke-width="0.8" opacity="0.2" fill="none" transform="rotate(45 300 350)"/>
+                <!-- Bottom architectural bar -->
+                <rect x="220" y="620" width="160" height="4" rx="2" fill="#11181c" opacity="0.15"/>
+                <rect x="250" y="630" width="100" height="2" rx="1" fill="#11181c" opacity="0.1"/>
+                <defs>
+                    <radialGradient id="coreGlow" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(300 350) rotate(90) scale(90)">
+                        <stop stop-color="#00b39e" stop-opacity="0.2"/>
+                        <stop offset="1" stop-color="#00b39e" stop-opacity="0"/>
+                    </radialGradient>
+                    <radialGradient id="coreGrad" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(300 350) rotate(90) scale(45)">
+                        <stop stop-color="#1a252e"/>
+                        <stop offset="1" stop-color="#0c1016"/>
+                    </radialGradient>
+                </defs>
+            </svg>
         </div>
         <div class="hero-content">
-            <h1 class="hero-headline">
-                <span class="hero-headline-line">What if intelligence</span>
-                <span class="hero-headline-line">could persist?</span>
-            </h1>
+            <h1 class="hero-headline">The coordination layer<br>for persistent intelligence.</h1>
         </div>
         <span class="hero-scroll">Scroll</span>
-        <span class="hero-watermark">AE</span>
     </section>
 
     <!-- WORK -->
@@ -242,13 +293,13 @@
                 <div class="work-item-overlay"></div>
                 <span class="work-item-title">aegnt-27</span>
             </a>
-            <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem">
-                <a href="https://cldcde.cc" target="_blank" rel="noopener" class="work-item" style="aspect-ratio:4/3">
+            <div class="work-row-2">
+                <a href="https://cldcde.cc" target="_blank" rel="noopener" class="work-item work-item-half">
                     <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 800 600' fill='none'%3E%3Crect width='800' height='600' fill='%23161920'/%3E%3Ctext x='40' y='120' fill='%23fff' font-family='Inter' font-size='64' font-weight='600'%3ECLDCDE%3C/text%3E%3Ctext x='40' y='170' fill='%23a5abad' font-family='Inter' font-size='20'%3EClaude Code Ecosystem%3C/text%3E%3C/svg%3E" alt="CLDCDE">
                     <div class="work-item-overlay"></div>
                     <span class="work-item-title">CLDCDE</span>
                 </a>
-                <a href="https://logue.pro" target="_blank" rel="noopener" class="work-item" style="aspect-ratio:4/3">
+                <a href="https://logue.pro" target="_blank" rel="noopener" class="work-item work-item-half">
                     <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 800 600' fill='none'%3E%3Crect width='800' height='600' fill='%231a1e24'/%3E%3Ctext x='40' y='120' fill='%23fff' font-family='Inter' font-size='64' font-weight='600'%3ELOGUE%3C/text%3E%3Ctext x='40' y='170' fill='%23a5abad' font-family='Inter' font-size='20'%3EAgent Memory Library%3C/text%3E%3C/svg%3E" alt="Logue">
                     <div class="work-item-overlay"></div>
                     <span class="work-item-title">Logue</span>
