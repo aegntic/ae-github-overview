@@ -123,8 +123,6 @@
         @media(min-width:1024px){.intro-meta{position:sticky;top:6rem}}
         .intro-eyebrow{font-size:0.75rem;font-weight:500;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-muted);display:flex;align-items:center;gap:0.625rem}
         .intro-eyebrow::before{content:"";width:1.75rem;height:1px;background:var(--text-muted);opacity:0.5}
-        .intro-author{font-size:0.9375rem;color:var(--text-dark);font-weight:500;line-height:1.4}
-        .intro-author span{display:block;color:var(--text-muted);font-weight:400;font-size:0.8125rem;margin-top:0.125rem}
         .intro-body{display:flex;flex-direction:column;gap:1.75rem}
         .intro-lead{font-family:'Space Grotesk','Inter',sans-serif;font-size:clamp(1.5rem,3.2vw,2.75rem);font-weight:500;letter-spacing:-0.025em;line-height:1.18;color:var(--text-dark);max-width:22ch}
         .intro-lead em{font-style:normal;color:var(--accent,#00b39f)}
@@ -132,11 +130,9 @@
         .intro-prose p{margin:0}
         .intro-prose p+p{margin-top:1.25rem}
         .intro-prose strong{color:var(--text-dark);font-weight:600}
-        .intro-sig{display:flex;align-items:center;gap:1rem;margin-top:0.5rem;padding-top:2rem;border-top:1px solid rgba(17,24,28,0.08)}
-        .intro-sig-mark{height:2.5rem;width:auto;display:block}
-        @media(min-width:1024px){.intro-sig-mark{height:3rem}}
-        .intro-sig-label{font-size:0.75rem;color:var(--text-muted);letter-spacing:0.04em;line-height:1.4}
-        .intro-sig-label span{display:block;color:var(--text-dark);font-weight:500;text-transform:none;letter-spacing:0;font-size:0.875rem;margin-top:0.125rem}
+        .intro-sig{margin-top:0.5rem;padding-top:2rem;border-top:1px solid rgba(17,24,28,0.08)}
+        .intro-tagline{font-family:'Space Grotesk','Inter',sans-serif;font-size:clamp(1rem,1.4vw,1.25rem);font-weight:500;letter-spacing:-0.01em;line-height:1.4;color:var(--text-dark);margin:0}
+        .intro-tagline strong{font-weight:600;color:var(--text-dark)}
 
         /* ── WORK ── */
         .work{padding:6rem 1rem 4rem}
@@ -316,17 +312,15 @@
         <div class="intro-grid">
             <div class="intro-meta">
                 <div class="intro-eyebrow">Why this exists</div>
-                <div class="intro-author">Written by the team behind aegntic<span>Open source · built in the open · figuring it out as we go</span></div>
             </div>
             <div class="intro-body">
-                <p class="intro-lead">Intelligence without memory is novelty. <em>Coordination without authenticity is theater.</em> We are trying to build the layer that makes both persistent.</p>
+                <p class="intro-lead">Intelligence without memory is novelty. <em>Coordination without authenticity is theater.</em></p>
                 <div class="intro-prose">
-                    <p>The current generation of AI tooling optimizes for a single convincing response. Every agent starts from zero. Every conversation forgets. Every identity can be spoofed. The infrastructure assumed intelligence was the hard part. It wasn't. <strong>Persistence, provenance, and trust</strong> are the hard parts, and almost nobody is building for them.</p>
-                    <p>This is our attempt. Repositories across orchestration, authenticity, continuity, sovereignty, and experiential memory. Some of it ships. Some of it is still experiment. We would rather build openly, get it wrong in public, and learn what actually holds than promise a finished system that does not exist yet.</p>
+                    <p>Current AI tooling optimizes for isolated, stateless responses. Agents reset with each interaction. Conversations carry no continuity. Identities can be fabricated without friction. The underlying assumption was that generating convincing output was the primary challenge. It was not. <strong>Persistence, provenance, and verifiable coordination across time and agents</strong> are the primary challenges.</p>
+                    <p>This work builds the coordination layer for persistent human and machine intelligence. Public repositories address orchestration, authenticity, continuity, sovereignty, and experiential memory. Components are released as they demonstrate stability. Experiments remain visible so the distinction between what holds and what does not stays explicit.</p>
                 </div>
                 <div class="intro-sig">
-                    <img src="ae-logo.webp" alt="aegntic" class="intro-sig-mark">
-                    <div class="intro-sig-label">Aegntic<span>The coordination layer for persistent human and AI intelligence systems.</span></div>
+                    <p class="intro-tagline"><strong>AEGNTIC:</strong> Autonomous Evolving human + machine intelligence that lasts.</p>
                 </div>
             </div>
         </div>
