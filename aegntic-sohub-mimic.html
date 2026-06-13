@@ -141,7 +141,7 @@
         @media(min-width:1280px){.services{padding:8rem 5rem}}
 
         .services-stack{position:relative;display:flex;flex-direction:column;gap:1.5rem}
-        @media(min-width:1024px){.services-stack{gap:0;min-height:calc(4 * 6rem + 100vh * 0.45)}}
+        @media(min-width:1024px){.services-stack{gap:0;min-height:calc(5 * 6rem + 100vh * 0.55)}}
 
         .service-card{border-radius:var(--radius);padding:2.5rem 1.5rem;display:flex;flex-direction:column;justify-content:space-between;gap:2rem;min-height:320px;position:relative}
         @media(min-width:1024px){
@@ -150,18 +150,21 @@
             .service-card:nth-child(2){top:5rem;z-index:2}
             .service-card:nth-child(3){top:10rem;z-index:3}
             .service-card:nth-child(4){top:15rem;z-index:4}
+            .service-card:nth-child(5){top:20rem;z-index:5}
         }
         @media(min-width:1280px){
             .service-card{padding:4rem 3rem}
             .service-card:nth-child(2){top:6rem;z-index:2}
             .service-card:nth-child(3){top:12rem;z-index:3}
             .service-card:nth-child(4){top:18rem;z-index:4}
+            .service-card:nth-child(5){top:24rem;z-index:5}
         }
 
         .service-card:nth-child(1){background:var(--surface-1);color:#fff}
         .service-card:nth-child(2){background:var(--surface-2);color:#fff}
         .service-card:nth-child(3){background:var(--surface-3);color:#fff}
         .service-card:nth-child(4){background:var(--surface-4);color:#fff}
+        .service-card:nth-child(5){background:#6b7075;color:#fff}
 
         .service-title{font-size:clamp(2rem,5vw,3.5rem);font-weight:600;letter-spacing:-0.02em;line-height:1}
         @media(min-width:1024px){.service-title{font-size:clamp(3rem,6vw,5rem)}}
@@ -403,6 +406,17 @@
                     <span class="service-tag">Experiential</span>
                 </div>
             </div>
+            <div class="service-card">
+                <div>
+                    <h3 class="service-title">Experiential Memory</h3>
+                    <p class="service-desc">Build personal context over time through lived interactions. Intelligence that compounds experience into understanding. The bridge between knowing and having lived.</p>
+                </div>
+                <div class="service-tags">
+                    <span class="service-tag">Context Engine</span>
+                    <span class="service-tag">Learning</span>
+                    <span class="service-tag">Temporal</span>
+                </div>
+            </div>
         </div>
     </section>
 
@@ -511,9 +525,10 @@
             if(stack){
                 const totalCards=cards.length;
                 const cardPeek=5; // rem between cards
-                const scrollPerCard=window.innerHeight*0.35;
+                const cardH=cards[0].offsetHeight;
+                const scrollPerCard=cardH; // scroll one full card height per card
                 const totalScroll=scrollPerCard*(totalCards-1);
-                stack.style.height=totalScroll+cards[0].offsetHeight+'px';
+                stack.style.height=totalScroll+cardH+'px';
 
                 cards.forEach((card,i)=>{
                     card.style.position='sticky';
