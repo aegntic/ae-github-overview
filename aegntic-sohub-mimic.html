@@ -21,6 +21,9 @@
             --surface-4:#50555a;
             --radius:3rem;
             --radius-lg:3.25rem;
+            --ease-spring:cubic-bezier(.22,.68,0,1);
+            --ease-overshoot:cubic-bezier(.22,.68,0,1.2);
+            --ease-strong:cubic-bezier(.22,.68,0,1.5);
         }
         html{scroll-behavior:smooth}
         body{font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--text);line-height:1.5;font-size:16px;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;overflow-x:hidden}
@@ -30,8 +33,12 @@
 
         /* ── ANIMATIONS ── */
         @keyframes float{
-            0%,100%{transform:translateY(0)}
-            50%{transform:translateY(-1rem)}
+            0%,100%{transform:translateY(0) scaleX(-1)}
+            50%{transform:translateY(-1rem) scaleX(-1)}
+        }
+        @keyframes floatSlow{
+            0%,100%{transform:translateY(0) rotate(0deg)}
+            50%{transform:translateY(-0.75rem) rotate(1deg)}
         }
         @keyframes heroFadeIn{
             from{opacity:0;transform:translateY(30px)}
@@ -45,9 +52,9 @@
             0%,100%{opacity:0.25}
             50%{opacity:0.55}
         }
-        @keyframes lineReveal{
-            from{clip-path:inset(0 100% 0 0)}
-            to{clip-path:inset(0 0 0 0)}
+        @keyframes scrollArrow{
+            0%,100%{transform:translateY(0)}
+            50%{transform:translateY(4px)}
         }
         @keyframes marquee{
             0%{transform:translateX(0)}
@@ -57,55 +64,51 @@
         /* ── NAV ── */
         .nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:1.25rem 1rem;display:flex;align-items:center;justify-content:space-between;pointer-events:none}
         @media(min-width:1024px){.nav{padding:1.5rem 3rem}}
-        .nav-logo{font-weight:600;font-size:0.875rem;letter-spacing:-0.02em;color:var(--text-dark);pointer-events:auto}
-        .nav-links{display:none;align-items:center;gap:2rem;font-size:0.8125rem;font-weight:500;pointer-events:auto}
-        @media(min-width:1024px){.nav-links{display:flex}}
-        .nav-links a{opacity:0.6;transition:opacity 0.2s}
-        .nav-links a:hover{opacity:1}
-        .nav-cta{background:#d9e0e3;color:var(--text-dark);padding:0.5rem 1rem;border-radius:999px;font-size:0.75rem;font-weight:400;transition:transform 0.2s,opacity 0.2s;pointer-events:auto;display:inline-flex;align-items:center;gap:0.5rem;white-space:nowrap}
-        @media(min-width:768px){.nav-cta{padding:0.5rem 1.25rem;font-size:0.8125rem}}
-        .nav-cta:hover{transform:scale(1.03);opacity:0.85}
-        .nav-menu-btn{background:var(--text-dark);color:var(--bg);padding:0.125rem;border-radius:999px;font-size:0.8125rem;font-weight:500;pointer-events:auto;display:inline-flex;align-items:center;gap:0; border:none;cursor:pointer;transition:transform 500ms cubic-bezier(.22,.68,0,1);will-change:transform}
+        .nav-logo{pointer-events:auto;display:flex;align-items:center;transition:opacity 300ms ease,transform 300ms ease}
+        .nav-logo.hidden{opacity:0;transform:translateY(-100%);pointer-events:none}
+        .nav-logo img{height:2rem;width:auto}
+        @media(min-width:1024px){.nav-logo img{height:2.5rem;width:auto}}
+        .nav-menu-btn{background:var(--text-dark);color:var(--bg);padding:0.125rem;border-radius:999px;font-size:0.8125rem;font-weight:500;pointer-events:auto;display:inline-flex;align-items:center;gap:0;border:none;cursor:pointer;transition:transform 500ms var(--ease-spring);will-change:transform}
         .nav-menu-btn:hover{transform:scale(1.1)}
-        .nav-menu-btn-text{color:var(--bg);font-size:0.8125rem;font-weight:500;text-transform:uppercase;padding:0.35rem 0.75rem 0.35rem 1rem;display:block;position:relative;overflow:hidden;height:1.25rem;line-height:1.25rem}
-        .nav-menu-btn-text span{display:block;transition:transform 500ms cubic-bezier(.22,.68,0,1.2)}
-        .nav-menu-btn-text .menu-close{position:absolute;top:0;left:50%;transform:translate(-50%,100%)}
+        .nav-menu-btn-text{color:var(--bg);font-size:0.8125rem;font-weight:500;text-transform:uppercase;padding:0.35rem 0.75rem 0.35rem 0.35rem;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;height:1.25rem;min-width:4.5rem}
+        .nav-menu-btn-text span{display:flex;align-items:center;justify-content:center;transition:transform 500ms var(--ease-overshoot);position:absolute;inset:0}
+        .nav-menu-btn-text .menu-close{transform:translateY(100%)}
         .nav-menu-btn.open .nav-menu-btn-text .menu-label{transform:translateY(-100%)}
         .nav-menu-btn.open .nav-menu-btn-text .menu-close{transform:translate(-50%,0)}
-        .nav-menu-btn-icon{background:#1e242c;border-radius:50%;width:28px;height:28px;display:flex;align-items:center;justify-content:center;margin-right:0.25rem;transition:transform 500ms cubic-bezier(.22,.68,0,1.5);will-change:transform}
+        .nav-menu-btn-icon{background:#1e242c;border-radius:50%;width:28px;height:28px;display:flex;align-items:center;justify-content:center;margin-right:0.25rem;transition:transform 500ms var(--ease-strong);will-change:transform}
         .nav-menu-btn:hover .nav-menu-btn-icon{transform:rotate(90deg)}
         .nav-menu-btn-icon svg{width:14px;height:6px;color:var(--bg)}
-        @media(min-width:1024px){.nav-menu-btn-icon{width:36px;height:36px;margin-right:0.35rem}.nav-menu-btn-icon svg{width:18px;height:8px}.nav-menu-btn-text{padding:0.4rem 1rem 0.4rem 1.25rem;font-size:0.875rem;height:1.35rem;line-height:1.35rem}}
-        .nav-mobile-btn{display:none;background:none;border:none;font-size:1.25rem;cursor:pointer;pointer-events:auto}
-        @media(max-width:1023px){
-            .nav-links{display:none!important}
-        }
+        @media(min-width:1024px){.nav-menu-btn-icon{width:36px;height:36px;margin-right:0.35rem}.nav-menu-btn-icon svg{width:18px;height:8px}.nav-menu-btn-text{padding:0.4rem 1rem 0.4rem 1rem;font-size:0.875rem;height:1.35rem;line-height:1.35rem}}
 
         /* ── HERO ── */
         .hero{position:relative;width:100vw;height:100dvh;min-height:600px;overflow:hidden}
-        .hero-render{position:absolute;inset:0;z-index:1;display:flex;align-items:center;justify-content:center;animation:heroImgIn 1s cubic-bezier(0.22,0.68,0,1) 0.3s both}
-        @media(min-width:1024px){.hero-render{justify-content:flex-end;padding-right:8vw}}
-        .hero-render svg{width:min(60vw,700px);height:auto;max-height:70vh;animation:float 6s ease-in-out infinite}
-        @media(min-width:1024px){.hero-render svg{width:min(50vw,700px)}}
+        .hero-render{position:absolute;inset:0;z-index:1;display:flex;align-items:center;justify-content:flex-end;padding-right:22vw;animation:heroImgIn 1s var(--ease-spring) 0.3s both}
+        @media(min-width:1024px){.hero-render{padding-right:20vw}}
+        .hero-render img{width:min(55vw,600px);height:auto;max-height:75vh;object-fit:contain;animation:float 6s ease-in-out infinite}
+        @media(min-width:1024px){.hero-render img{width:min(40vw,550px)}}
 
-        .hero-watermark{position:absolute;inset:0;z-index:0;display:flex;align-items:center;justify-content:center;pointer-events:none;user-select:none}
-        .hero-watermark span{font-weight:700;font-size:clamp(8rem,22vw,18rem);letter-spacing:-0.04em;color:var(--text-dark);opacity:0.04;line-height:0.85;white-space:nowrap}
+        .hero-watermark{position:absolute;inset:0;z-index:0;display:flex;align-items:center;justify-content:flex-end;overflow:hidden;pointer-events:none;user-select:none}
+        .hero-watermark span{font-weight:700;font-size:clamp(10rem,28vw,24rem);letter-spacing:-0.04em;color:#000;opacity:1;line-height:0.85;white-space:nowrap;margin-right:-0.02em}
 
         .hero-content{position:absolute;bottom:2.5rem;left:0;right:0;padding:0 1rem 0;z-index:2}
         @media(min-width:768px){.hero-content{padding:0 2rem 0;bottom:3rem}}
         @media(min-width:1024px){.hero-content{padding:0 3rem 0;bottom:13vh;left:3rem}}
         @media(min-width:1280px){.hero-content{left:3rem}}
 
-        .hero-headline{font-size:clamp(1.75rem,4.5vw,3.5rem);font-weight:600;line-height:1.05;letter-spacing:-0.03em;color:var(--text-dark);max-width:24ch;opacity:0;animation:heroFadeIn 0.8s ease-out 0.5s forwards}
-        @media(min-width:768px){.hero-headline{max-width:20ch}}
+        .hero-headline{font-size:clamp(1.25rem,3vw,2rem);font-weight:600;line-height:1.15;letter-spacing:-0.02em;color:var(--text-dark);max-width:14ch;opacity:0;animation:heroFadeIn 0.8s ease-out 0.5s forwards}
+        @media(min-width:768px){.hero-headline{max-width:16ch}}
+        @media(min-width:1024px){.hero-headline{font-size:clamp(1.5rem,3.5vw,2.5rem)}}
 
-        .hero-scroll{position:absolute;left:1rem;bottom:1rem;z-index:2;font-size:0.875rem;font-weight:500;color:var(--text-muted);opacity:0;animation:scrollPulse 3s ease-in-out infinite,heroFadeIn 0.6s ease-out 0.8s forwards}
+        .hero-scroll{position:absolute;left:1rem;bottom:1rem;z-index:2;display:flex;align-items:center;gap:0.5rem;font-size:0.875rem;font-weight:500;color:var(--text-muted);opacity:0;animation:scrollPulse 3s ease-in-out infinite,heroFadeIn 0.6s ease-out 0.8s forwards}
         @media(min-width:768px){.hero-scroll{bottom:1.5rem}}
         @media(min-width:1024px){.hero-scroll{left:3rem;bottom:6%;font-size:0.9375rem}}
+        .hero-scroll svg{width:14px;height:14px;animation:scrollArrow 2s ease-in-out infinite}
 
         /* ── SECTION LABELS ── */
         .section-label{font-size:0.75rem;font-weight:500;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-muted);margin-bottom:1.5rem}
         @media(min-width:1024px){.section-label{margin-bottom:2rem}}
+        .section-heading{font-size:clamp(1.5rem,3vw,2.5rem);font-weight:600;letter-spacing:-0.02em;line-height:1.15;color:var(--text-dark);margin-bottom:1rem;max-width:28ch}
+        .section-desc{font-size:clamp(0.9375rem,1.2vw,1.0625rem);color:var(--text-muted);line-height:1.6;max-width:48ch;margin-bottom:3rem}
 
         /* ── WORK ── */
         .work{padding:6rem 1rem 4rem}
@@ -115,96 +118,76 @@
 
         .work-grid{display:grid;grid-template-columns:1fr;gap:1.5rem}
         @media(min-width:768px){.work-grid{grid-template-columns:1fr 1fr;gap:1.5rem}}
-        @media(min-width:1024px){.work-grid{gap:2rem}}
+        @media(min-width:1024px){.work-grid{gap:2.5rem}}
 
-        .work-item{position:relative;border-radius:1.5rem;overflow:hidden;aspect-ratio:16/10;display:block;perspective:1000px;background:transparent}
-        @media(min-width:1024px){.work-item{border-radius:2rem}}
+        .work-item{position:relative;border-radius:1rem;overflow:hidden;aspect-ratio:16/9;display:block;transition:transform 0.3s var(--ease-spring)}
+        @media(min-width:1024px){.work-item{border-radius:1.5rem}}
         .work-item:hover{transform:scale(1.02)}
-        .work-item-inner{position:relative;width:100%;height:100%;transition:transform 0.6s cubic-bezier(0.23,1,0.32,1);transform-style:preserve-3d}
-        .work-item:hover .work-item-inner{transform:rotateY(180deg)}
-        .work-item-front,.work-item-back{position:absolute;inset:0;backface-visibility:hidden;border-radius:1.5rem;overflow:hidden;display:flex;flex-direction:column}
-        @media(min-width:1024px){.work-item-front,.work-item-back{border-radius:2rem}}
-        .work-item-front{z-index:2;transform:rotateY(0deg);justify-content:center;align-items:center}
-        .work-item-back{z-index:1;transform:rotateY(180deg);justify-content:flex-end;align-items:flex-start;padding:1.5rem}
-        @media(min-width:1024px){.work-item-back{padding:2rem}}
-        .work-item-front .work-icon{width:56px;height:56px;opacity:0.85}
-        @media(min-width:1024px){.work-item-front .work-icon{width:72px;height:72px}}
-        .work-item-label{font-size:0.75rem;font-weight:500;letter-spacing:0.06em;text-transform:uppercase;color:rgba(255,255,255,0.5);margin-bottom:0.25rem}
-        .work-item-title{color:#fff;font-size:1.5rem;font-weight:600;letter-spacing:-0.02em;line-height:1.1}
-        @media(min-width:1024px){.work-item-title{font-size:2rem}}
-        .work-item-desc{color:rgba(255,255,255,0.65);font-size:0.875rem;line-height:1.4;margin-top:0.5rem;max-width:100%}
-        .work-item-arrow{position:absolute;top:1.25rem;right:1.25rem;width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,0.08);display:flex;align-items:center;justify-content:center;transition:transform 0.3s ease,background 0.3s ease}
+        .work-item-bg{position:absolute;inset:0;z-index:1}
+        .work-item-overlay{position:absolute;bottom:0;left:0;right:0;height:55%;background:linear-gradient(to top,rgba(12,16,22,0.7),transparent);z-index:2;pointer-events:none}
+        .work-item-content{position:absolute;bottom:1rem;left:1.25rem;right:1.25rem;z-index:3;display:flex;flex-direction:column;gap:0.25rem}
+        @media(min-width:1024px){.work-item-content{bottom:2rem;left:2rem;right:2rem}}
+        .work-item-title{color:#fff;font-size:1.25rem;font-weight:600;letter-spacing:-0.02em;line-height:1.2}
+        @media(min-width:1024px){.work-item-title{font-size:1.75rem}}
+        .work-item-sub{color:rgba(255,255,255,0.6);font-size:0.8125rem;font-weight:500;letter-spacing:0.04em;text-transform:uppercase}
+        .work-item-arrow{position:absolute;top:1rem;right:1rem;width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,0.1);display:flex;align-items:center;justify-content:center;z-index:4;opacity:0;transform:translate(-4px,4px);transition:opacity 0.3s,transform 0.3s var(--ease-spring)}
         @media(min-width:1024px){.work-item-arrow{width:40px;height:40px;top:1.5rem;right:1.5rem}}
-        .work-item:hover .work-item-arrow{transform:scale(1.1);background:rgba(255,255,255,0.15)}
-
-        .work-item:nth-child(1) .work-item-front{background:linear-gradient(135deg,#0c1016 0%,#1a1e24 100%)}
-        .work-item:nth-child(1) .work-item-front::before{content:'';position:absolute;top:-20%;right:-10%;width:60%;height:80%;border-radius:50%;background:radial-gradient(circle,#00b39e 0%,transparent 70%);opacity:0.12;z-index:0}
-        .work-item:nth-child(2) .work-item-front{background:linear-gradient(135deg,#161920 0%,#23272d 100%)}
-        .work-item:nth-child(2) .work-item-front::before{content:'';position:absolute;bottom:-20%;left:-10%;width:60%;height:80%;border-radius:50%;background:radial-gradient(circle,#b38b5e 0%,transparent 70%);opacity:0.12;z-index:0}
-        .work-item:nth-child(3) .work-item-front{background:linear-gradient(135deg,#1a1e24 0%,#2a2e34 100%)}
-        .work-item:nth-child(3) .work-item-front::before{content:'';position:absolute;top:10%;right:10%;width:40%;height:40%;border-radius:50%;border:2px solid rgba(0,179,158,0.15);z-index:0}
-        .work-item:nth-child(4) .work-item-front{background:linear-gradient(135deg,#14181e 0%,#1e2228 100%)}
-        .work-item:nth-child(4) .work-item-front::before{content:'';position:absolute;bottom:10%;left:10%;width:40%;height:40%;border-radius:50%;border:2px solid rgba(179,139,94,0.15);z-index:0}
-        .work-item:nth-child(5) .work-item-front{background:linear-gradient(135deg,#181c22 0%,#24282e 100%)}
-        .work-item:nth-child(5) .work-item-front::before{content:'';position:absolute;top:-30%;right:20%;width:50%;height:100%;background:linear-gradient(180deg,rgba(0,179,158,0.08) 0%,transparent 100%);z-index:0}
-        .work-item:nth-child(6) .work-item-front{background:linear-gradient(135deg,#12161c 0%,#1c2026 100%)}
-        .work-item:nth-child(6) .work-item-front::before{content:'';position:absolute;bottom:-30%;left:20%;width:50%;height:100%;background:linear-gradient(0deg,rgba(179,139,94,0.08) 0%,transparent 100%);z-index:0}
+        .work-item:hover .work-item-arrow{opacity:1;transform:translate(0,0)}
 
         /* ── SERVICES ── */
         .services{padding:4rem 1rem}
         @media(min-width:768px){.services{padding:4rem 2rem}}
-        @media(min-width:1024px){.services{padding:4rem 3rem}}
-        @media(min-width:1280px){.services{padding:4rem 5rem}}
+        @media(min-width:1024px){.services{padding:6rem 3rem}}
+        @media(min-width:1280px){.services{padding:8rem 5rem}}
 
         .services-stack{position:relative;display:flex;flex-direction:column;gap:1.5rem}
-        @media(min-width:1024px){.services-stack{gap:0}}
+        @media(min-width:1024px){.services-stack{gap:0;min-height:calc(4 * 6rem + 100vh * 0.45)}}
 
-        .service-card{border-radius:1.5rem;padding:2rem 1.5rem;display:flex;flex-direction:column;justify-content:space-between;gap:2rem;min-height:280px;position:relative;transition:transform 0.3s ease,box-shadow 0.3s ease}
-        @media(min-width:1024px){.service-card{border-radius:var(--radius-lg);padding:3rem;position:sticky;top:2rem;min-height:auto;aspect-ratio:16/7}}
-        @media(min-width:1280px){.service-card{padding:4rem}}
-        .service-card:hover{transform:translateY(-4px);box-shadow:0 20px 60px rgba(0,0,0,0.15)}
-
-        .service-card:nth-child(1){background:var(--surface-1);color:#fff;z-index:1}
-        .service-card:nth-child(2){background:var(--surface-2);color:#fff;z-index:2}
-        .service-card:nth-child(3){background:var(--surface-3);color:#fff;z-index:3}
-        .service-card:nth-child(4){background:var(--surface-4);color:#fff;z-index:4}
+        .service-card{border-radius:var(--radius);padding:2.5rem 1.5rem;display:flex;flex-direction:column;justify-content:space-between;gap:2rem;min-height:320px;position:relative}
         @media(min-width:1024px){
-            .service-card:nth-child(1){top:2rem}
-            .service-card:nth-child(2){top:3.5rem}
-            .service-card:nth-child(3){top:5rem}
-            .service-card:nth-child(4){top:6.5rem}
+            .service-card{position:absolute;left:0;right:0;padding:3rem 2.5rem;min-height:auto;aspect-ratio:16/7}
+            .service-card:nth-child(1){top:0;z-index:1}
+            .service-card:nth-child(2){top:5rem;z-index:2}
+            .service-card:nth-child(3){top:10rem;z-index:3}
+            .service-card:nth-child(4){top:15rem;z-index:4}
+        }
+        @media(min-width:1280px){
+            .service-card{padding:4rem 3rem}
+            .service-card:nth-child(2){top:6rem;z-index:2}
+            .service-card:nth-child(3){top:12rem;z-index:3}
+            .service-card:nth-child(4){top:18rem;z-index:4}
         }
 
-        .service-title{font-size:clamp(1.75rem,3vw,2.5rem);font-weight:600;letter-spacing:-0.02em;line-height:1.1}
+        .service-card:nth-child(1){background:var(--surface-1);color:#fff}
+        .service-card:nth-child(2){background:var(--surface-2);color:#fff}
+        .service-card:nth-child(3){background:var(--surface-3);color:#fff}
+        .service-card:nth-child(4){background:var(--surface-4);color:#fff}
 
-        .service-desc{font-size:clamp(0.9375rem,1.2vw,1.0625rem);opacity:0.7;line-height:1.6;max-width:48ch}
+        .service-title{font-size:clamp(2rem,5vw,3.5rem);font-weight:600;letter-spacing:-0.02em;line-height:1}
+        @media(min-width:1024px){.service-title{font-size:clamp(3rem,6vw,5rem)}}
+        @media(min-width:1280px){.service-title{font-size:clamp(3.5rem,7vw,6rem)}}
+
+        .service-desc{font-size:clamp(0.9375rem,1.2vw,1.0625rem);opacity:0.65;line-height:1.6;max-width:48ch}
 
         .service-tags{display:flex;flex-wrap:wrap;gap:0.5rem;margin-top:1rem}
-        .service-tag{font-size:0.75rem;font-weight:500;letter-spacing:0.04em;text-transform:uppercase;padding:0.4rem 0.875rem;border:1px solid rgba(255,255,255,0.2);border-radius:999px;white-space:nowrap}
+        .service-tag{font-size:0.75rem;font-weight:500;letter-spacing:0.04em;text-transform:uppercase;padding:0.4rem 0.875rem;border-radius:999px;white-space:nowrap;background:rgba(0,0,0,0.25)}
 
         /* ── CTA ── */
-        .cta{position:relative;width:100%;padding:4rem 1rem}
-        @media(min-width:768px){.cta{padding:4rem 2rem}}
-        @media(min-width:1024px){.cta{padding:6rem 3rem}}
-        @media(min-width:1280px){.cta{padding:8rem 5rem}}
+        .cta{position:relative;width:100%;min-height:80vh;padding:4rem 1rem;display:flex;flex-direction:column;justify-content:center;overflow:hidden}
+        @media(min-width:768px){.cta{padding:6rem 2rem;min-height:90vh}}
+        @media(min-width:1024px){.cta{padding:8rem 3rem;min-height:100vh}}
+        @media(min-width:1280px){.cta{padding:10rem 5rem}}
 
-        .cta-card{background:var(--surface-1);border-radius:2rem;padding:3rem 2rem;display:flex;flex-direction:column;gap:2rem;overflow:hidden;position:relative}
-        @media(min-width:1024px){.cta-card{border-radius:var(--radius-lg);padding:4rem;flex-direction:row;align-items:center;justify-content:space-between;min-height:400px}}
-        @media(min-width:1280px){.cta-card{padding:5rem}}
+        .cta-display{font-size:clamp(4rem,12vw,9rem);font-weight:600;letter-spacing:-0.04em;line-height:0.9;color:var(--text-dark);position:relative;z-index:2}
+        @media(min-width:1024px){.cta-display{font-size:clamp(6rem,12vw,10rem)}}
 
-        .cta-text{color:#fff}
-        .cta-label{font-size:0.75rem;font-weight:500;letter-spacing:0.08em;text-transform:uppercase;color:rgba(255,255,255,0.4);margin-bottom:1rem}
-        .cta-headline{font-size:clamp(2rem,5vw,4rem);font-weight:600;line-height:1.05;letter-spacing:-0.03em;color:#fff;margin-bottom:1.5rem}
-        .cta-desc{font-size:1rem;color:rgba(255,255,255,0.6);max-width:36ch;line-height:1.6;margin-bottom:2rem}
+        .cta-sub{font-size:clamp(1rem,1.5vw,1.25rem);color:var(--text-muted);max-width:36ch;line-height:1.6;margin-top:2rem;position:relative;z-index:2}
 
-        .cta-btn{display:inline-flex;align-items:center;gap:0.75rem;background:#d9e0e3;color:var(--text-dark);padding:0.875rem 2rem;border-radius:999px;font-size:0.9375rem;font-weight:500;transition:transform 0.2s ease,opacity 0.2s}
-        .cta-btn:hover{transform:scale(1.03);opacity:0.9}
-        .cta-btn svg{width:1.125rem;height:1.125rem}
+        .cta-btn{display:inline-flex;align-items:center;gap:0.75rem;background:var(--text-dark);color:var(--bg);padding:0.875rem 2rem;border-radius:999px;font-size:0.9375rem;font-weight:500;transition:transform 0.5s var(--ease-spring);margin-top:2.5rem;position:relative;z-index:2}
+        .cta-btn:hover{transform:scale(1.1)}
+        .cta-btn svg{width:1.125rem;height:1.125rem;transition:transform 0.3s var(--ease-spring)}
+        .cta-btn:hover svg{transform:translateX(3px)}
 
-        .cta-graphic{flex-shrink:0;display:flex;align-items:center;justify-content:center}
-        .cta-graphic svg{width:200px;height:auto}
-        @media(min-width:768px){.cta-graphic svg{width:280px}}
-        @media(min-width:1024px){.cta-graphic svg{width:320px}}
 
         /* ── FOOTER ── */
         .footer{width:100%;padding:4rem 1.5rem 3rem;display:flex;flex-direction:column;align-items:center;gap:2rem;text-align:center;border-top:1px solid rgba(17,24,28,0.08)}
@@ -223,26 +206,20 @@
         /* ── LOADING ── */
         .page-loader{position:fixed;inset:0;z-index:1000;background:var(--bg);display:flex;align-items:center;justify-content:center;transition:opacity 0.6s ease,visibility 0.6s}
         .page-loader.done{opacity:0;visibility:hidden;pointer-events:none}
-        .loader-text{font-family:'Inter',sans-serif;font-weight:600;font-size:0.875rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-muted);animation:pulse 1.5s ease-in-out infinite}
+        .loader-text{display:flex;align-items:center;justify-content:center;animation:pulse 1.5s ease-in-out infinite}
+        .loader-text img{height:2rem;width:auto}
         @keyframes pulse{0%,100%{opacity:0.4}50%{opacity:1}}
     </style>
 </head>
 <body>
     <!-- LOADER -->
     <div class="page-loader" id="loader">
-        <span class="loader-text">AEGNTIC</span>
+        <span class="loader-text"><img src="ae-logo.webp" alt="AEGNTIC"></span>
     </div>
 
     <!-- NAV -->
     <nav class="nav">
-        <a href="#" class="nav-logo">aegntic</a>
-        <div class="nav-links">
-            <a href="#work">Work</a>
-            <a href="#services">Services</a>
-            <a href="#contact">Contact</a>
-            <a href="https://github.com/aegntic" target="_blank" rel="noopener">GitHub</a>
-        </div>
-        <a href="https://tools.aegntic.ai" class="nav-cta" target="_blank">Enter the Layer</a>
+        <a href="#" class="nav-logo"><img src="ae-logo.webp" alt="aegntic"></a>
         <button class="nav-menu-btn" id="menuBtn" onclick="toggleMenu()" aria-label="Menu" aria-expanded="false" aria-controls="site-menu">
             <span class="nav-menu-btn-text">
                 <span class="menu-label">Menu</span>
@@ -290,171 +267,87 @@
     <section class="hero" id="hero">
         <div class="hero-watermark"><span>aegntic</span></div>
         <div class="hero-render">
-            <svg viewBox="0 0 600 700" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <!-- Transparent background, no fill rect -->
-                <!-- Grid lines -->
-                <g opacity="0.06">
-                    <path d="M0 100h600M0 200h600M0 300h600M0 400h600M0 500h600M0 600h600" stroke="#11181c" stroke-width="0.5"/>
-                    <path d="M100 0v700M200 0v700M300 0v700M400 0v700M500 0v700" stroke="#11181c" stroke-width="0.5"/>
-                </g>
-                <!-- Outer orbital ring -->
-                <ellipse cx="300" cy="350" rx="220" ry="260" stroke="#11181c" stroke-width="0.5" opacity="0.08"/>
-                <!-- Connection lines from center -->
-                <g stroke="#11181c" stroke-width="0.8" opacity="0.12">
-                    <path d="M300 350 L300 120"/><path d="M300 350 L480 250"/><path d="M300 350 L480 450"/><path d="M300 350 L300 580"/><path d="M300 350 L120 450"/><path d="M300 350 L120 250"/>
-                </g>
-                <!-- Inner hexagon frame -->
-                <path d="M300 180 L430 255 L430 405 L300 480 L170 405 L170 255 Z" stroke="#11181c" stroke-width="1" opacity="0.1" fill="none"/>
-                <!-- Central core glow -->
-                <circle cx="300" cy="350" r="90" fill="url(#coreGlow)" opacity="0.6"/>
-                <!-- Central core -->
-                <circle cx="300" cy="350" r="55" fill="#11181c"/>
-                <circle cx="300" cy="350" r="45" fill="url(#coreGrad)"/>
-                <!-- Core detail rings -->
-                <circle cx="300" cy="350" r="35" stroke="#00b39e" stroke-width="1.5" opacity="0.7" fill="none"/>
-                <circle cx="300" cy="350" r="25" stroke="#b38b5e" stroke-width="1" opacity="0.5" fill="none"/>
-                <!-- Orbital nodes -->
-                <g>
-                    <circle cx="300" cy="120" r="18" fill="#11181c"/><circle cx="300" cy="120" r="12" fill="#00b39e" opacity="0.8"/>
-                    <circle cx="480" cy="250" r="14" fill="#11181c"/><circle cx="480" cy="250" r="9" fill="#b38b5e" opacity="0.7"/>
-                    <circle cx="480" cy="450" r="16" fill="#11181c"/><circle cx="480" cy="450" r="10" fill="#00b39e" opacity="0.6"/>
-                    <circle cx="300" cy="580" r="20" fill="#11181c"/><circle cx="300" cy="580" r="13" fill="#b38b5e" opacity="0.7"/>
-                    <circle cx="120" cy="450" r="15" fill="#11181c"/><circle cx="120" cy="450" r="10" fill="#00b39e" opacity="0.6"/>
-                    <circle cx="120" cy="250" r="17" fill="#11181c"/><circle cx="120" cy="250" r="11" fill="#b38b5e" opacity="0.8"/>
-                </g>
-                <!-- Small connector dots along lines -->
-                <g fill="#11181c" opacity="0.2">
-                    <circle cx="300" cy="235" r="3"/><circle cx="390" cy="300" r="2.5"/><circle cx="390" cy="400" r="3"/>
-                    <circle cx="300" cy="465" r="2.5"/><circle cx="210" cy="400" r="3"/><circle cx="210" cy="300" r="2.5"/>
-                </g>
-                <!-- Floating geometric accent -->
-                <rect x="260" y="310" width="80" height="80" rx="12" stroke="#00b39e" stroke-width="1" opacity="0.25" fill="none" transform="rotate(45 300 350)"/>
-                <rect x="275" y="325" width="50" height="50" rx="8" stroke="#b38b5e" stroke-width="0.8" opacity="0.2" fill="none" transform="rotate(45 300 350)"/>
-                <!-- Bottom architectural bar -->
-                <rect x="220" y="620" width="160" height="4" rx="2" fill="#11181c" opacity="0.15"/>
-                <rect x="250" y="630" width="100" height="2" rx="1" fill="#11181c" opacity="0.1"/>
-                <defs>
-                    <radialGradient id="coreGlow" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(300 350) rotate(90) scale(90)">
-                        <stop stop-color="#00b39e" stop-opacity="0.2"/>
-                        <stop offset="1" stop-color="#00b39e" stop-opacity="0"/>
-                    </radialGradient>
-                    <radialGradient id="coreGrad" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(300 350) rotate(90) scale(45)">
-                        <stop stop-color="#1a252e"/>
-                        <stop offset="1" stop-color="#0c1016"/>
-                    </radialGradient>
-                </defs>
-            </svg>
+            <img src="cta-float.webp" alt="" loading="lazy">
         </div>
         <div class="hero-content">
             <h1 class="hero-headline">The coordination layer<br>for persistent intelligence.</h1>
         </div>
-        <span class="hero-scroll">Scroll</span>
+        <span class="hero-scroll">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14"/><path d="m19 12-7 7-7-7"/></svg>
+            Scroll
+        </span>
     </section>
 
     <!-- WORK -->
     <section class="work" id="work">
         <div class="section-label">Selected Work</div>
+        <h2 class="section-heading">Building the coordination layer.</h2>
+        <p class="section-desc">198 repositories. 127+ integrations. Each project a necessary part of one system.</p>
         <div class="work-grid">
             <a href="https://clawreform.com" target="_blank" rel="noopener" class="work-item">
-                <div class="work-item-inner">
-                    <div class="work-item-front">
-                        <svg class="work-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="color:#00b39e">
-                            <rect x="6" y="6" width="12" height="10" rx="2"/><path d="M9 10h.01"/><path d="M15 10h.01"/><path d="M8 14h8"/>
-                        </svg>
-                    </div>
-                    <div class="work-item-back" style="background:linear-gradient(135deg,#0c1016 0%,#1a1e24 100%)">
-                        <div class="work-item-arrow">
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="color:#fff"><path d="M7 17L17 7M17 7H7M17 7V17"/></svg>
-                        </div>
-                        <span class="work-item-label">Agent Infrastructure</span>
-                        <span class="work-item-title">clawREFORM</span>
-                        <span class="work-item-desc">Self-rewriting agent OS with persistent memory.</span>
-                    </div>
+                <div class="work-item-bg" style="background:linear-gradient(135deg,#0c1016 0%,#1a2a2e 50%,#0c1016 100%)"></div>
+                <div class="work-item-overlay"></div>
+                <div class="work-item-content">
+                    <span class="work-item-sub">Agent Infrastructure</span>
+                    <span class="work-item-title">clawREFORM</span>
+                </div>
+                <div class="work-item-arrow">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M17 7H7M17 7V17"/></svg>
                 </div>
             </a>
             <a href="https://aegnt27.com" target="_blank" rel="noopener" class="work-item">
-                <div class="work-item-inner">
-                    <div class="work-item-front">
-                        <svg class="work-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="color:#b38b5e">
-                            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><polyline points="9 12 12 15 16 11"/>
-                        </svg>
-                    </div>
-                    <div class="work-item-back" style="background:linear-gradient(135deg,#161920 0%,#23272d 100%)">
-                        <div class="work-item-arrow">
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="color:#fff"><path d="M7 17L17 7M17 7H7M17 7V17"/></svg>
-                        </div>
-                        <span class="work-item-label">Authenticity Engine</span>
-                        <span class="work-item-title">aegnt-27</span>
-                        <span class="work-item-desc">95%+ human-likeness scoring for synthetic detection.</span>
-                    </div>
+                <div class="work-item-bg" style="background:linear-gradient(135deg,#161920 0%,#2a2520 50%,#161920 100%)"></div>
+                <div class="work-item-overlay"></div>
+                <div class="work-item-content">
+                    <span class="work-item-sub">Authenticity Engine</span>
+                    <span class="work-item-title">aegnt-27</span>
+                </div>
+                <div class="work-item-arrow">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M17 7H7M17 7V17"/></svg>
                 </div>
             </a>
             <a href="https://cldcde.cc" target="_blank" rel="noopener" class="work-item">
-                <div class="work-item-inner">
-                    <div class="work-item-front">
-                        <svg class="work-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="color:#00b39e">
-                            <polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/>
-                        </svg>
-                    </div>
-                    <div class="work-item-back" style="background:linear-gradient(135deg,#1a1e24 0%,#2a2e34 100%)">
-                        <div class="work-item-arrow">
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="color:#fff"><path d="M7 17L17 7M17 7H7M17 7V17"/></svg>
-                        </div>
-                        <span class="work-item-label">Developer Ecosystem</span>
-                        <span class="work-item-title">CLDCDE</span>
-                        <span class="work-item-desc">MCP registry and A2A developer ecosystem.</span>
-                    </div>
+                <div class="work-item-bg" style="background:linear-gradient(135deg,#0e1820 0%,#1a2a30 50%,#0e1820 100%)"></div>
+                <div class="work-item-overlay"></div>
+                <div class="work-item-content">
+                    <span class="work-item-sub">Developer Ecosystem</span>
+                    <span class="work-item-title">CLDCDE</span>
+                </div>
+                <div class="work-item-arrow">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M17 7H7M17 7V17"/></svg>
                 </div>
             </a>
             <a href="https://logue.pro" target="_blank" rel="noopener" class="work-item">
-                <div class="work-item-inner">
-                    <div class="work-item-front">
-                        <svg class="work-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="color:#b38b5e">
-                            <path d="M2 3h6a4 4 0 014 4v14a3 3 0 00-3-3H2zM22 3h-6a4 4 0 00-4 4v14a3 3 0 013-3h7z"/>
-                        </svg>
-                    </div>
-                    <div class="work-item-back" style="background:linear-gradient(135deg,#14181e 0%,#1e2228 100%)">
-                        <div class="work-item-arrow">
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="color:#fff"><path d="M7 17L17 7M17 7H7M17 7V17"/></svg>
-                        </div>
-                        <span class="work-item-label">Memory Library</span>
-                        <span class="work-item-title">Logue</span>
-                        <span class="work-item-desc">Persistent memory for long-form intelligence.</span>
-                    </div>
+                <div class="work-item-bg" style="background:linear-gradient(135deg,#14181e 0%,#24201c 50%,#14181e 100%)"></div>
+                <div class="work-item-overlay"></div>
+                <div class="work-item-content">
+                    <span class="work-item-sub">Memory Library</span>
+                    <span class="work-item-title">Logue</span>
+                </div>
+                <div class="work-item-arrow">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M17 7H7M17 7V17"/></svg>
                 </div>
             </a>
             <a href="https://tools.aegntic.ai" target="_blank" rel="noopener" class="work-item">
-                <div class="work-item-inner">
-                    <div class="work-item-front">
-                        <svg class="work-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="color:#00b39e">
-                            <path d="M14.7 6.3a1 1 0 000 1.4l1.6 1.6a1 1 0 001.4 0l3.77-3.77a6 6 0 01-7.94 7.94l-6.91 6.91a2.12 2.12 0 01-3-3l6.91-6.91a6 6 0 017.94-7.94l-3.76 3.76z"/>
-                        </svg>
-                    </div>
-                    <div class="work-item-back" style="background:linear-gradient(135deg,#181c22 0%,#24282e 100%)">
-                        <div class="work-item-arrow">
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="color:#fff"><path d="M7 17L17 7M17 7H7M17 7V17"/></svg>
-                        </div>
-                        <span class="work-item-label">Tool Suite</span>
-                        <span class="work-item-title">Aegntic Tools</span>
-                        <span class="work-item-desc">Coordination layer products in production.</span>
-                    </div>
+                <div class="work-item-bg" style="background:linear-gradient(135deg,#0c1820 0%,#162830 50%,#0c1820 100%)"></div>
+                <div class="work-item-overlay"></div>
+                <div class="work-item-content">
+                    <span class="work-item-sub">Tool Suite</span>
+                    <span class="work-item-title">Aegntic Tools</span>
+                </div>
+                <div class="work-item-arrow">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M17 7H7M17 7V17"/></svg>
                 </div>
             </a>
             <a href="https://github.com/aegntic" target="_blank" rel="noopener" class="work-item">
-                <div class="work-item-inner">
-                    <div class="work-item-front">
-                        <svg class="work-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="color:#b38b5e">
-                            <polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/>
-                        </svg>
-                    </div>
-                    <div class="work-item-back" style="background:linear-gradient(135deg,#12161c 0%,#1c2026 100%)">
-                        <div class="work-item-arrow">
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="color:#fff"><path d="M7 17L17 7M17 7H7M17 7V17"/></svg>
-                        </div>
-                        <span class="work-item-label">Open Source</span>
-                        <span class="work-item-title">198 Repositories</span>
-                        <span class="work-item-desc">127+ integrations across the agent stack.</span>
-                    </div>
+                <div class="work-item-bg" style="background:linear-gradient(135deg,#12161c 0%,#201c18 50%,#12161c 100%)"></div>
+                <div class="work-item-overlay"></div>
+                <div class="work-item-content">
+                    <span class="work-item-sub">Open Source</span>
+                    <span class="work-item-title">198 Repositories</span>
+                </div>
+                <div class="work-item-arrow">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M17 7H7M17 7V17"/></svg>
                 </div>
             </a>
         </div>
@@ -463,6 +356,8 @@
     <!-- SERVICES -->
     <section class="services" id="services">
         <div class="section-label">Core Modules</div>
+        <h2 class="section-heading">Five pillars of the coordination layer.</h2>
+        <p class="section-desc">Each module is production-shipped, open-source, and structurally necessary.</p>
         <div class="services-stack">
             <div class="service-card">
                 <div>
@@ -499,7 +394,7 @@
             </div>
             <div class="service-card">
                 <div>
-                    <h3 class="service-title">Sovereignty &<br>Experiential Memory</h3>
+                    <h3 class="service-title">Sovereignty</h3>
                     <p class="service-desc">Own your intelligence infrastructure. Private-by-default systems with experiential memory that builds personal context over time. Sovereign operators, sovereign agents.</p>
                 </div>
                 <div class="service-tags">
@@ -513,31 +408,12 @@
 
     <!-- CTA -->
     <section class="cta" id="contact">
-        <div class="cta-card">
-            <div class="cta-text">
-                <div class="cta-label">Get in touch</div>
-                <h2 class="cta-headline">Don't be shy</h2>
-                <p class="cta-desc">Explore the coordination layer. 198 repos. 47 stars. 16 builders.</p>
-                <a href="https://github.com/aegntic" target="_blank" rel="noopener" class="cta-btn">
-                    <span>Enter the Layer</span>
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
-                </a>
-            </div>
-            <div class="cta-graphic">
-                <svg viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <rect width="200" height="200" rx="20" fill="#161920"/>
-                    <circle cx="100" cy="100" r="60" stroke="#00b39e" stroke-width="1.5" opacity="0.3" fill="none"/>
-                    <circle cx="100" cy="100" r="40" stroke="#b38b5e" stroke-width="1" opacity="0.25" fill="none"/>
-                    <circle cx="100" cy="100" r="20" fill="#00b39e" opacity="0.15"/>
-                    <circle cx="100" cy="100" r="8" fill="#00b39e" opacity="0.6"/>
-                    <path d="M100 40v20M100 140v20M40 100h20M140 100h20" stroke="#00b39e" stroke-width="1" opacity="0.2"/>
-                    <circle cx="100" cy="60" r="4" fill="#b38b5e" opacity="0.5"/>
-                    <circle cx="140" cy="100" r="4" fill="#00b39e" opacity="0.5"/>
-                    <circle cx="100" cy="140" r="4" fill="#b38b5e" opacity="0.5"/>
-                    <circle cx="60" cy="100" r="4" fill="#00b39e" opacity="0.5"/>
-                </svg>
-            </div>
-        </div>
+        <h2 class="cta-display">Don't<br>be shy.</h2>
+        <p class="cta-sub">Explore the coordination layer. 198 repos. 47 stars. 16 builders.</p>
+        <a href="https://github.com/aegntic" target="_blank" rel="noopener" class="cta-btn">
+            <span>Enter the Layer</span>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+        </a>
     </section>
 
     <!-- FOOTER -->
@@ -556,6 +432,7 @@
                 <span>Experiential Memory</span>
             </div>
         </div>
+        <img src="ae-logo.webp" alt="AEGNTIC" style="height:2rem;width:auto;opacity:0.5">
         <div class="footer-links">
             <a href="https://github.com/aegntic" target="_blank" rel="noopener">GitHub</a>
             <a href="https://x.com/AEGNTIC" target="_blank" rel="noopener">X / Twitter</a>
@@ -573,6 +450,16 @@
                 document.getElementById('loader').classList.add('done');
             },600);
         });
+
+        // Logo hide on scroll to avoid watermark overlap
+        const navLogo=document.querySelector('.nav-logo');
+        let logoHidden=false;
+        window.addEventListener('scroll',()=>{
+            const threshold=window.innerHeight*0.15;
+            const shouldHide=window.scrollY>threshold;
+            if(shouldHide&&!logoHidden){navLogo.classList.add('hidden');logoHidden=true}
+            else if(!shouldHide&&logoHidden){navLogo.classList.remove('hidden');logoHidden=false}
+        },{passive:true});
 
         // Menu toggle
         function toggleMenu(){
@@ -605,16 +492,6 @@
             }
         });
 
-        // Scroll reveal for CTA
-        const observer=new IntersectionObserver((entries)=>{
-            entries.forEach(entry=>{
-                if(entry.isIntersecting){
-                    entry.target.classList.add('visible');
-                }
-            });
-        },{threshold:0.2});
-        document.querySelectorAll('.cta-card').forEach(el=>observer.observe(el));
-
         // Smooth scroll for nav links
         document.querySelectorAll('a[href^="#"]').forEach(a=>{
             a.addEventListener('click',e=>{
@@ -622,6 +499,30 @@
                 if(target){e.preventDefault();target.scrollIntoView({behavior:'smooth'})}
             });
         });
+
+        // Service cards scroll reveal (SOHub overlapping pattern)
+        if(window.matchMedia('(min-width:1024px)').matches){
+            const cards=document.querySelectorAll('.service-card');
+            cards.forEach((card,i)=>{
+                card.style.clipPath='inset(0 0 0 0)';
+                card.style.transition='none';
+            });
+            const stack=document.querySelector('.services-stack');
+            if(stack){
+                const totalCards=cards.length;
+                const cardPeek=5; // rem between cards
+                const scrollPerCard=window.innerHeight*0.35;
+                const totalScroll=scrollPerCard*(totalCards-1);
+                stack.style.height=totalScroll+cards[0].offsetHeight+'px';
+
+                cards.forEach((card,i)=>{
+                    card.style.position='sticky';
+                    card.style.top=(i*cardPeek)+'rem';
+                    card.style.left='0';
+                    card.style.right='0';
+                });
+            }
+        }
     </script>
 </body>
 </html>

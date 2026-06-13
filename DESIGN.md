@@ -4,7 +4,7 @@
 **Primary Surface:** https://aegntic.ai (the coordination layer, presented as an editorial experience).
 **Secondary/Applied Surface:** https://tools.aegntic.ai (products & tools catalog, sibling aesthetic).
 **Brand Mark:** The "ae" glyph (see /home/ae/Pictures/ae-logo.png). Small, high-signal identifier in navs and product contexts.
-**Date:** 2026-06-11 (v2 editorial pivot, informed by SOHub.digital reference audit).
+**Date:** 2026-06-12 (v2.1 -- SOHub structural mimic integration).
 **Core Reference:** The 2026-06-03 brainstorm contract, AGENTIC_AI_ASSESSMENT.md (127-repo evidence base), and SOHub.digital structural analysis.
 
 ## Product Context & Purpose
@@ -52,6 +52,95 @@
 - Any 2026 AI slop: cream/sand body backgrounds, tracked uppercase eyebrow above every section, numbered section markers (01/02/03), staggered reveal animations as default, comically large H1, hand-drawn SVG illustrations, ghost cards (1px border + soft shadow), over-rounded corners (32px+), gradient text, sparkle/magic metaphors, glassmorphism
 - Anything that would make someone say "AI made this"
 
+## SOHub.digital Structural Reference
+
+**Audited:** 2026-06-12. Full HTML source analysis (88KB) + desktop/mobile/tablet screenshots. SOHub is a Next.js agency site at sohub.digital. It is the primary structural model for aegntic's mimic build (`aegntic-sohub-mimic.html`).
+
+### Page Architecture
+
+4 sections, full-page rhythm:
+1. **Hero** -- `w-screen h-[40vh] lg:h-screen`. Large 3D render (homeRender.png) positioned absolute right side. SVG logo wordmark animates in. Tagline below: "Your story builds our history." Scroll indicator at bottom left.
+2. **Work** -- `px-4 md:px-8 lg:px-12 xl:px-20 pb-16 lg:pb-32`. Section heading "Work" with editorial paragraph. 2-column grid (`grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-10`). Each project card is `aspect-video rounded-2xl overflow-hidden` with image fill, bottom gradient overlay (`bg-linear-to-t from-black/40`), and title positioned `absolute bottom-4 lg:bottom-8 left-4 lg:left-8`. Arrow SVG appears on hover. Cards scale `hover:scale-[1.02]` with `transition-transform duration-300 ease-spring`.
+3. **Services** -- `px-4 md:px-8 lg:px-12 xl:px-20`. Section heading + paragraph. 4 service cards stacked and overlapping via absolute positioning on lg+. Each card: `rounded-[3rem] lg:aspect-16/7 px-6 py-12 lg:p-16 2xl:p-24`. Cards layer with `clip-path:inset(0 0 0 0)` and z-index 0-3. Each has large title (`text-5xl lg:text-8xl 2xl:text-[8rem] leading-none tracking-5`), description, and pill tags (`rounded-full px-4 lg:px-6 py-2`). Bottom card fully visible; upper cards peek from top.
+4. **CTA** -- `w-screen lg:h-screen`. "Don't be shy" in publicaPlay display font (`text-8xl md:text-9xl xl:text-[9rem] tracking-tighter leading-[0.9]`). Floating 3D chair image right side with `float-anim-l`. CTA button: `rounded-full` pill with text + arrow icon, `hover:scale-110 transition-transform duration-500 ease-[cubic-bezier(.22,.68,0,1)]`.
+
+### Color System
+
+SOHub uses a dark-first palette (opposite of aegntic's light-first). Aegntic adapts the structure, not the palette.
+
+| SOHub Token | Value | Usage |
+|-------------|-------|-------|
+| bg-sohub-black | `#0C1016` | Primary dark background (blue-black) |
+| bg-sohub-dark-grey | `#10141C` | Service card tag backgrounds, elevated dark |
+| bg-sohub-soft-grey | `#D9E0E3` | Light surface cards |
+| bg-sohub-white | `#F0F6F8` | Light text, light card backgrounds (blue-tinted white) |
+| text-sohub-black | `#0C1016` | Dark text |
+| text-sohub-white | `#F0F6F8` | Light text |
+| text-sohub-grey | `#555555` | Muted text, secondary headings |
+| theme-color | `#27b7a5` | Browser theme-color meta (teal accent, unused in body styles) |
+
+**Service card layer colors** (stacked cards, bottom to top):
+- Layer 0: `#0C1016` (base -- fully visible)
+- Layer 1: `#23272d`
+- Layer 2: `#3a3e44`
+- Layer 3: `#50555a` (top -- least visible)
+
+### Typography
+
+- **Display:** `PublicaPlay_Regular` (custom, not Google Fonts). Used only for CTA headline.
+- **Body:** Another custom obfuscated font + Inter as fallback. `font-family:'Inter', 'Inter Fallback'`.
+- **Scale:** text-xs to text-[10rem]. Hero tagline: `text-2xl lg:text-[3.5rem] leading-none font-semibold tracking-tighter`. Service titles: `text-5xl lg:text-8xl 2xl:text-[8rem] leading-none tracking-5`. Section heads: `text-3xl md:text-5xl lg:text-6xl xl:text-7xl 2xl:text-[7rem] tracking-7`.
+- **Tracking:** Custom values `tracking-5` (~0.05em) and `tracking-7` (~0.07em) for large display text. `tracking-tighter` for hero tagline.
+
+### Motion & Animation
+
+- **Hero entrance:** SVG path elements animate in via `hero-anim-in` class. Tagline lines via `hero-anim-in-lines`. Staggered but fast.
+- **Scroll reveals:** Section headings use `opacity-0 tt-sub-in translate-y-16`, transitioning to visible on scroll.
+- **Float:** `float-anim` and `float-anim-l` classes for gentle vertical oscillation on CTA image and hero render.
+- **Card hover:** `hover:scale-[1.02]` with `transition-transform duration-300 ease-spring`.
+- **CTA button:** `hover:scale-110 transition-transform duration-500 ease-[cubic-bezier(.22,.68,0,1)]`. Arrow icon translates on hover.
+- **Magnetic effect:** `data-magnetic="true"` wrapper on service tags for subtle cursor-following.
+- **Service card reveal:** Cards above base use `clip-path:inset(0 0 0 0)` + `transform:translateY(120%)`, animating to `translateY(0%)`.
+- **Custom easings:** `cubic-bezier(.22,.68,0,1)` (fast-out), `cubic-bezier(.22,.68,0,1.2)` (overshoot), `cubic-bezier(.22,.68,0,1.5)` (strong overshoot for arrow).
+
+### Layout Patterns to Mimic
+
+1. **Hero:** Full-screen with large 3D render positioned right, text left-bottom. Not centered -- asymmetric.
+2. **Work grid:** 2-column, aspect-video cards with bottom overlay gradient + title. Hover scale. Arrow appears.
+3. **Service cards:** Overlapping stacked cards with rounded-[3rem], peeking via z-index and clip-path. Tags as rounded-full pills. Large display titles with `leading-none`.
+4. **CTA:** Oversized display text (9rem+) with `leading-[0.9]`, floating image, pill button with icon.
+5. **Responsive padding:** `px-4 md:px-8 lg:px-12 xl:px-20` -- consistent across sections.
+6. **Scroll indicator:** Small animated element at bottom of hero section.
+
+### Navigation
+
+- Fixed right-side scrollbar (`w-2 rounded-full`) -- custom thin scrollbar, not browser default.
+- Menu button: hamburger icon with open/close animation. Opens full-screen overlay.
+- Nav items: Home, Studio, Work, Contact. Minimal.
+- "Chat with SOHub" as floating CTA button in bottom-right corner.
+
+### What Aegntic Adopts vs Diverges
+
+**Adopt:**
+- Full-viewport hero with large 3D render on right, text left-bottom
+- 2-column work/project grid with aspect-video cards, bottom gradient, hover scale
+- Overlapping service/module cards with large display titles
+- CTA section with oversized display text + floating visual
+- Responsive padding scale (`px-4 md:px-8 lg:px-12 xl:px-20`)
+- Custom scrollbar (thin, right-side)
+- Float animation on hero render
+- Service card clip-path reveal
+- Pill tags with rounded-full
+
+**Diverge:**
+- Light-first palette (SOHub is dark-first; aegntic stays light with teal/bronze)
+- Scroll-snap sections (SOHub uses free scroll; aegntic adds snap points)
+- Space Grotesk + Inter instead of PublicaPlay + custom font
+- 5 module sections instead of 4 service cards
+- Horizontal ecosystem carousel (SOHub has 2-col grid; aegntic adds horizontal scroll for products)
+- Theme toggle (SOHub has none)
+- JetBrains Mono for data/metrics (SOHub has no mono use)
+
 ## Typography
 
 **Display/Hero (thesis statements, section titles):** Space Grotesk. Weight 600, letter-spacing -0.025em to -0.04em. Large, confident, editorial. Used for thesis statements, module section titles, and the hero headline.
@@ -66,7 +155,9 @@
 - 16px: body base
 - clamp(2.5rem, 6vw, 4.25rem): hero headline
 - 21-24px: section subheads, module titles
-- Line-height: 1.0-1.05 for hero, 1.5 for body, 1.15-1.25 for headings
+- clamp(3rem, 8vw, 8rem): module display titles (SOHub pattern: service cards use 5xl-8xl-10rem scale)
+- clamp(6rem, 12vw, 9rem): CTA display text (SOHub pattern: "Don't be shy" at 8xl-9xl-12rem)
+- Line-height: 1.0-1.05 for hero, 0.9 for CTA display (SOHub uses leading-[0.9]), 1.5 for body, 1.15-1.25 for headings
 
 **Anti-slop guard:** No system-ui as primary display. Proper text-wrap on headings. No comically oversized H1 (clamp max 4.25rem / ~68px).
 
@@ -116,7 +207,7 @@
 
 **Max content width:** ~1280px centered. Full-bleed sections for visual anchors that deserve it.
 
-**Border radius:** 4-8px for small elements (chips, buttons). 12-16px for cards. Nothing over 16px -- no over-rounded AI slop.
+**Border radius:** 4-8px for small elements (chips, buttons). 12-16px for project cards (SOHub: rounded-2xl). 48px (3rem) for module/service cards (SOHub pattern: rounded-[3rem]). Full-round (rounded-full) for pills, tags, icon buttons.
 
 **Grid:** Clean 12-column grid underlying the layout. Sections use defined column spans (7+5, 6+6, 8+4) for visual variety. No asymmetric chaos, no absolute-positioned floating elements, no connection-line overlays. The grid is the structure; the content fills it with intention.
 
@@ -128,14 +219,20 @@
 
 **Allowed motion patterns:**
 - Scroll-triggered section entrances: content fades up and in as each viewport section scrolls into view. Subtle, short duration (300-400ms), ease-out. NOT staggered reveals on every child element.
-- Image/visual anchor reveals: images scale slightly from 1.02 to 1.0 on entrance. Subtle, one-time.
-- Hover states: cards lift with box-shadow change (200ms ease-out). Links underline on hover. Buttons shift background opacity. No transform: scale on images.
+- Image/visual anchor reveals: images scale slightly from 1.02 to 1.0 on entrance. Subtle, one-time. Hero render floats gently (SOHub: `float-anim` vertical oscillation).
+- Hover states: cards scale `hover:scale-[1.02]` with spring easing (SOHub pattern). Links underline on hover. CTA buttons scale `hover:scale-110` with overshoot easing.
+- Service/module card reveal: overlapping cards use `clip-path:inset()` + `transform:translateY()` to reveal on scroll (SOHub pattern for stacked service cards).
 - Horizontal scroll sections: smooth drag/scroll for portfolio/product carousels. GSAP-driven with momentum.
-- Page load: single orchestrated entrance for the hero section (headline, then subtitle, then CTA). 600ms total. Not a cascade of staggered elements across the whole page.
+- Page load: single orchestrated entrance for the hero section (headline, then subtitle, then CTA). 600ms total. Not a cascade of staggered elements across the whole page. SVG elements can animate in (SOHub: `hero-anim-in` on SVG paths).
+- Scroll indicator: subtle animated element at bottom of hero (SOHub: scroll-wrapper with pulsing arrow).
 
-**Easing:** ease-out-quart (cubic-bezier(0.25, 1, 0.5, 1)) for entrances. ease-out for hovers. No bounce, no elastic, no spring physics.
+**Easing:**
+- Entrances: ease-out-quart `cubic-bezier(0.25, 1, 0.5, 1)` (default).
+- Card hovers: spring `cubic-bezier(.22,.68,0,1)` (SOHub pattern).
+- CTA/buttons with overshoot: `cubic-bezier(.22,.68,0,1.2)` (SOHub pattern).
+- No bounce, no elastic, no spring physics beyond these values.
 
-**Duration:** 150-200ms for hovers. 300-400ms for entrances. 600ms max for hero load sequence.
+**Duration:** 150-200ms for hovers. 300-400ms for entrances. 500ms for CTA button hover (SOHub: duration-500). 600ms max for hero load sequence.
 
 **Performance:** Only transform and opacity. No layout thrashing. Respect prefers-reduced-motion: disable all motion, show content immediately at final state. DPR-aware images.
 
@@ -160,18 +257,26 @@
 
 **Format:** WebP with PNG fallback. Lazy-loaded below fold. Preload hero visual. Responsive srcset.
 
-## Horizontal Scroll Section
+## Work/Ecosystem Grid (SOHub Pattern)
 
-**Pattern:** Borrowed from SOHub's work carousel. Used for the ecosystem/products section.
+**Pattern:** Borrowed from SOHub's Work section. 2-column grid of project cards with bottom gradient overlays.
 
-**Implementation:** A horizontal scroll container showing product/project cards. GSAP ScrollTrigger or CSS scroll-snap horizontal. Each card is a project from the ecosystem (aegnt-27, clawREFORM, Prologue, CLDCDE, etc.) with:
+**Layout:** `grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-10`. Each card:
+- `aspect-video rounded-2xl overflow-hidden relative`
+- Background image fills card
+- Bottom gradient overlay: `bg-linear-to-t from-black/40 to-transparent h-1/2 absolute bottom-0`
+- Title positioned `absolute bottom-4 lg:bottom-8 left-4 lg:left-8`
+- Arrow SVG appears on hover (hidden on mobile)
+- `hover:scale-[1.02] transition-transform duration-300 ease-spring`
+
+**Aegntic adaptation:** Used for the ecosystem/products section with project cards showing:
 - Large preview image/render
-- Project name with spaced editorial tracking
+- Project name with editorial tracking
 - One-line description
 - Core module tag
 - Link to live site or GitHub
 
-**Behavior:** Drag to scroll on desktop. Swipe on mobile. Snap to nearest card. No autoplay.
+**Alternative:** Horizontal scroll carousel for when the project list exceeds 6 items. GSAP ScrollTrigger with drag/scroll.
 
 ## Theme Toggle
 
@@ -248,5 +353,7 @@
 | 2026-06-11 | Light default, dark toggle | Light is the identity. Dark is accommodation. This reverses v1 where dark was the thesis expression. |
 | 2026-06-11 | Static visual anchors replace live canvases | Live canvases (persistent field, skeleton SVG, continuity demo) were thesis-performative but added complexity and loaded heavy. Curated 3D renders and architectural diagrams achieve the same visual authority with better performance and cleaner execution. |
 | 2026-06-11 | Full-viewport scroll-snap for modules | Each of the 5 core modules gets its own editorial moment. This replaces the skeleton map/connection overlay pattern. Modules are presented sequentially, not simultaneously. |
+| 2026-06-12 | SOHub structural mimic integration (v2.1) | Full HTML source audit of sohub.digital (88KB Next.js output). Codified specific patterns: 2-col work grid with aspect-video cards, overlapping service cards with clip-path reveal and rounded-[3rem], hero with right-positioned 3D render and SVG wordmark, CTA with oversized display text + leading-[0.9], responsive padding scale px-4→px-20, spring easing cubic-bezier(.22,.68,0,1). Aegntic adopts structure, diverges on palette (light-first vs SOHub dark-first). |
+| 2026-06-12 | Border radius expanded | 3rem (48px) radius for module/service cards adopted from SOHub's rounded-[3rem] pattern. Rounded-full for pill tags and icon buttons. Overrides prior "nothing over 16px" rule -- SOHub's large radius is editorial, not AI slop. |
 
 **Next:** Read this DESIGN.md before any visual, copy, motion, or layout change to aegntic.ai or related surfaces. When in doubt, ask: "Does this feel like a confident editorial presentation of the coordination layer, or does it feel like another AI startup landing page?"
