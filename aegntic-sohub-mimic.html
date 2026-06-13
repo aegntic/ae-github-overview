@@ -8,6 +8,8 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
     <style>
         *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
         :root{
@@ -98,6 +100,7 @@
         @media(min-width:1280px){.hero-content{left:3rem}}
 
         .hero-headline{font-size:clamp(1.25rem,3vw,2rem);font-weight:600;line-height:1.15;letter-spacing:-0.02em;color:var(--text-dark);max-width:14ch;opacity:0;animation:heroFadeIn 0.8s ease-out 0.5s forwards}
+        body.gsap-ready .hero-headline{animation:none;opacity:1}
         @media(min-width:768px){.hero-headline{max-width:16ch}}
         @media(min-width:1024px){.hero-headline{font-size:clamp(1.5rem,3.5vw,2.5rem)}}
 
@@ -238,6 +241,29 @@
         .loader-text{display:flex;align-items:center;justify-content:center;animation:pulse 1.5s ease-in-out infinite}
         .loader-text img{height:2rem;width:auto}
         @keyframes pulse{0%,100%{opacity:0.4}50%{opacity:1}}
+
+        /* ── GSAP SPLIT TEXT ── */
+        /* Only mask when JS active so no-JS users see content */
+        body.gsap-ready .split-mask{display:inline-block;overflow:hidden;vertical-align:top;line-height:inherit;padding-bottom:0.05em;margin-bottom:-0.05em}
+        body.gsap-ready .split-inner{display:inline-block;will-change:transform}
+        body.gsap-ready .reveal-fade{opacity:0;will-change:transform,opacity}
+        body.gsap-ready .reveal-clip{clip-path:inset(0 0 100% 0);will-change:clip-path}
+
+        /* Eyebrow line draw */
+        body.gsap-ready .intro-eyebrow::before{transform:scaleX(0);transform-origin:left center;will-change:transform}
+        body.gsap-ready .intro-eyebrow.line-drawn::before{transform:scaleX(1);transition:transform 0.8s cubic-bezier(.22,.68,0,1)}
+
+        /* Work card image zoom baseline */
+        body.gsap-ready .work-item-bg img{will-change:transform;transform:scale(1.15)}
+
+        /* Per-line mask wrapper */
+        body.gsap-ready .split-line{display:block;overflow:hidden;padding-bottom:0.06em;margin-bottom:-0.06em}
+
+        @media(prefers-reduced-motion:reduce){
+            body.gsap-ready .reveal-fade,body.gsap-ready .reveal-clip{opacity:1!important;clip-path:none!important;transform:none!important}
+            body.gsap-ready .work-item-bg img{transform:none!important}
+            body.gsap-ready .intro-eyebrow::before{transform:none!important}
+        }
     </style>
 </head>
 <body>
@@ -299,7 +325,7 @@
             <img src="cta-float.webp" alt="" loading="lazy">
         </div>
         <div class="hero-content">
-            <h1 class="hero-headline">The coordination layer<br>for persistent intelligence.</h1>
+            <h1 class="hero-headline" data-split>The coordination layer<br>for persistent intelligence.</h1>
         </div>
         <span class="hero-scroll">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14"/><path d="m19 12-7 7-7-7"/></svg>
@@ -314,13 +340,13 @@
                 <div class="intro-eyebrow">Why this exists</div>
             </div>
             <div class="intro-body">
-                <p class="intro-lead">Intelligence without memory is novelty. <em>Coordination without authenticity is theater.</em></p>
+                <p class="intro-lead" data-split>Intelligence without memory is novelty. <em>Coordination without authenticity is theater.</em></p>
                 <div class="intro-prose">
                     <p>Current AI tooling optimizes for isolated, stateless responses. Agents reset with each interaction. Conversations carry no continuity. Identities can be fabricated without friction. The underlying assumption was that generating convincing output was the primary challenge. It was not. <strong>Persistence, provenance, and verifiable coordination across time and agents</strong> are the primary challenges.</p>
                     <p>This work builds the coordination layer for persistent human and machine intelligence. Public repositories address orchestration, authenticity, continuity, sovereignty, and experiential memory. Components are released as they demonstrate stability. Experiments remain visible so the distinction between what holds and what does not stays explicit.</p>
                 </div>
                 <div class="intro-sig">
-                    <p class="intro-tagline"><strong>AEGNTIC:</strong> Adaptive Evolution of human + machine intelligence that lasts.</p>
+                    <p class="intro-tagline" data-split><strong>AEGNTIC:</strong> Adaptive Evolution of human + machine intelligence that lasts.</p>
                 </div>
             </div>
         </div>
@@ -329,7 +355,7 @@
     <!-- WORK -->
     <section class="work" id="work">
         <div class="section-label">Selected Work</div>
-        <h2 class="section-heading">Building the coordination layer.</h2>
+        <h2 class="section-heading" data-split>Building the coordination layer.</h2>
         <p class="section-desc">Open-source infrastructure. Some shipping, some still experiment. Each project part of one ongoing attempt.</p>
         <div class="work-grid">
             <a href="https://clawreform.com" target="_blank" rel="noopener" class="work-item">
@@ -404,7 +430,7 @@
     <!-- SERVICES -->
     <section class="services" id="services">
         <div class="section-label">Core Modules</div>
-        <h2 class="section-heading">Five pillars of the coordination layer.</h2>
+        <h2 class="section-heading" data-split>Five pillars of the coordination layer.</h2>
         <p class="section-desc">Five modules. Open source. Some shipping, some in progress, all part of the same question.</p>
         <div class="services-stack">
             <div class="service-card">
@@ -467,7 +493,7 @@
 
     <!-- CTA -->
     <section class="cta" id="contact">
-        <h2 class="cta-display">Don't<br>be shy.</h2>
+        <h2 class="cta-display" data-split>Don't<br>be shy.</h2>
         <p class="cta-sub">Explore the coordination layer. Open source. Built in the open.</p>
         <a href="https://github.com/aegntic" target="_blank" rel="noopener" class="cta-btn">
             <span>Enter the Layer</span>
@@ -583,6 +609,149 @@
                 });
             }
         }
+
+        // ── GSAP TEXT EFFECTS ──
+        (function(){
+            if(!window.gsap||!window.ScrollTrigger){return}
+            gsap.registerPlugin(ScrollTrigger);
+            const reduce=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+            document.body.classList.add('gsap-ready');
+
+            // Cancel hero CSS fade so GSAP controls it
+            if(reduce){
+                document.querySelectorAll('[data-split] .split-inner,[data-split]').forEach(()=>{});
+                // Force-show everything
+                gsap.set('[data-split] .split-inner',{clearProps:'all'});
+                gsap.set('.reveal-fade,.reveal-clip',{clearProps:'all'});
+                gsap.set('.work-item-bg img',{clearProps:'transform'});
+                gsap.set('.intro-eyebrow::before',{clearProps:'all'}); // noop, pseudo handled by CSS
+                return;
+            }
+
+            // Word splitter — preserves <em>/<strong> as opaque word units, keeps <br>
+            function splitWords(el){
+                const nodes=Array.from(el.childNodes);
+                el.innerHTML='';
+                nodes.forEach(n=>{
+                    if(n.nodeType===3){
+                        const parts=n.textContent.split(/(\s+)/);
+                        parts.forEach(p=>{
+                            if(p===''){return}
+                            if(/^\s+$/.test(p)){el.appendChild(document.createTextNode(' '));return}
+                            const mask=document.createElement('span');mask.className='split-mask';
+                            const inner=document.createElement('span');inner.className='split-inner';inner.textContent=p;
+                            mask.appendChild(inner);el.appendChild(mask);
+                        });
+                    } else if(n.nodeType===1){
+                        const tag=n.tagName.toLowerCase();
+                        if(tag==='br'){el.appendChild(n);return}
+                        const mask=document.createElement('span');mask.className='split-mask';
+                        n.classList.add('split-inner');
+                        mask.appendChild(n);el.appendChild(mask);
+                    }
+                });
+            }
+
+            // Run split on every [data-split]
+            document.querySelectorAll('[data-split]').forEach(splitWords);
+
+            const ease='expo.out';
+            const easeSoft='power3.out';
+
+            // ── HERO timeline (runs after loader) ──
+            const heroTL=gsap.timeline({delay:0.4});
+            heroTL.fromTo('.hero-headline .split-inner',
+                {yPercent:110},
+                {yPercent:0,duration:1.1,ease:ease,stagger:0.06}
+            );
+
+            // ── Scroll-triggered word reveals ──
+            gsap.utils.toArray('.intro-lead, .section-heading, .intro-tagline, .cta-display').forEach(el=>{
+                const inners=el.querySelectorAll('.split-inner');
+                if(!inners.length){return}
+                gsap.fromTo(inners,
+                    {yPercent:110},
+                    {yPercent:0,duration:0.95,ease:ease,stagger:0.05,
+                    scrollTrigger:{trigger:el,start:'top 85%'}}
+                );
+            });
+
+            // ── Intro eyebrow line draw + fade ──
+            gsap.to('.intro-eyebrow::before',{}); // pseudo handled via CSS class toggle
+            document.querySelectorAll('.intro-eyebrow').forEach(el=>{
+                gsap.fromTo(el,{opacity:0,x:-12},{
+                    opacity:1,x:0,duration:0.7,ease:easeSoft,
+                    scrollTrigger:{trigger:el,start:'top 88%'}
+                });
+            });
+            // Pseudo line draw — animate via CSS class
+            document.querySelectorAll('.intro-eyebrow').forEach(el=>{
+                ScrollTrigger.create({
+                    trigger:el,start:'top 88%',
+                    onEnter:()=>el.classList.add('line-drawn'),
+                    onLeaveBack:()=>el.classList.remove('line-drawn')
+                });
+            });
+
+            // ── Prose / desc / sub fade-up ──
+            gsap.utils.toArray('.intro-prose p, .section-desc, .cta-sub').forEach(el=>{
+                gsap.fromTo(el,{y:32,opacity:0},{
+                    y:0,opacity:1,duration:1.0,ease:easeSoft,
+                    scrollTrigger:{trigger:el,start:'top 88%'}
+                });
+            });
+
+            // ── Work card directional clip reveal ──
+            const clips=[
+                'inset(0 100% 0 0)',
+                'inset(0 0 100% 0)',
+                'inset(0 0 0 100%)',
+                'inset(100% 0 0 0)'
+            ];
+            ScrollTrigger.create({
+                trigger:'.work-grid',start:'top 80%',
+                onEnter:()=>{
+                    document.querySelectorAll('.work-item').forEach((card,i)=>{
+                        gsap.fromTo(card,{
+                            clipPath:clips[i%clips.length],opacity:1
+                        },{
+                            clipPath:'inset(0 0 0 0)',duration:1.1,ease:'power4.inOut',delay:i*0.1
+                        });
+                    });
+                    document.querySelectorAll('.work-item-bg img').forEach((img,i)=>{
+                        gsap.to(img,{
+                            scale:1,duration:1.4,ease:'power3.out',delay:i*0.1
+                        });
+                    });
+                },
+                once:true
+            });
+
+            // ── Service cards: title + desc fade-in on stack entry ──
+            // Each card animates once when first entering viewport
+            document.querySelectorAll('.service-card').forEach(card=>{
+                const title=card.querySelector('.service-title');
+                const desc=card.querySelector('.service-desc');
+                const tags=card.querySelectorAll('.service-tag');
+                if(!title){return}
+                gsap.fromTo([title,desc],{y:24,opacity:0},{
+                    y:0,opacity:1,duration:0.8,ease:easeSoft,stagger:0.08,
+                    scrollTrigger:{trigger:card,start:'top 80%'}
+                });
+                gsap.fromTo(tags,{y:14,opacity:0},{
+                    y:0,opacity:1,duration:0.5,ease:easeSoft,stagger:0.05,
+                    scrollTrigger:{trigger:card,start:'top 78%'}
+                });
+            });
+
+            // ── Section labels (Selected Work / Core Modules) line+fade ──
+            document.querySelectorAll('.section-label').forEach(el=>{
+                gsap.fromTo(el,{opacity:0,y:-10},{
+                    opacity:1,y:0,duration:0.7,ease:easeSoft,
+                    scrollTrigger:{trigger:el,start:'top 90%'}
+                });
+            });
+        })();
     </script>
 </body>
 </html>
