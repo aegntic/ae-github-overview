@@ -1,0 +1,594 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sydney Autonomous Ecosystem — Aegntic Orchestration Layer</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;600&display=swap');
+
+        body {
+            font-family: 'Inter', system-ui, sans-serif;
+        }
+
+        .heading {
+            font-family: 'Space Grotesk', 'Inter', system-ui, sans-serif;
+            font-weight: 600;
+            letter-spacing: -0.025em;
+        }
+
+        .glass {
+            background: rgba(255,255,255,0.06);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .node {
+            transition: all 0.2s cubic-bezier(0.23, 1, 0.32, 1);
+        }
+
+        .info-panel {
+            transition: all 0.3s cubic-bezier(0.23, 1, 0.32, 1);
+        }
+
+        .flow-label {
+            font-size: 11px;
+            font-weight: 500;
+            letter-spacing: 0.5px;
+        }
+    </style>
+</head>
+<body class="bg-[#050505] text-white">
+    <div class="max-w-7xl mx-auto px-6 pt-8 pb-12">
+        <!-- Header -->
+        <div class="flex items-end justify-between mb-8">
+            <div>
+                <div class="flex items-center gap-x-3 mb-2">
+                    <div class="w-9 h-9 rounded-2xl bg-gradient-to-br from-cyan-400 to-violet-500 flex items-center justify-center">
+                        <span class="text-black font-bold text-xl tracking-tighter">A</span>
+                    </div>
+                    <div>
+                        <span class="text-3xl font-semibold tracking-tighter">AEGNTIC</span>
+                    </div>
+                </div>
+                <h1 class="text-5xl heading tracking-tighter">Sydney Autonomous Ecosystem</h1>
+                <p class="text-xl text-white/60 mt-1">Aegntic Orchestration Layer v2 — Interactive</p>
+            </div>
+
+            <div class="flex items-center gap-x-3">
+                <button onclick="resetAll()"
+                        class="px-5 py-2.5 rounded-2xl border border-white/15 hover:bg-white/5 flex items-center gap-x-2 text-sm transition-all">
+                    <i class="fa-solid fa-undo"></i>
+                    <span>Reset View</span>
+                </button>
+                <button onclick="highlightAllFlows()"
+                        class="px-5 py-2.5 rounded-2xl bg-white text-black flex items-center gap-x-2 text-sm font-medium transition-all hover:bg-white/90">
+                    <span>Show All Flows</span>
+                </button>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+            <!-- WebGL2 Canvas -->
+            <div class="lg:col-span-8">
+                <div class="glass rounded-3xl p-3 border border-white/10">
+                    <canvas id="ecosystem-canvas" width="1100" height="720" class="w-full rounded-2xl bg-[#050505]"></canvas>
+                </div>
+                <div class="flex justify-between items-center mt-3 px-2 text-xs text-white/40">
+                    <div>Click any subsystem to highlight its flows • Hover connections for details</div>
+                    <div class="font-mono">WEBGL2</div>
+                </div>
+            </div>
+
+            <!-- Info Panel -->
+            <div class="lg:col-span-4">
+                <div class="glass rounded-3xl p-6 border border-white/10 h-full flex flex-col">
+                    <div id="info-content">
+                        <div class="text-white/60 text-sm mb-4">Select a subsystem or connection to explore data flows</div>
+
+                        <div class="space-y-4">
+                            <div>
+                                <div class="text-xs text-white/50 mb-1.5">CENTRAL ORCHESTRATION</div>
+                                <div class="font-semibold text-lg">Aegntic Orchestration Core</div>
+                                <div class="text-sm text-white/70 mt-1">Coordinates all autonomous agents, memory, and execution across the ecosystem.</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mt-auto pt-6 border-t border-white/10">
+                        <div class="text-xs text-white/50 mb-3">KEY PRINCIPLES</div>
+                        <div class="grid grid-cols-2 gap-2 text-xs">
+                            <div class="flex items-center gap-x-2">
+                                <div class="w-2 h-2 rounded-full bg-cyan-400"></div>
+                                <span>Outbound from Core</span>
+                            </div>
+                            <div class="flex items-center gap-x-2">
+                                <div class="w-2 h-2 rounded-full bg-violet-400"></div>
+                                <span>Inbound to Core</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Legend -->
+        <div class="mt-6 flex flex-wrap gap-x-8 gap-y-2 text-xs text-white/50 px-1">
+            <div class="flex items-center gap-x-2">
+                <div class="w-3 h-px bg-cyan-400"></div>
+                <span>Core → Subsystem (Commands / Tasks)</span>
+            </div>
+            <div class="flex items-center gap-x-2">
+                <div class="w-3 h-px bg-violet-400"></div>
+                <span>Subsystem → Core (Signals / Data)</span>
+            </div>
+            <div>Click nodes to isolate relevant flows</div>
+        </div>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('ecosystem-canvas');
+        const gl = canvas.getContext('webgl2', { antialias: true, alpha: true });
+
+        if (!gl) {
+            document.body.innerHTML = '<div class="p-8 text-center text-red-400">WebGL2 not supported in this browser.</div>';
+            throw new Error('WebGL2 required');
+        }
+
+        // Data model
+        const core = { x: 550, y: 360, radius: 52, label: "Aegntic\nOrchestration Core" };
+
+        const subsystems = [
+            { id: 'polymarket', x: 220, y: 180, label: "Polymarket\nIntelligence Hub", color: [0.4, 0.95, 0.85] },
+            { id: 'yt',        x: 880, y: 180, label: "YT Autonomous\nContent Engine", color: [0.6, 0.5, 0.95] },
+            { id: 'rag',       x: 920, y: 520, label: "RAG + Vector\nMemory Layer", color: [0.5, 0.75, 0.95] },
+            { id: 'planning',  x: 180, y: 520, label: "Systemic Brief\n& Planning Engine", color: [0.95, 0.7, 0.4] },
+            { id: 'telegram',  x: 550, y: 620, label: "Telegram\nInterface Layer", color: [0.4, 0.85, 0.6] },
+            { id: 'observation', x: 300, y: 360, label: "Observation &\nData Ingestion", color: [0.85, 0.5, 0.7] }
+        ];
+
+        // Flow definitions (from -> to, label, direction)
+        const flows = [
+            { from: 'core', to: 'polymarket', label: "Market Signals", direction: 'out' },
+            { from: 'polymarket', to: 'core', label: "Market Signals", direction: 'in' },
+            { from: 'core', to: 'yt', label: "Agent Briefs & Tasks", direction: 'out' },
+            { from: 'yt', to: 'core', label: "Content Status", direction: 'in' },
+            { from: 'core', to: 'rag', label: "Memory Reads/Writes", direction: 'out' },
+            { from: 'rag', to: 'core', label: "Memory Reads/Writes", direction: 'in' },
+            { from: 'core', to: 'planning', label: "Agent Briefs & Tasks", direction: 'out' },
+            { from: 'planning', to: 'core', label: "Brief Results", direction: 'in' },
+            { from: 'telegram', to: 'core', label: "User Commands", direction: 'in' },
+            { from: 'core', to: 'telegram', label: "Responses", direction: 'out' },
+            { from: 'observation', to: 'core', label: "Observation Data", direction: 'in' },
+            { from: 'core', to: 'observation', label: "Observation Queries", direction: 'out' }
+        ];
+
+        let selectedNode = null;
+        let hoveredFlow = null;
+
+        // Mouse handling
+        let mouseX = 0, mouseY = 0;
+
+        canvas.addEventListener('mousemove', (e) => {
+            const rect = canvas.getBoundingClientRect();
+            mouseX = e.clientX - rect.left;
+            mouseY = e.clientY - rect.top;
+
+            // Check hover on flows
+            hoveredFlow = null;
+            for (let flow of flows) {
+                const fromNode = flow.from === 'core' ? core : subsystems.find(s => s.id === flow.from);
+                const toNode = flow.to === 'core' ? core : subsystems.find(s => s.id === flow.to);
+
+                if (!fromNode || !toNode) continue;
+
+                const dist = distanceToLine(mouseX, mouseY, fromNode.x, fromNode.y, toNode.x, toNode.y);
+                if (dist < 18) {
+                    hoveredFlow = flow;
+                    break;
+                }
+            }
+
+            canvas.style.cursor = hoveredFlow ? 'pointer' : 'default';
+        });
+
+        canvas.addEventListener('click', (e) => {
+            const rect = canvas.getBoundingClientRect();
+            const clickX = e.clientX - rect.left;
+            const clickY = e.clientY - rect.top;
+
+            // Check if clicked on a subsystem
+            let clicked = false;
+            for (let sub of subsystems) {
+                const dx = clickX - sub.x;
+                const dy = clickY - sub.y;
+                if (Math.sqrt(dx*dx + dy*dy) < 48) {
+                    selectedNode = sub;
+                    updateInfoPanel(sub);
+                    clicked = true;
+                    break;
+                }
+            }
+
+            if (!clicked) {
+                // Clicked on core or background
+                const dx = clickX - core.x;
+                const dy = clickY - core.y;
+                if (Math.sqrt(dx*dx + dy*dy) < core.radius + 10) {
+                    selectedNode = core;
+                    updateInfoPanel(core);
+                } else {
+                    selectedNode = null;
+                    updateInfoPanel(null);
+                }
+            }
+        });
+
+        function updateInfoPanel(node) {
+            const panel = document.getElementById('info-content');
+
+            if (!node) {
+                panel.innerHTML = `
+                    <div class="text-white/60 text-sm mb-4">Select a subsystem or connection to explore data flows</div>
+                    <div class="space-y-4">
+                        <div>
+                            <div class="text-xs text-white/50 mb-1.5">CENTRAL ORCHESTRATION</div>
+                            <div class="font-semibold text-lg">Aegntic Orchestration Core</div>
+                            <div class="text-sm text-white/70 mt-1">Coordinates all autonomous agents, memory, and execution across the ecosystem.</div>
+                        </div>
+                    </div>
+                `;
+                return;
+            }
+
+            if (node === core) {
+                panel.innerHTML = `
+                    <div>
+                        <div class="text-xs text-cyan-400 mb-1">CENTRAL HUB</div>
+                        <div class="font-semibold text-2xl tracking-tight mb-3">${node.label.replace('\n', ' ')}</div>
+                        <div class="text-sm text-white/75">The living coordination layer. Routes tasks, manages memory state, and maintains continuity across all autonomous subsystems.</div>
+
+                        <div class="mt-6 text-xs text-white/50">CONNECTED SUBSYSTEMS</div>
+                        <div class="mt-2 flex flex-wrap gap-1.5">
+                            ${subsystems.map(s => `<div class="px-3 py-1 bg-white/5 rounded-full text-xs">${s.label.split('\n')[0]}</div>`).join('')}
+                        </div>
+                    </div>
+                `;
+            } else {
+                const relevantFlows = flows.filter(f => f.from === node.id || f.to === node.id);
+
+                let html = `
+                    <div>
+                        <div class="text-xs text-white/50 mb-1">SUBSYSTEM</div>
+                        <div class="font-semibold text-2xl tracking-tight mb-4">${node.label.replace('\n', '<br>')}</div>
+                `;
+
+                if (relevantFlows.length > 0) {
+                    html += `<div class="text-xs text-white/50 mb-2">DATA FLOWS</div><div class="space-y-2">`;
+                    relevantFlows.forEach(flow => {
+                        const other = flow.from === node.id ?
+                            (flow.to === 'core' ? 'Core' : subsystems.find(s => s.id === flow.to)?.label.split('\n')[0]) :
+                            (flow.from === 'core' ? 'Core' : subsystems.find(s => s.id === flow.from)?.label.split('\n')[0]);
+
+                        html += `
+                            <div class="flex items-center gap-x-2 text-sm">
+                                <div class="w-2 h-2 rounded-full ${flow.direction === 'out' ? 'bg-cyan-400' : 'bg-violet-400'}"></div>
+                                <span class="text-white/80">${flow.label}</span>
+                                <span class="text-white/40">→ ${other}</span>
+                            </div>
+                        `;
+                    });
+                    html += `</div>`;
+                }
+
+                html += `</div>`;
+                panel.innerHTML = html;
+            }
+        }
+
+        function distanceToLine(px, py, x1, y1, x2, y2) {
+            const A = px - x1;
+            const B = py - y1;
+            const C = x2 - x1;
+            const D = y2 - y1;
+
+            const dot = A * C + B * D;
+            const lenSq = C * C + D * D;
+            let param = -1;
+            if (lenSq !== 0) param = dot / lenSq;
+
+            let xx, yy;
+            if (param < 0) {
+                xx = x1; yy = y1;
+            } else if (param > 1) {
+                xx = x2; yy = y2;
+            } else {
+                xx = x1 + param * C;
+                yy = y1 + param * D;
+            }
+
+            const dx = px - xx;
+            const dy = py - yy;
+            return Math.sqrt(dx * dx + dy * dy);
+        }
+
+        // WebGL2 Setup
+        const vertexShaderSource = `#version 300 es
+            in vec2 a_position;
+            uniform vec2 u_resolution;
+            out vec2 v_uv;
+
+            void main() {
+                vec2 pos = a_position;
+                gl_Position = vec4(pos, 0.0, 1.0);
+                v_uv = pos * 0.5 + 0.5;
+            }
+        `;
+
+        const fragmentShaderSource = `#version 300 es
+            precision highp float;
+
+            uniform vec2 u_resolution;
+            uniform float u_time;
+            uniform vec2 u_mouse;
+            uniform int u_selected;
+            uniform int u_hoveredFlow;
+
+            out vec4 fragColor;
+
+            float sdCircle(vec2 p, float r) {
+                return length(p) - r;
+            }
+
+            float glow(float d, float r, float intensity) {
+                return pow(max(0.0, 1.0 - d / r), intensity);
+            }
+
+            void main() {
+                vec2 uv = (gl_FragCoord.xy - 0.5 * u_resolution.xy) / min(u_resolution.x, u_resolution.y);
+                vec2 mouseUV = (u_mouse - 0.5 * u_resolution.xy) / min(u_resolution.x, u_resolution.y);
+
+                float t = u_time * 0.8;
+
+                // Subtle background
+                float bg = 0.015;
+
+                // Core glow
+                vec2 coreUV = vec2(0.0); // centered
+                float coreD = sdCircle(uv, 0.095);
+                float coreGlow = glow(coreD, 0.32, 2.2);
+
+                vec3 col = vec3(bg);
+
+                // Core color
+                vec3 coreColor = mix(vec3(0.3, 0.6, 0.95), vec3(0.6, 0.4, 0.95), sin(t * 0.5) * 0.5 + 0.5);
+                col += coreColor * coreGlow * 1.1;
+
+                // Subsystem nodes (simplified positions in UV space)
+                // We'll draw these more precisely in JS, but add base glow here
+                fragColor = vec4(col, 1.0);
+            }
+        `;
+
+        function createShader(type, source) {
+            const shader = gl.createShader(type);
+            gl.shaderSource(shader, source);
+            gl.compileShader(shader);
+            if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
+                console.error(gl.getShaderInfoLog(shader));
+                gl.deleteShader(shader);
+                return null;
+            }
+            return shader;
+        }
+
+        const vs = createShader(gl.VERTEX_SHADER, vertexShaderSource);
+        const fs = createShader(gl.FRAGMENT_SHADER, fragmentShaderSource);
+
+        const program = gl.createProgram();
+        gl.attachShader(program, vs);
+        gl.attachShader(program, fs);
+        gl.linkProgram(program);
+
+        if (!gl.getProgramParameter(program, gl.LINK_STATUS)) {
+            console.error(gl.getProgramInfoLog(program));
+        }
+
+        // Fullscreen quad
+        const positions = new Float32Array([
+            -1, -1,  1, -1,  -1, 1,
+            -1,  1,  1, -1,   1, 1
+        ]);
+
+        const vbo = gl.createBuffer();
+        gl.bindBuffer(gl.ARRAY_BUFFER, vbo);
+        gl.bufferData(gl.ARRAY_BUFFER, positions, gl.STATIC_DRAW);
+
+        const posLoc = gl.getAttribLocation(program, 'a_position');
+        gl.enableVertexAttribArray(posLoc);
+        gl.vertexAttribPointer(posLoc, 2, gl.FLOAT, false, 0, 0);
+
+        let time = 0;
+
+        function draw() {
+            gl.viewport(0, 0, canvas.width, canvas.height);
+            gl.clearColor(0.02, 0.02, 0.02, 1.0);
+            gl.clear(gl.COLOR_BUFFER_BIT);
+
+            gl.useProgram(program);
+
+            const resLoc = gl.getUniformLocation(program, 'u_resolution');
+            const timeLoc = gl.getUniformLocation(program, 'u_time');
+            const mouseLoc = gl.getUniformLocation(program, 'u_mouse');
+
+            gl.uniform2f(resLoc, canvas.width, canvas.height);
+            gl.uniform1f(timeLoc, time);
+            gl.uniform2f(mouseLoc, mouseX, mouseY);
+
+            gl.drawArrays(gl.TRIANGLES, 0, 6);
+
+            // Draw connections and nodes using 2D context overlay (hybrid approach for clarity)
+            const ctx = canvas.getContext('2d');
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // Draw flows
+            ctx.lineWidth = 2.5;
+            ctx.lineJoin = 'round';
+            ctx.lineCap = 'round';
+
+            flows.forEach((flow, index) => {
+                const from = flow.from === 'core' ? core : subsystems.find(s => s.id === flow.from);
+                const to = flow.to === 'core' ? core : subsystems.find(s => s.id === flow.to);
+
+                if (!from || !to) return;
+
+                const isHighlighted = selectedNode &&
+                    (selectedNode === core || selectedNode.id === flow.from || selectedNode.id === flow.to);
+
+                const isHovered = hoveredFlow === flow;
+
+                let alpha = 0.35;
+                let lineWidth = 2.2;
+
+                if (isHighlighted) {
+                    alpha = 0.95;
+                    lineWidth = 3.5;
+                }
+                if (isHovered) {
+                    alpha = 1.0;
+                    lineWidth = 4.5;
+                }
+
+                // Color based on direction
+                const color = flow.direction === 'out' ?
+                    `rgba(103, 232, 249, ${alpha})` :
+                    `rgba(167, 139, 250, ${alpha})`;
+
+                ctx.strokeStyle = color;
+                ctx.lineWidth = lineWidth;
+
+                // Draw line
+                ctx.beginPath();
+                ctx.moveTo(from.x, from.y);
+                ctx.lineTo(to.x, to.y);
+                ctx.stroke();
+
+                // Draw arrow head
+                const angle = Math.atan2(to.y - from.y, to.x - from.x);
+                const arrowSize = isHighlighted || isHovered ? 11 : 8;
+
+                ctx.beginPath();
+                ctx.moveTo(to.x, to.y);
+                ctx.lineTo(
+                    to.x - arrowSize * Math.cos(angle - 0.4),
+                    to.y - arrowSize * Math.sin(angle - 0.4)
+                );
+                ctx.lineTo(
+                    to.x - arrowSize * Math.cos(angle + 0.4),
+                    to.y - arrowSize * Math.sin(angle + 0.4)
+                );
+                ctx.closePath();
+                ctx.fillStyle = color;
+                ctx.fill();
+
+                // Flow label on hover or when highlighted
+                if (isHovered || (isHighlighted && selectedNode)) {
+                    const midX = (from.x + to.x) / 2;
+                    const midY = (from.y + to.y) / 2 - 8;
+
+                    ctx.font = '600 11px Inter, system-ui';
+                    ctx.fillStyle = 'rgba(255,255,255,0.95)';
+                    ctx.textAlign = 'center';
+                    ctx.fillText(flow.label, midX, midY);
+                }
+            });
+
+            // Draw core
+            const coreGlow = Math.sin(time * 1.5) * 4 + 8;
+            ctx.strokeStyle = 'rgba(103, 232, 249, 0.3)';
+            ctx.lineWidth = 18;
+            ctx.beginPath();
+            ctx.arc(core.x, core.y, core.radius + 6, 0, Math.PI * 2);
+            ctx.stroke();
+
+            ctx.fillStyle = '#67e8f9';
+            ctx.beginPath();
+            ctx.arc(core.x, core.y, core.radius, 0, Math.PI * 2);
+            ctx.fill();
+
+            ctx.fillStyle = 'rgba(255,255,255,0.95)';
+            ctx.font = '700 13px Inter, system-ui';
+            ctx.textAlign = 'center';
+            const coreLines = core.label.split('\n');
+            coreLines.forEach((line, i) => {
+                ctx.fillText(line, core.x, core.y - 4 + i * 16);
+            });
+
+            // Draw subsystems
+            subsystems.forEach((sub, index) => {
+                const isSelected = selectedNode && selectedNode.id === sub.id;
+                const isHoveredNode = distanceToLine(mouseX, mouseY, sub.x, sub.y, sub.x, sub.y) < 42; // rough
+
+                const size = isSelected ? 46 : 42;
+                const glowSize = isSelected ? 14 : 9;
+
+                // Glow
+                ctx.strokeStyle = `rgba(${sub.color[0]*255}, ${sub.color[1]*255}, ${sub.color[2]*255}, ${isSelected ? 0.5 : 0.25})`;
+                ctx.lineWidth = glowSize;
+                ctx.beginPath();
+                ctx.arc(sub.x, sub.y, size + 4, 0, Math.PI * 2);
+                ctx.stroke();
+
+                // Node
+                ctx.fillStyle = `rgb(${sub.color[0]*255}, ${sub.color[1]*255}, ${sub.color[2]*255})`;
+                ctx.beginPath();
+                ctx.arc(sub.x, sub.y, size, 0, Math.PI * 2);
+                ctx.fill();
+
+                // Label
+                ctx.fillStyle = 'white';
+                ctx.font = isSelected ? '700 12px Inter, system-ui' : '600 11px Inter, system-ui';
+                ctx.textAlign = 'center';
+
+                const lines = sub.label.split('\n');
+                lines.forEach((line, i) => {
+                    ctx.fillText(line, sub.x, sub.y - 3 + (i * 14));
+                });
+            });
+
+            time += 0.016;
+            requestAnimationFrame(draw);
+        }
+
+        function highlightAllFlows() {
+            selectedNode = core;
+            updateInfoPanel(core);
+        }
+
+        function resetAll() {
+            selectedNode = null;
+            hoveredFlow = null;
+            updateInfoPanel(null);
+        }
+
+        // Boot
+        function init() {
+            updateInfoPanel(null);
+            draw();
+
+            // Initial subtle animation hint
+            setTimeout(() => {
+                if (!selectedNode) {
+                    // Could add a one-time pulse on core if wanted
+                }
+            }, 1200);
+
+            console.log('%c[Sydney Ecosystem] Interactive WebGL2 architecture diagram initialized.', 'color:#555');
+        }
+
+        window.onload = init;
+    </script>
+</body>
+</html>
