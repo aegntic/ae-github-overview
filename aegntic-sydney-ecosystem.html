@@ -78,7 +78,7 @@
                 </div>
                 <div class="flex justify-between items-center mt-3 px-2 text-xs text-white/40">
                     <div>Click any subsystem to highlight its flows • Hover connections for details</div>
-                    <div class="font-mono">WEBGL2</div>
+                    <div class="font-mono">CANVAS 2D</div>
                 </div>
             </div>
 
@@ -130,11 +130,11 @@
 
     <script>
         const canvas = document.getElementById('ecosystem-canvas');
-        const gl = canvas.getContext('webgl2', { antialias: true, alpha: true });
+        const ctx = canvas.getContext('2d');
 
-        if (!gl) {
-            document.body.innerHTML = '<div class="p-8 text-center text-red-400">WebGL2 not supported in this browser.</div>';
-            throw new Error('WebGL2 required');
+        if (!ctx) {
+            document.body.innerHTML = '<div class="p-8 text-center text-red-400">Canvas 2D not supported in this browser.</div>';
+            throw new Error('Canvas 2D required');
         }
 
         // Data model
@@ -314,124 +314,29 @@
             return Math.sqrt(dx * dx + dy * dy);
         }
 
-        // WebGL2 Setup
-        const vertexShaderSource = `#version 300 es
-            in vec2 a_position;
-            uniform vec2 u_resolution;
-            out vec2 v_uv;
-
-            void main() {
-                vec2 pos = a_position;
-                gl_Position = vec4(pos, 0.0, 1.0);
-                v_uv = pos * 0.5 + 0.5;
-            }
-        `;
-
-        const fragmentShaderSource = `#version 300 es
-            precision highp float;
-
-            uniform vec2 u_resolution;
-            uniform float u_time;
-            uniform vec2 u_mouse;
-            uniform int u_selected;
-            uniform int u_hoveredFlow;
-
-            out vec4 fragColor;
-
-            float sdCircle(vec2 p, float r) {
-                return length(p) - r;
-            }
-
-            float glow(float d, float r, float intensity) {
-                return pow(max(0.0, 1.0 - d / r), intensity);
-            }
-
-            void main() {
-                vec2 uv = (gl_FragCoord.xy - 0.5 * u_resolution.xy) / min(u_resolution.x, u_resolution.y);
-                vec2 mouseUV = (u_mouse - 0.5 * u_resolution.xy) / min(u_resolution.x, u_resolution.y);
-
-                float t = u_time * 0.8;
-
-                // Subtle background
-                float bg = 0.015;
-
-                // Core glow
-                vec2 coreUV = vec2(0.0); // centered
-                float coreD = sdCircle(uv, 0.095);
-                float coreGlow = glow(coreD, 0.32, 2.2);
-
-                vec3 col = vec3(bg);
-
-                // Core color
-                vec3 coreColor = mix(vec3(0.3, 0.6, 0.95), vec3(0.6, 0.4, 0.95), sin(t * 0.5) * 0.5 + 0.5);
-                col += coreColor * coreGlow * 1.1;
-
-                // Subsystem nodes (simplified positions in UV space)
-                // We'll draw these more precisely in JS, but add base glow here
-                fragColor = vec4(col, 1.0);
-            }
-        `;
-
-        function createShader(type, source) {
-            const shader = gl.createShader(type);
-            gl.shaderSource(shader, source);
-            gl.compileShader(shader);
-            if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
-                console.error(gl.getShaderInfoLog(shader));
-                gl.deleteShader(shader);
-                return null;
-            }
-            return shader;
-        }
-
-        const vs = createShader(gl.VERTEX_SHADER, vertexShaderSource);
-        const fs = createShader(gl.FRAGMENT_SHADER, fragmentShaderSource);
-
-        const program = gl.createProgram();
-        gl.attachShader(program, vs);
-        gl.attachShader(program, fs);
-        gl.linkProgram(program);
-
-        if (!gl.getProgramParameter(program, gl.LINK_STATUS)) {
-            console.error(gl.getProgramInfoLog(program));
-        }
-
-        // Fullscreen quad
-        const positions = new Float32Array([
-            -1, -1,  1, -1,  -1, 1,
-            -1,  1,  1, -1,   1, 1
-        ]);
-
-        const vbo = gl.createBuffer();
-        gl.bindBuffer(gl.ARRAY_BUFFER, vbo);
-        gl.bufferData(gl.ARRAY_BUFFER, positions, gl.STATIC_DRAW);
-
-        const posLoc = gl.getAttribLocation(program, 'a_position');
-        gl.enableVertexAttribArray(posLoc);
-        gl.vertexAttribPointer(posLoc, 2, gl.FLOAT, false, 0, 0);
-
         let time = 0;
 
         function draw() {
-            gl.viewport(0, 0, canvas.width, canvas.height);
-            gl.clearColor(0.02, 0.02, 0.02, 1.0);
-            gl.clear(gl.COLOR_BUFFER_BIT);
+            // Background
+            ctx.fillStyle = '#050505';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-            gl.useProgram(program);
+            // Ambient radial glow from core
+            const bgGrad = ctx.createRadialGradient(core.x, core.y, 40, core.x, core.y, 520);
+            bgGrad.addColorStop(0, 'rgba(80, 110, 200, 0.18)');
+            bgGrad.addColorStop(0.4, 'rgba(60, 50, 130, 0.08)');
+            bgGrad.addColorStop(1, 'rgba(5, 5, 5, 0)');
+            ctx.fillStyle = bgGrad;
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-            const resLoc = gl.getUniformLocation(program, 'u_resolution');
-            const timeLoc = gl.getUniformLocation(program, 'u_time');
-            const mouseLoc = gl.getUniformLocation(program, 'u_mouse');
-
-            gl.uniform2f(resLoc, canvas.width, canvas.height);
-            gl.uniform1f(timeLoc, time);
-            gl.uniform2f(mouseLoc, mouseX, mouseY);
-
-            gl.drawArrays(gl.TRIANGLES, 0, 6);
-
-            // Draw connections and nodes using 2D context overlay (hybrid approach for clarity)
-            const ctx = canvas.getContext('2d');
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            // Subtle subsystem ambient glows
+            subsystems.forEach(sub => {
+                const sg = ctx.createRadialGradient(sub.x, sub.y, 10, sub.x, sub.y, 160);
+                sg.addColorStop(0, `rgba(${sub.color[0]*255}, ${sub.color[1]*255}, ${sub.color[2]*255}, 0.12)`);
+                sg.addColorStop(1, `rgba(${sub.color[0]*255}, ${sub.color[1]*255}, ${sub.color[2]*255}, 0)`);
+                ctx.fillStyle = sg;
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+            });
 
             // Draw flows
             ctx.lineWidth = 2.5;
@@ -585,7 +490,7 @@
                 }
             }, 1200);
 
-            console.log('%c[Sydney Ecosystem] Interactive WebGL2 architecture diagram initialized.', 'color:#555');
+            console.log('%c[Sydney Ecosystem] Interactive Canvas 2D architecture diagram initialized.', 'color:#555');
         }
 
         window.onload = init;
