@@ -136,10 +136,24 @@
         .section-desc{font-size:clamp(0.9375rem,1.2vw,1.0625rem);color:var(--text-muted);line-height:1.6;max-width:48ch;margin-bottom:3rem}
 
         /* ── INTRO / MANIFESTO ── */
-        .intro{padding:7rem 1rem 5rem;border-top:1px solid rgba(17,24,28,0.06)}
+        .intro{position:relative;padding:7rem 1rem 5rem;border-top:1px solid rgba(17,24,28,0.06);overflow:visible}
         @media(min-width:768px){.intro{padding:9rem 2rem 7rem}}
         @media(min-width:1024px){.intro{padding:11rem 3rem 9rem}}
         @media(min-width:1280px){.intro{padding:13rem 5rem 11rem}}
+
+        /* Hook line — full-width thesis statement before the grid */
+        .intro-hook{max-width:1400px;margin:0 auto 5rem;font-family:'Space Grotesk','Inter',sans-serif;font-size:clamp(2rem,4.5vw,3.75rem);font-weight:500;letter-spacing:-0.03em;line-height:1.1;color:var(--text-dark)}
+        .intro-hook em{font-style:normal;color:var(--accent,#00b39f)}
+        @media(min-width:768px){.intro-hook{margin-bottom:6rem}}
+        @media(min-width:1024px){.intro-hook{margin-bottom:7rem}}
+
+        /* Visual anchor figure — clipped partially off left edge */
+        .intro-figure{position:absolute;left:0;top:50%;width:min(38vw,460px);aspect-ratio:1;z-index:0;pointer-events:none;opacity:0}
+        .intro-figure img{width:100%;height:100%;object-fit:cover;display:block;border-radius:1.5rem;animation:floatSlow 8s ease-in-out infinite;box-shadow:0 8px 32px rgba(12,16,22,0.08)}
+        /* Non-JS fallback positioning */
+        body:not(.gsap-ready) .intro-figure{transform:translateX(-22%);opacity:1}
+        @media(max-width:1023px){.intro-figure{display:none}}
+
         .intro-grid{display:grid;grid-template-columns:1fr;gap:2.5rem;max-width:1400px;margin:0 auto}
         @media(min-width:1024px){.intro-grid{grid-template-columns:5fr 7fr;gap:5rem;align-items:start}}
         .intro-meta{display:flex;flex-direction:column;gap:1rem}
@@ -245,6 +259,12 @@
         .cta-btn:hover{transform:scale(1.1)}
         .cta-btn svg{width:1.125rem;height:1.125rem;transition:transform 0.3s var(--ease-spring)}
         .cta-btn:hover svg{transform:translateX(3px)}
+
+        /* CTA floating visual (SOHub careerChair pattern) */
+        .cta-figure{position:absolute;right:-5vw;top:50%;transform:translateY(-50%);width:min(35vw,420px);z-index:1;pointer-events:none}
+        .cta-figure img{width:100%;height:auto;display:block;animation:floatSlow 6s ease-in-out infinite}
+        @media(max-width:767px){.cta-figure{width:min(45vw,260px);right:-10vw;top:65%}}
+        @media(min-width:1280px){.cta-figure{width:min(30vw,480px)}}
 
 
         /* ── FOOTER ── */
@@ -361,6 +381,10 @@
 
     <!-- INTRO / MANIFESTO -->
     <section class="intro" id="manifesto">
+        <div class="intro-figure">
+            <img src="glass_sculpture_render.png" alt="" loading="lazy">
+        </div>
+        <p class="intro-hook" data-split>The coordination layer for <em>persistent</em> human-AI intelligence.</p>
         <div class="intro-grid">
             <div class="intro-meta">
                 <div class="intro-eyebrow">Why this exists</div>
@@ -454,7 +478,7 @@
                 </div>
             </a>
             <a href="https://github.com/aegntic" target="_blank" rel="noopener" class="work-item">
-                <div class="work-item-bg" style="background:linear-gradient(135deg,#12161c 0%,#201c18 50%,#12161c 100%)"></div>
+                <div class="work-item-bg"><img src="work-open-inventory.png" alt="Open Inventory" loading="lazy"></div>
                 <div class="work-item-overlay"></div>
                 <div class="work-item-content">
                     <span class="work-item-sub">Open Source</span>
@@ -533,6 +557,9 @@
 
     <!-- CTA -->
     <section class="cta" id="contact">
+        <div class="cta-figure">
+            <img src="cta-aegnt-figure.png" alt="" loading="lazy">
+        </div>
         <h2 class="cta-display" data-split>Don't<br>be shy.</h2>
         <p class="cta-sub">Explore the coordination layer. Open source. Built in the open.</p>
         <a href="https://github.com/aegntic" target="_blank" rel="noopener" class="cta-btn">
@@ -707,7 +734,7 @@
             );
 
             // ── Scroll-triggered word reveals ──
-            gsap.utils.toArray('.intro-lead, .section-heading, .intro-tagline, .cta-display').forEach(el=>{
+            gsap.utils.toArray('.intro-hook, .intro-lead, .section-heading, .intro-tagline, .cta-display').forEach(el=>{
                 const inners=el.querySelectorAll('.split-inner');
                 if(!inners.length){return}
                 gsap.fromTo(inners,
@@ -732,6 +759,15 @@
                     onEnter:()=>el.classList.add('line-drawn'),
                     onLeaveBack:()=>el.classList.remove('line-drawn')
                 });
+            });
+
+            // ── Intro figure scale-in (clipped off-screen to left) ──
+            gsap.utils.toArray('.intro-figure').forEach(el=>{
+                gsap.fromTo(el,
+                    {xPercent:-40,scale:0.9,opacity:0},
+                    {xPercent:-22,scale:1,opacity:1,duration:1.6,ease:easeSoft,
+                    scrollTrigger:{trigger:'.intro',start:'top 60%',toggleActions:'play none none reverse'}}
+                );
             });
 
             // ── Prose / desc / sub fade-up ──
@@ -798,6 +834,14 @@
                 gsap.fromTo(el,{opacity:0,y:-14},{
                     opacity:1,y:0,duration:0.9,ease:easeSoft,
                     scrollTrigger:{trigger:el,start:'top 88%',toggleActions:'play none none reverse'}
+                });
+            });
+
+            // ── CTA figure float-in ──
+            gsap.utils.toArray('.cta-figure').forEach(el=>{
+                gsap.fromTo(el,{x:80,opacity:0},{
+                    x:0,opacity:1,duration:1.6,ease:easeSoft,
+                    scrollTrigger:{trigger:'.cta',start:'top 70%',toggleActions:'play none none reverse'}
                 });
             });
         })();
