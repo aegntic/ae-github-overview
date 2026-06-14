@@ -5,6 +5,26 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AEGNTIC. Agentic Empowerment, Verified.</title>
     <meta name="description" content="The coordination layer for persistent human and AI intelligence systems. Infrastructure for sovereign persistent agents.">
+    <meta name="theme-color" content="#f0f6f8">
+    <link rel="canonical" href="https://aegntic.ai/">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://aegntic.ai/">
+    <meta property="og:title" content="AEGNTIC — The Coordination Layer for Persistent Human-AI Intelligence">
+    <meta property="og:description" content="The coordination layer for persistent human and AI intelligence systems. Infrastructure for sovereign persistent agents.">
+    <meta property="og:image" content="https://aegntic.ai/og-aegntic-skeleton.png">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="AEGNTIC — The Coordination Layer">
+    <meta name="twitter:description" content="Infrastructure for sovereign persistent human-AI intelligence.">
+    <meta name="twitter:image" content="https://aegntic.ai/og-aegntic-skeleton.png">
+    <script type="application/ld+json">
+    {"@context":"https://schema.org","@type":"Organization","name":"AEGNTIC","url":"https://aegntic.ai","description":"The coordination layer for persistent human–AI intelligence systems.","sameAs":["https://github.com/aegntic","https://x.com/AEGNTIC","https://tools.aegntic.ai"]}
+    </script>
+    <script type="application/ld+json">
+    {"@context":"https://schema.org","@type":"SoftwareSourceCode","name":"Aegntic Coordination Layer","description":"The infrastructure layer for sovereign persistent human–AI intelligence systems.","url":"https://aegntic.ai","codeRepository":"https://github.com/aegntic","programmingLanguage":"TypeScript"}
+    </script>
+    <script type="application/ld+json">
+    {"@context":"https://schema.org","@type":"ItemList","name":"Coordination Primitives","numberOfItems":5,"itemListElement":[{"@type":"ListItem","position":1,"name":"Orchestration","description":"Coordinate multiple agents, humans, and systems into coherent workflows."},{"@type":"ListItem","position":2,"name":"Authenticity","description":"Verify and preserve human identity in AI-mediated environments."},{"@type":"ListItem","position":3,"name":"Continuity","description":"Persistent memory across sessions, contexts, and time."},{"@type":"ListItem","position":4,"name":"Sovereignty","description":"Own your intelligence infrastructure. Private by default."},{"@type":"ListItem","position":5,"name":"Experiential Memory","description":"Build personal context over time through lived interactions."}]}
+    </script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -136,6 +156,12 @@
         .intro-sig{margin-top:0.5rem;padding-top:2rem;border-top:1px solid rgba(17,24,28,0.08)}
         .intro-tagline{font-family:'Space Grotesk','Inter',sans-serif;font-size:clamp(1rem,1.4vw,1.25rem);font-weight:500;letter-spacing:-0.01em;line-height:1.4;color:var(--text-dark);margin:0}
         .intro-tagline strong{font-weight:600;color:var(--text-dark)}
+
+        /* ── PROOF STRIP (live GitHub metrics) ── */
+        .proof-strip{display:flex;gap:2rem;margin-bottom:2rem;flex-wrap:wrap}
+        .proof-item{display:flex;flex-direction:column;gap:0.375rem}
+        .proof-num{font-size:clamp(1.75rem,3vw,2.5rem);font-weight:600;letter-spacing:-0.02em;line-height:1;color:var(--text-dark);font-variant-numeric:tabular-nums}
+        .proof-label{font-size:0.6875rem;font-weight:500;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-muted)}
 
         /* ── WORK ── */
         .work{padding:6rem 1rem 4rem}
@@ -346,6 +372,20 @@
                     <p>This work builds the coordination layer for persistent human and machine intelligence. Public repositories address orchestration, authenticity, continuity, sovereignty, and experiential memory. Components are released as they demonstrate stability. Experiments remain visible so the distinction between what holds and what does not stays explicit.</p>
                 </div>
                 <div class="intro-sig">
+                    <div class="proof-strip">
+                        <div class="proof-item">
+                            <span class="proof-num" id="stat-repos">42</span>
+                            <span class="proof-label">Public Repos</span>
+                        </div>
+                        <div class="proof-item">
+                            <span class="proof-num" id="stat-stars">72</span>
+                            <span class="proof-label">Stars</span>
+                        </div>
+                        <div class="proof-item">
+                            <span class="proof-num" id="stat-followers">16</span>
+                            <span class="proof-label">Builders</span>
+                        </div>
+                    </div>
                     <p class="intro-tagline" data-split><strong>AEGNTIC:</strong> Adaptive Evolution enhancing human-machine intelligence</p>
                 </div>
             </div>
@@ -761,6 +801,91 @@
                 });
             });
         })();
+
+        // ── GITHUB LIVE METRICS ──
+        const GithubData = (() => {
+            const CK = 'aegntic:gh-data', CM = 6*60*60*1000;
+            const FB = { totalPublicRepos: 42, totalStars: 72, followers: 16 };
+            function load() {
+                try { const r = localStorage.getItem(CK); if (!r) return null;
+                    const d = JSON.parse(r); if (Date.now()-d.fetchedAt < CM) return d;
+                } catch(e){} return null;
+            }
+            function save(d) { try { localStorage.setItem(CK, JSON.stringify(d)); } catch(e){} }
+            async function fetchGH() {
+                try {
+                    const [p, r] = await Promise.all([
+                        window.fetch('https://api.github.com/users/aegntic'),
+                        window.fetch('https://api.github.com/users/aegntic/repos?per_page=100&sort=stars&type=public')
+                    ]);
+                    const pj = await p.json(), rj = await r.json();
+                    const d = {
+                        totalPublicRepos: pj.public_repos||FB.totalPublicRepos,
+                        totalStars: rj.reduce((s,x)=>s+x.stargazers_count,0)||FB.totalStars,
+                        followers: pj.followers||FB.followers,
+                        fetchedAt: Date.now()
+                    };
+                    save(d); return d;
+                } catch(e) { return FB; }
+            }
+            return { load, fetch: fetchGH, FB };
+        })();
+
+        function countUp(el, t, d=1200) {
+            const s = parseInt(el.textContent)||0; if(s===t)return;
+            const st = performance.now();
+            function k(n) {
+                const p = Math.min((n-st)/d,1);
+                el.textContent = Math.round(s+(t-s)*(1-Math.pow(1-p,3)));
+                if(p<1) requestAnimationFrame(k);
+            }
+            requestAnimationFrame(k);
+        }
+
+        // Fetch immediately (cache-first, background refresh)
+        const ghPromise = (async () => {
+            const cached = GithubData.load();
+            if (cached) { GithubData.fetch(); return cached; }
+            return await GithubData.fetch();
+        })();
+
+        // Animate when proof strip enters viewport
+        const proofStrip = document.querySelector('.proof-strip');
+        const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        let proofAnimated = false;
+
+        function applyGH(d) {
+            const sr = document.getElementById('stat-repos'),
+                  ss = document.getElementById('stat-stars'),
+                  sf = document.getElementById('stat-followers');
+            if (reduceMotion) {
+                if(sr) sr.textContent = d.totalPublicRepos;
+                if(ss) ss.textContent = d.totalStars;
+                if(sf) sf.textContent = d.followers;
+            } else {
+                if(sr) countUp(sr, d.totalPublicRepos);
+                if(ss) countUp(ss, d.totalStars);
+                if(sf) countUp(sf, d.followers);
+            }
+        }
+
+        if (proofStrip) {
+            if (reduceMotion) {
+                ghPromise.then(applyGH);
+            } else {
+                const io = new IntersectionObserver(async (entries) => {
+                    for (const e of entries) {
+                        if (e.isIntersecting && !proofAnimated) {
+                            proofAnimated = true;
+                            const d = await ghPromise;
+                            applyGH(d);
+                            io.unobserve(e.target);
+                        }
+                    }
+                }, { threshold: 0.3 });
+                io.observe(proofStrip);
+            }
+        }
     </script>
 </body>
 </html>
